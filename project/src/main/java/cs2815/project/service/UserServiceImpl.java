@@ -10,7 +10,7 @@ import cs2815.project.repo.UserRepo;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    UserRepo repo;
+    private UserRepo repo;
 
     @Override
     public void registerUser(User user) {
@@ -19,8 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean logIn(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'logIn'");
+        User existingUser = repo.findByUserName(user.getUser_name());
+
+        return existingUser != null && existingUser.getUser_password().equals(user.getUser_password());
     }
 
 }

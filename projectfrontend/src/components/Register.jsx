@@ -1,18 +1,29 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 function Register() {
-  const [employeename, setEmployeename] = useState("");
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
   async function save(event) {
     event.preventDefault();
+    const user = {
+      user_name: username,
+      user_first_name: firstname,
+      user_last_name: lastname,
+      user_password: password,
+      user_role: "Viewer",
+    };
+    console.log(user);
     try {
-      await axios.post("http://localhost:8085/api/v1/employee/save", {
-        employeename: employeename,
-        email: email,
-        password: password,
-      });
-      alert("Employee Registation Successfully");
+      await axios.post("http://localhost:8080/users/registerUser", user);
+      alert("User registration successful!");
+      navigate("/");
     } catch (err) {
       alert(err);
     }
@@ -20,42 +31,55 @@ function Register() {
 
   return (
     <div>
-      <div class="container mt-4">
-        <div class="card">
-          <h1>Student Registation</h1>
+      <div className="container mt-4">
+        <div className="card">
+          <h1>Registration</h1>
 
           <form>
-            <div class="form-group">
-              <label>Employee name</label>
+            <div className="form-group">
+              <label>Username</label>
               <input
                 type="text"
-                class="form-control"
-                id="employeename"
-                placeholder="Enter Name"
-                value={employeename}
+                className="form-control"
+                id="username"
+                placeholder="Enter Username"
+                value={username}
                 onChange={(event) => {
-                  setEmployeename(event.target.value);
+                  setUsername(event.target.value);
                 }}
               />
             </div>
-            <div class="form-group">
-              <label>email</label>
+            <div className="form-group">
+              <label>First name</label>
               <input
-                type="email"
-                class="form-control"
-                id="email"
-                placeholder="Enter Email"
-                value={email}
+                type="text"
+                className="form-control"
+                id="firstname"
+                placeholder="Enter First Name"
+                value={firstname}
                 onChange={(event) => {
-                  setEmail(event.target.value);
+                  setFirstname(event.target.value);
                 }}
               />
             </div>
-            <div class="form-group">
-              <label>password</label>
+            <div className="form-group">
+              <label>Last name</label>
+              <input
+                type="text"
+                className="form-control"
+                id="lastname"
+                placeholder="Enter Last Name"
+                value={lastname}
+                onChange={(event) => {
+                  setLastname(event.target.value);
+                }}
+              />
+            </div>
+            <div className="form-group">
+              <label>Password</label>
               <input
                 type="password"
-                class="form-control"
+                className="form-control"
                 id="password"
                 placeholder="Enter password"
                 value={password}
@@ -64,8 +88,11 @@ function Register() {
                 }}
               />
             </div>
-            <button type="submit" class="btn btn-primary mt-4" onClick={save}>
-              Save
+            <button
+              type="submit"
+              className="btn btn-primary mt-4"
+              onClick={save}>
+              Register
             </button>
           </form>
         </div>
