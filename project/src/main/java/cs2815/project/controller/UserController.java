@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import cs2815.project.model.User;
-import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
 
 @RestController
