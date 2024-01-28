@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assets - IT Asset Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="assets.html" class="active">Assets</a>
+            <a href="admin.html">Admin Panel</a>
+        </nav>
+        <div class="login-info">
+            <span>Welcome, [Username]</span> |
+            <span>Role: [User Role]</span>
+        </div>
+    </header>
+
+    <main>
+        <section class="assets-container">
+            <h1>Asset Management</h1>
+
+            <!-- Search section -->
+            <div class="search-section">
+                <input type="text" id="assetSearchInput" placeholder="Search assets..." class="search-input">
+                <button id="assetSearchBtn" class="search-btn">Search</button>
+            </div>
+
+            <button id="createAssetBtn">Create New Asset</button>
+
+            <div class="assets-list">
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <!-- Footer content -->
+    </footer>
+
+    <script src="assets.js"></script>
+</body>
+
+</html>
