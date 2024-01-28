@@ -3,8 +3,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -12,38 +10,36 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const [username, setUsername] = useState("");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
-
-  async function save(event) {
-    event.preventDefault();
-    const user = {
-      user_name: username,
-      user_first_name: firstname,
-      user_last_name: lastname,
-      user_password: password,
-      user_role: "Viewer",
-    };
-    console.log(user);
+  const handleSubmit = async (event) => {
     try {
-      await axios.post("http://localhost:8080/users/registerUser", user);
-      alert("User registration successful!");
-      navigate("/");
-    } catch (err) {
-      alert(err);
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const username = data.get("username");
+      const firstName = data.get("firstName");
+      const lastName = data.get("lastName");
+      const password = data.get("password");
+
+      await axios.post("http://localhost:8080/users/signUp", {
+        user_name: username,
+        user_first_name: firstName,
+        user_last_name: lastName,
+        user_password: password,
+        user_role: "Viewer",
+      });
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Error during sign up:", error);
+      alert("An error occurred during sign up");
     }
-  }
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -62,7 +58,11 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={save} sx={{ mt: 3 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -73,8 +73,6 @@ export default function SignUp() {
                   id="firstName"
                   label="First Name"
                   autoFocus
-                  value={firstname}
-                  onChange={(e) => setFirstname(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -85,8 +83,6 @@ export default function SignUp() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="family-name"
-                  value={lastname}
-                  onChange={(e) => setLastname(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -97,8 +93,6 @@ export default function SignUp() {
                   label="Username"
                   name="username"
                   autoComplete="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -110,8 +104,6 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                 />
               </Grid>
             </Grid>

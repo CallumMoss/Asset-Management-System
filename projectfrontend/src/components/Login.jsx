@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 export default function SignIn() {
-  const navigate = useNavigate(); // Ensure you have this line if you are using react-router-dom
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     try {
