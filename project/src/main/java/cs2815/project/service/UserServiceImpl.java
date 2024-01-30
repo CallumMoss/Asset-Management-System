@@ -1,5 +1,7 @@
 package cs2815.project.service;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(User user) {
+        Objects.requireNonNull(user, "User must not be null");
         repo.save(user);
     }
 
