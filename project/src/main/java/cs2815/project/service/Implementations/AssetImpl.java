@@ -15,6 +15,10 @@ public class AssetImpl implements AssetService {
 
     @Override
     public void createAsset(Asset asset) {
+        if (asset == null) {
+            System.out.println("Error: Asset is null.");
+            return;
+        }
         repo.save(asset);
     }
 

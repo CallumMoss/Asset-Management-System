@@ -15,6 +15,10 @@ public class AssetAttributeValueImpl implements AssetAttributeValueService {
 
     @Override
     public void createAssetAttributeValue(AssetAttributeValue assetAttributeValue) {
+        if (assetAttributeValue == null) {
+            System.out.println("Error: AttributeValue is null.");
+            return;
+        }
         repo.save(assetAttributeValue);
     }
 

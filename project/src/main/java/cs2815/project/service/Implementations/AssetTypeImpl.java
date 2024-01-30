@@ -15,6 +15,10 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Override
     public void createAssetType(AssetType assetType) {
+        if (assetType == null) {
+            System.out.println("Error: AssetType is null.");
+            return;
+        }
         repo.save(assetType);
     }
 
