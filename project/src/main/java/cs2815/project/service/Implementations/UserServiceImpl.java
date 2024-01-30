@@ -15,6 +15,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(User user) {
+        if (user == null) {
+            System.out.println("Error: User is null.");
+            return;
+        }
         repo.save(user);
     }
 

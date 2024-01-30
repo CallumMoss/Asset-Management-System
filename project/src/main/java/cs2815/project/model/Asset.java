@@ -27,7 +27,7 @@ public class Asset {
 
     @ManyToOne
     @JoinColumn(name = "asset_type")
-    private AssetTypes asset_type;
+    private AssetType asset_type;
 
     private Date upload_date;
 
