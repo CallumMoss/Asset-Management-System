@@ -1,4 +1,4 @@
-package cs2815.project;
+package cs2815.project.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
