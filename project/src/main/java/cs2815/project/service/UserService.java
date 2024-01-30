@@ -8,4 +8,6 @@ public interface UserService {
 
     public boolean logIn(User user);
 
+    public String getUserRole(String username);
+
 }

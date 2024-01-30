@@ -25,4 +25,10 @@ public class UserServiceImpl implements UserService {
         return existingUser != null && existingUser.getUser_password().equals(user.getUser_password());
     }
 
+    @Override
+    public String getUserRole(String username) {
+        User user = repo.findByUserName(username);
+        return user != null ? user.getUser_role() : null;
+    }
+
 }

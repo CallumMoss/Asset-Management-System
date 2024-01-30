@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
-export default function SignIn() {
+export default function SignIn({ updateCurrentUser }) {
   const navigate = useNavigate(); // Ensure you have this line if you are using react-router-dom
 
   const handleSubmit = async (event) => {
@@ -32,8 +32,10 @@ export default function SignIn() {
         user_password: password,
       });
 
-      if (response.data === true) {
+      if (response.data.authenticated === true) {
         // Login successful
+        updateCurrentUser(username, response.data.user_role);
+
         navigate("/dashboard");
       } else {
         // Login failed
