@@ -34,7 +34,7 @@ CREATE TABLE assets (
 
 -- Attributes that belong to a given asset type, such that any asset of a given asset type has these attributes, such as number of lines.
 CREATE TABLE asset_attributes (
-    asset_attribute_id INT PRIMARY KEY,
+    asset_attribute_id INT PRIMARY KEY, -- should it be made SERIAL?
     -- might need to have asset_id in this table too, to communicate properly with assets AND asset types
     asset_type VARCHAR(30) REFERENCES asset_types(type_name),
     attribute_name VARCHAR(50) NOT NULL,
