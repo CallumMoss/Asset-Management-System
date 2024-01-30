@@ -5,18 +5,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import cs2815.project.model.AssetTypes;
-import cs2815.project.service.AssetTypesService;
+import cs2815.project.model.AssetType;
+import cs2815.project.service.AssetTypeService;
 
 @RestController
 @RequestMapping("/asset_types")
-public class AssetTypesController {
+public class AssetTypeController {
 
     @Autowired
-    private AssetTypesService assetTypeService;
+    private AssetTypeService assetTypeService;
 
     @PostMapping("/createAssetType")
-    public void createAssetType(@RequestBody AssetTypes type) {
+    public void createAssetType(@RequestBody AssetType type) {
         assetTypeService.createAssetType(type);
     }
 }
