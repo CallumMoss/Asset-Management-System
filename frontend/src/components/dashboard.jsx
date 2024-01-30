@@ -1,8 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-function Dashboard() {
+function Dashboard({ username, userRole }) {
   const navigate = useNavigate();
+
   return (
     <div>
       <header>
@@ -16,7 +17,7 @@ function Dashboard() {
           <a href="admin.html">Admin Panel</a>
         </nav>
         <div className="login-info">
-          <span>Welcome, [Username]</span> | <span>Role: [User Role]</span>
+          <span>Welcome, {username}</span> | <span>Role: {userRole}</span>
         </div>
       </header>
 
@@ -33,7 +34,7 @@ function Dashboard() {
         </div>
       </main>
 
-      <footer></footer>
+      <footer>{/* Your footer content */}</footer>
     </div>
   );
 }

@@ -26,7 +26,7 @@ export default function SignUp() {
       const lastName = data.get("lastName");
       const password = data.get("password");
 
-      await axios.post("http://localhost:8080/users/signUp", {
+      await axios.post("http://localhost:8080/users/signup", {
         user_name: username,
         user_first_name: firstName,
         user_last_name: lastName,

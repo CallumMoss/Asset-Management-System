@@ -25,7 +25,15 @@ function App() {
             element={<Login updateCurrentUser={updateCurrentUser} />}
           />
           {/* Pass the updateCurrentUser function to the Login component */}
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <Dashboard
+                username={currentUserName}
+                userRole={currentUserType}
+              />
+            }
+          />
           <Route path="*" element={<div> Page not found</div>} />
         </Routes>
       </BrowserRouter>

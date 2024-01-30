@@ -34,7 +34,7 @@ export default function SignIn({ updateCurrentUser }) {
 
       if (response.data.authenticated === true) {
         // Login successful
-        updateCurrentUser(username, response.data.user_role);
+        updateCurrentUser(username, response.data.userRole);
 
         navigate("/dashboard");
       } else {

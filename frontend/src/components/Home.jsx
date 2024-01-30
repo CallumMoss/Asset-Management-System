@@ -17,7 +17,7 @@ function Home() {
 
   return (
     <div>
-      <header></header>
+      <header>{/* Your header content */}</header>
 
       <main>
         <section className="hero">
@@ -57,7 +57,7 @@ function Home() {
         </section>
       </main>
 
-      <footer></footer>
+      <footer>{/* Your footer content */}</footer>
     </div>
   );
 }
