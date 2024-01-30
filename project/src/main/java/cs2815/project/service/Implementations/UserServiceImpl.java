@@ -1,10 +1,11 @@
-package cs2815.project.service;
+package cs2815.project.service.Implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cs2815.project.model.User;
 import cs2815.project.repo.UserRepo;
+import cs2815.project.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {

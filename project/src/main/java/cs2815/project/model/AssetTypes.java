@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "asset_types")
 
-public class Asset_Types {
+public class AssetTypes {
     @Id
     private String type_name;
 
