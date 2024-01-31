@@ -1,11 +1,21 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import Dashboard from "./components/dashboard";
+import Assets from "./components/Assets";
+import Admin from "./components/Admin";
 
 function App() {
+  return (
+    <div>
+      <AppRoutes />
+    </div>
+  );
+}
+
+function AppRoutes() {
   const [currentUserName, setCurrentUserName] = useState("");
   const [currentUserType, setCurrentUserType] = useState("");
 
@@ -28,17 +38,62 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <Dashboard
-                username={currentUserName}
-                userRole={currentUserType}
-              />
+              <ViewerElement currentUserType={currentUserType}>
+                <Dashboard
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
+              </ViewerElement>
             }
           />
-          <Route path="*" element={<div> Page not found</div>} />
+          <Route
+            path="/assets"
+            element={
+              <ViewerElement currentUserType={currentUserType}>
+                <Assets username={currentUserName} userRole={currentUserType} />
+              </ViewerElement>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <Admin username={currentUserName} userRole={currentUserType} />
+              </AdminElement>
+            }
+          />
+
+          <Route path="*" element={<div> Page not found!</div>} />
         </Routes>
       </BrowserRouter>
     </div>
   );
 }
+export function ViewerElement({ currentUserType, children }) {
+  if (
+    currentUserType === "Viewer" ||
+    currentUserType === "User" ||
+    currentUserType === "Admin"
+  ) {
+    return <>{children}</>;
+  } else {
+    return <div>You don't have access to this page!</div>;
+  }
+}
 
+export function UserElement({ currentUserType, children }) {
+  if (currentUserType === "User" || currentUserType === "Admin") {
+    return <>{children}</>;
+  } else {
+    return <div>You don't have access to this page!</div>;
+  }
+}
+
+export function AdminElement({ currentUserType, children }) {
+  if (currentUserType === "Admin") {
+    return <>{children}</>;
+  } else {
+    return <div>You don't have access to this page!</div>;
+  }
+}
 export default App;

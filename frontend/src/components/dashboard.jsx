@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Dashboard({ username, userRole }) {
   const navigate = useNavigate();
@@ -8,16 +8,17 @@ function Dashboard({ username, userRole }) {
     <div>
       <header>
         <nav className="navbar">
-          <a href="index.html">Home</a>
-          <a href="dashboard.html" className="active">
-            Dashboard
-          </a>
-          {/* Mark as active since we're on the dashboard */}
-          <a href="assets.html">Assets</a>
-          <a href="admin.html">Admin Panel</a>
+          <Link to="/">Log Out</Link>
+          <Link to="/dashboard">Dashboard</Link>
+          {userRole === "Admin" || userRole === "User" ? (
+            <>
+              <Link to="/assets">Assets</Link>
+              {userRole === "Admin" ? <Link to="/admin">Admin</Link> : null}
+            </>
+          ) : null}
         </nav>
         <div className="login-info">
-          <span>Welcome, {username}</span> | <span>Role: {userRole}</span>
+          <span>Welcome, {username}</span> <span>Role: {userRole}</span>
         </div>
       </header>
 
