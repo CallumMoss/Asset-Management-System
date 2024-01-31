@@ -1,4 +1,4 @@
-package cs2815.project.service.Implementations;
+package cs2815.project.service.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
