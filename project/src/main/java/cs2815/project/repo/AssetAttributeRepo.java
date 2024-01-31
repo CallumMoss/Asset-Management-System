@@ -8,9 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface AssetAttributeRepo extends JpaRepository<AssetAttribute, Integer> { // Integer being the type of the primary key
+public interface AssetAttributeRepo extends JpaRepository<AssetAttribute, Integer> { // Integer being the type of the
+                                                                                     // primary key
 
-    @Query("SELECT a FROM AssetAttribute a WHERE a.asset_attribute_id = :asset_attribute_id")
-    AssetAttribute findByAssetAttributeID(@Param("asset_attribute_id") String asset_attribute_id);
-    
 }

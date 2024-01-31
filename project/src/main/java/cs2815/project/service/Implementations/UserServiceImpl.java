@@ -17,14 +17,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(User user) {
-<<<<<<< HEAD:project/src/main/java/cs2815/project/service/UserServiceImpl.java
-        Objects.requireNonNull(user, "User must not be null");
-=======
         if (user == null) {
             System.out.println("Error: User is null.");
             return;
         }
->>>>>>> backend:project/src/main/java/cs2815/project/service/Implementations/UserServiceImpl.java
         repo.save(user);
     }
 

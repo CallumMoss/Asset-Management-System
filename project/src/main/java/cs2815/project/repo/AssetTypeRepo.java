@@ -10,7 +10,4 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 @RepositoryRestResource
 public interface AssetTypeRepo extends JpaRepository<AssetType, String> {
 
-    @Query("SELECT t FROM AssetTypes t WHERE t.type_name = :type_name")
-    AssetType findByAssetType(@Param("type_name") String type_name);
-
 }
