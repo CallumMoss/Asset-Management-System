@@ -1,4 +1,4 @@
-package cs2815.project.service.implementations;
+package cs2815.project.service.Implementations;
 
 import java.util.Objects;
 
