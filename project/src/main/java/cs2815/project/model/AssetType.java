@@ -1,6 +1,8 @@
 package cs2815.project.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,9 @@ import lombok.Setter;
 
 public class AssetType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int type_id;
+
     private String type_name;
 
     private String description;

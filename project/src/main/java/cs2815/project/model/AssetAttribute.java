@@ -1,6 +1,8 @@
 package cs2815.project.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -18,6 +20,7 @@ import lombok.Setter;
 @Table(name = "asset_attributes")
 public class AssetAttribute {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int asset_attribute_id;
 
     @ManyToOne

@@ -1,32 +1,39 @@
 package cs2815.project.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "log")
+public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int logId;
 
-    @Column(unique = true) // Add this annotation to enforce unique constraint
-    private String user_name;
+    @ManyToOne
+    @JoinColumn(name = "asset_id")
+    private Asset asset;
 
-    private String user_first_name;
-    private String user_last_name;
-    private String user_password;
-    private String user_role;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    private String updateDescription;
+
+    private Timestamp updateTimestamp;
+
 }

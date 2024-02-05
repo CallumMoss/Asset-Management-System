@@ -3,6 +3,8 @@ package cs2815.project.model;
 import java.util.Date;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -20,10 +22,13 @@ import lombok.Setter;
 @Table(name = "assets")
 public class Asset {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int asset_id;
-    private String link;
-    private String asset_description;
+
     private String title;
+    private String asset_description;
+    private String link;
+    private String language;
 
     @ManyToOne
     @JoinColumn(name = "asset_type")
@@ -32,6 +37,6 @@ public class Asset {
     private Date upload_date;
 
     @ManyToOne
-    @JoinColumn(name = "author")
+    @JoinColumn(name = "author", referencedColumnName = "user_name")
     private User author;
 }
