@@ -1,4 +1,4 @@
-package cs2815.project.model;
+package cs2815.project.model.specialmodels;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponse {
-    private boolean authenticated;
-    private String userRole;
+public class ResetPasswordRequest {
+    private int userId;
+    private String newPassword;
 }

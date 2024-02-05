@@ -44,6 +44,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void editUser(User user) {
+
+        System.out.println(user.getId());
+        System.out.println(user.getUser_name());
+        System.out.println(user.getUser_first_name());
+        System.out.println(user.getUser_last_name());
+        System.out.println(user.getUser_role());
+
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
                 user.getUser_last_name(), user.getUser_role());
     }

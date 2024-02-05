@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cs2815.project.model.LoginResponse;
 import cs2815.project.model.User;
+import cs2815.project.model.specialmodels.LoginResponse;
+import cs2815.project.model.specialmodels.ResetPasswordRequest;
 import cs2815.project.service.UserService;
 
 import java.util.List;
@@ -61,8 +62,8 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody int userId, @RequestBody String newPassword) {
-        userService.resetPassword(userId, newPassword);
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest passres) {
+        userService.resetPassword(passres.getUserId(), passres.getNewPassword());
         return ResponseEntity.ok("Password reset successfully");
     }
 
