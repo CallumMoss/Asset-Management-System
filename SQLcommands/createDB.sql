@@ -10,7 +10,7 @@ CREATE TABLE users (
     user_name VARCHAR(30) PRIMARY KEY,
     user_first_name VARCHAR(30) NOT NULL,
     user_last_name VARCHAR(30) NOT NULL,
-    user_password VARCHAR(30) NOT NULL,
+    user_password VARCHAR(100) NOT NULL,
     user_role VARCHAR(15) NOT NULL -- Admin, regular user or viewer
 );
 
