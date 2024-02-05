@@ -10,9 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 
 @Getter
 @Setter
@@ -32,12 +30,9 @@ public class User {
     private String user_last_name;
     private String user_password;
     private String user_role;
-<<<<<<< HEAD
-=======
 
-    public void encryptPassword(PasswordEncoder key){
+    public void encryptPassword(PasswordEncoder key) {
         this.user_password = key.encode(user_password);
     }
 
->>>>>>> password-encryption
 }
