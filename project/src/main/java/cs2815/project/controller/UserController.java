@@ -68,15 +68,17 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping("/search")
+    @PostMapping("/search/username")
     public ResponseEntity<List<String>> searchByUsername(@RequestBody String searchString) {
         List<String> compatibleUsernames = userService.searchByUsername(searchString);
         return ResponseEntity.ok(compatibleUsernames);
     }
+    @PostMapping("/search/firstname")
     public ResponseEntity<List<String>> searchByFirstName(@RequestBody String searchString) {
         List<String> compatibleUsernames = userService.searchByFirstName(searchString);
         return ResponseEntity.ok(compatibleUsernames);
     }
+    @PostMapping("/search/lastname")
     public ResponseEntity<List<String>> searchByLastName(@RequestBody String searchString) {
         List<String> compatibleUsernames = userService.searchByLastName(searchString);
         return ResponseEntity.ok(compatibleUsernames);

@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService {
         int pointerSearch = 0;
         int pointerCompare = 0;
         while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
-            if (searchString.charAt(pointerSearch) == compareString.charAt(pointerCompare)) {
+            if (searchString.toLowerCase().charAt(pointerSearch) == compareString.toLowerCase().charAt(pointerCompare)) {
                 pointerSearch++;
             }
             pointerCompare++;
