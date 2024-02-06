@@ -45,4 +45,10 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
     @Query("SELECT u.user_name FROM User u")
     List<String> findAllUserNames();
+
+    @Query("SELECT u.user_first_name FROM User u")
+    List<String> findAllFNames();
+
+    @Query("SELECT u.user_last_name FROM User u")
+    List<String> findAllLNames();
 }

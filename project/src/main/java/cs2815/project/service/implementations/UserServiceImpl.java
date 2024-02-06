@@ -1,4 +1,4 @@
-package cs2815.project.service.Implementations;
+package cs2815.project.service.implementations;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -86,22 +86,50 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<String> searchByUsername(String searchString) {
-        System.out.println("test1");
         List<String> usernameList = repo.findAllUserNames();
         List<String> compatibleList = new ArrayList<>();
         for (String username : usernameList) {
-            System.out.println(username);
             if (isSimilar(searchString, username)) {
-                System.out.println("test2");
                 compatibleList.add(username);
             }
         }
         return compatibleList;
     }
 
+    @Override
+    public List<String> searchByFirstName(String searchString) {
+        List<String> FNameList = repo.findAllFNames();
+        List<String> compatibleList = new ArrayList<>();
+        for (String firstname : FNameList) {
+            if (isSimilar(searchString, firstname)) {
+                compatibleList.add(firstname);
+            }
+        }
+        return compatibleList;
+    }
+
+    @Override
+    public List<String> searchByLastName(String searchString) {
+        List<String> LNameList = repo.findAllLNames();
+        List<String> compatibleList = new ArrayList<>();
+        for (String lastname : LNameList) {
+            if (isSimilar(searchString, lastname)) {
+                compatibleList.add(lastname);
+            }
+        }
+        return compatibleList;
+    }
+
     public boolean isSimilar(String searchString, String compareString) {
-        System.out.println(compareString.toLowerCase().contains(searchString.toLowerCase()));
-        return compareString.toLowerCase().contains(searchString.toLowerCase());
+        int pointerSearch = 0;
+        int pointerCompare = 0;
+        while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
+            if (searchString.charAt(pointerSearch) == compareString.charAt(pointerCompare)) {
+                pointerSearch++;
+            }
+            pointerCompare++;
+        }
+        return pointerSearch == searchString.length();
     }
 
 }

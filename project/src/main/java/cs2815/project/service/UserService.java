@@ -22,6 +22,10 @@ public interface UserService {
 
     public List<String> searchByUsername(String searchword);
 
+    public List<String> searchByFirstName(String searchword);
+
+    public List<String> searchByLastName(String searchword);
+
     public void resetPassword(int userId, String newPassword);
 
 }
