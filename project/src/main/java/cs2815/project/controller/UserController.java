@@ -34,6 +34,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
+        userService.createBaseUsers();
         boolean loginSuccessful = userService.logIn(user);
         String userRole = userService.getUserRole(user.getUser_name());
         return ResponseEntity.ok(new LoginResponse(loginSuccessful, userRole));

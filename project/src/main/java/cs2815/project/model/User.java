@@ -33,6 +33,14 @@ public class User {
 
     private String user_role;
 
+    public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
+        this.user_name = uName;
+        this.user_first_name = uFName;
+        this.user_last_name = uLName;
+        this.user_password = key.encode(uPassword);
+        this.user_role = uRole;
+    }
+
     public void encryptPassword(PasswordEncoder key) {
         this.user_password = key.encode(user_password);
     }

@@ -21,6 +21,19 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder key;
 
     @Override
+    public void createBaseUsers() {
+        if (repo.findByUserName("BaseAdmin") == null) {
+            User baseViewer = new User("BaseViewer", "Viewer", "Smith", "password", "Viewer", key);
+            User baseUser = new User("BaseUser", "User", "Martinez", "password", "User", key);
+            User baseAdmin = new User("BaseAdmin", "Admin", "Johnson", "password", "Admin", key);
+            repo.save(baseViewer);
+            repo.save(baseUser);
+            repo.save(baseAdmin);
+        }
+    }
+
+
+    @Override
     public void registerUser(User user) {
         if (user == null) {
             System.out.println("Error: User is null.");

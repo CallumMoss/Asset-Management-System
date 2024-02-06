@@ -6,6 +6,8 @@ import cs2815.project.model.User;
 
 public interface UserService {
 
+    public void createBaseUsers();
+
     public void registerUser(User user);
 
     public boolean logIn(User user);
