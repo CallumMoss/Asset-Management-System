@@ -1,4 +1,4 @@
-package cs2815.project.service.implementations;
+package cs2815.project.service.Implementations;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -32,13 +32,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
     public void registerUser(User user) {
-        if (user == null) {
-            System.out.println("Error: User is null.");
-            return;
-        }
+
         user.encryptPassword(key);
         repo.save(user);
     }
@@ -57,12 +53,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void editUser(User user) {
-
-        System.out.println(user.getId());
-        System.out.println(user.getUser_name());
-        System.out.println(user.getUser_first_name());
-        System.out.println(user.getUser_last_name());
-        System.out.println(user.getUser_role());
 
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
                 user.getUser_last_name(), user.getUser_role());
@@ -124,7 +114,8 @@ public class UserServiceImpl implements UserService {
         int pointerSearch = 0;
         int pointerCompare = 0;
         while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
-            if (searchString.toLowerCase().charAt(pointerSearch) == compareString.toLowerCase().charAt(pointerCompare)) {
+            if (searchString.toLowerCase().charAt(pointerSearch) == compareString.toLowerCase()
+                    .charAt(pointerCompare)) {
                 pointerSearch++;
             }
             pointerCompare++;
