@@ -27,6 +27,7 @@ function Dashboard({ username, userRole }) {
           <button onClick={() => (window.location.href = "add-asset.html")}>
             Add New Asset
           </button>
+
           <button
             onClick={() => (window.location.href = "recent-updates.html")}>
             View Recent Updates
