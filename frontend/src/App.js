@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import user from '../src/user.png';
+import logout from '../src/logout.png';
+import './App.css';
+import React, {useState, useEffect, useRef} from 'react';
+
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -7,10 +11,44 @@ import Dashboard from "./components/dashboard";
 import Assets from "./components/Assets";
 import Admin from "./components/Admin";
 
+{/*imports for dropdown lines 1-5*/}
+
+
 function App() {
+
+  const [open, setOpen] = useState(false);
+  let menuRef = useRef();
+  useEffect(() => {
+    let handler = (e)=>{
+      if(!menuRef.current.contains(e.target)){
+      setOpen(false);
+      console.log(menuRef.current);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+
+    return() =>{
+      document.removeEventListener("mousedown", handler);
+    }
+  });
   return (
-    <div>
+    <div className="App">
+
+      <div>
       <AppRoutes />
+    </div>
+
+      <div className= 'menu-container' ref={menuRef}>
+        <div className='menu-trigger' onClick={()=>{setOpen(!open)}}>
+          <img src={user}></img>
+        </div>
+
+        <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} >
+          <ul>
+            <DropdownItem img = {logout} text = {"Logout"}/>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }
@@ -69,6 +107,16 @@ function AppRoutes() {
     </div>
   );
 }
+{/*Dropdown method to drop items*/}
+function DropdownItem(props){
+  return(
+    <li className = 'dropdownItem'>
+      <img src = {props.img}></img>
+      <a> {props.text}</a>
+    </li>
+  );
+}
+
 export function ViewerElement({ currentUserType, children }) {
   if (
     currentUserType === "Viewer" ||

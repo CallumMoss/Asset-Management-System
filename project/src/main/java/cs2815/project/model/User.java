@@ -32,12 +32,9 @@ public class User {
     private String user_last_name;
     private String user_password;
     private String user_role;
-<<<<<<< HEAD
-=======
 
     public void encryptPassword(PasswordEncoder key){
         this.user_password = key.encode(user_password);
     }
 
->>>>>>> password-encryption
 }
