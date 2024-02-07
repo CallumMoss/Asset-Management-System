@@ -2,12 +2,15 @@ package cs2815.project.model;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -29,17 +32,22 @@ public class Asset {
     private String title;
     private String asset_description;
     private String link;
-    private Language language;
+
+    @ManyToMany
+    @JoinTable(name = "asset_language", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
+    private List<Language> languages;
 
     @ManyToOne
-    @JoinColumn(name = "asset_type")
+    @JoinColumn(name = "asset_type_id")
     private AssetType asset_type;
 
     private Timestamp updateTimestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "author", referencedColumnName = "user_name")
-    private User author;
+    @ManyToMany
+    @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> authors;
 
-    private Dependencies dependecy;
+    @ManyToMany
+    @JoinTable(name = "asset_dependency", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "dependency_id"))
+    private List<Dependency> dependencies;
 }

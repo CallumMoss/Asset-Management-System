@@ -18,14 +18,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "languages")
-public class Language {
+@Table(name = "dependencies")
+public class Dependency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int language_id;
+    private int id;
 
-    private String language_name;
-
-    @ManyToMany(mappedBy = "languages")
-    private List<Asset> assets;
+    @ManyToMany(mappedBy = "dependencies")
+    private List<Asset> dependentAssets;
 }
