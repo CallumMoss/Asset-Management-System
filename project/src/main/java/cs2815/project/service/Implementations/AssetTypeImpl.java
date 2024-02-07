@@ -1,8 +1,8 @@
 package cs2815.project.service.Implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cs2815.project.model.AssetType;
@@ -14,6 +14,9 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Autowired
     private AssetTypeRepo repo;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     @Override
     public void createAssetType(AssetType assetType) {
@@ -33,6 +36,19 @@ public class AssetTypeImpl implements AssetTypeService {
     @Override
     public List<AssetType> refreshAssetType() {
         return repo.getAllAssetTypes();
+    }
+
+    @Override
+    public List<String> searchTypes(String searchString) {
+
+        List<String> TypeList = repo.getAllAssetTypeNames();
+        List<String> compatibleList = new ArrayList<>();
+        for (String type : TypeList) {
+            if (userService.isSimilar(searchString, type)) {
+                compatibleList.add(type);
+            }
+        }
+        return compatibleList;
     }
 
 }
