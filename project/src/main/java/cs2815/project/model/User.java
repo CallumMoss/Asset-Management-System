@@ -23,16 +23,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(unique = true) // Add this annotation to enforce unique constraint
+    @Column(unique = true)
     private String user_name;
 
     private String user_first_name;
     private String user_last_name;
+
     private String user_password;
+
     private String user_role;
 
     public void encryptPassword(PasswordEncoder key) {
         this.user_password = key.encode(user_password);
     }
-
 }
