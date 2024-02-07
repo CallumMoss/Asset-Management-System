@@ -73,11 +73,13 @@ public class UserController {
         List<String> compatibleUsernames = userService.searchByUsername(searchString);
         return ResponseEntity.ok(compatibleUsernames);
     }
+
     @PostMapping("/search/firstname")
     public ResponseEntity<List<String>> searchByFirstName(@RequestBody String searchString) {
         List<String> compatibleUsernames = userService.searchByFirstName(searchString);
         return ResponseEntity.ok(compatibleUsernames);
     }
+
     @PostMapping("/search/lastname")
     public ResponseEntity<List<String>> searchByLastName(@RequestBody String searchString) {
         List<String> compatibleUsernames = userService.searchByLastName(searchString);

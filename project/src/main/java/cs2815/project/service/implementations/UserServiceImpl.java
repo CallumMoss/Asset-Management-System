@@ -1,13 +1,16 @@
 package cs2815.project.service.Implementations;
 
 import java.util.List;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import cs2815.project.model.Log;
 import cs2815.project.model.User;
+import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
 
@@ -16,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepo repo;
+
+    @Autowired
+    private LogRepo logrepo;
 
     @Autowired
     private PasswordEncoder key;
@@ -42,6 +48,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean logIn(User user) {
         User existingUser = repo.findByUserName(user.getUser_name());
+
+        Log loginLog = new Log();
+        loginLog.setUser(existingUser);
+        loginLog.setUpdateDescription("Logging in");
+        loginLog.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        logrepo.save(loginLog);
+
         return existingUser != null && key.matches(user.getUser_password(), existingUser.getUser_password());
     }
 
