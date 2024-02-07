@@ -42,4 +42,10 @@ public class AssetTypeController {
         List<AssetType> assetTypes = assetTypeService.refreshAssetType();
         return ResponseEntity.ok(assetTypes);
     }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<String>> searchTypes(@RequestBody String searchString) {
+        List<String> compatibleUsernames = assetTypeService.searchTypes(searchString);
+        return ResponseEntity.ok(compatibleUsernames);
+    }
 }

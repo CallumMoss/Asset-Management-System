@@ -2,7 +2,6 @@ package cs2815.project.service.Implementations;
 
 import java.util.List;
 
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cs2815.project.model.AssetType;
@@ -17,6 +16,7 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Override
     public void createAssetType(AssetType assetType) {
+
         repo.save(assetType);
     }
 
@@ -34,5 +34,4 @@ public class AssetTypeImpl implements AssetTypeService {
     public List<AssetType> refreshAssetType() {
         return repo.getAllAssetTypes();
     }
-
 }

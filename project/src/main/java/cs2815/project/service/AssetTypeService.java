@@ -13,4 +13,7 @@ public interface AssetTypeService {
 
     public List<AssetType> refreshAssetType();
 
+    public List<String> searchTypes(String searchword);
+
+
 }
