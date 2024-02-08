@@ -4,10 +4,17 @@ import { Link } from "react-router-dom";
 
 function Assets({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("");
 
   const handleSearch = () => {
     console.log("Searching for:", searchTerm);
-    // Add your search logic here
+    // Add your search logic here, considering the selected filter
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+    console.log("Filtering by:", e.target.value);
+    // You can also add logic here to filter the displayed assets based on the selected filter
   };
 
   return (
@@ -32,7 +39,7 @@ function Assets({ username, userRole }) {
         <section className="assets-container">
           <h1>Asset Management</h1>
 
-          <div className="search-section">
+          <div className="search-and-filter">
             <input
               type="text"
               id="assetSearchInput"
@@ -47,17 +54,32 @@ function Assets({ username, userRole }) {
               onClick={handleSearch}>
               Search
             </button>
+            <select
+              value={filter}
+              onChange={handleFilterChange}
+              className="filter-dropdown">
+              <option value="">Filter</option>
+              <option value="type">Type</option>
+              <option value="date">Date</option>
+              <option value="author">Author</option>
+              <option value="title">Title</option>
+            </select>
           </div>
 
-          <button id="createAssetBtn">Create New Asset</button>
+          <Link to="/create-asset">
+            <button id="createAssetBtn">Create New Asset</button>
+          </Link>
 
-          <div className="assets-list"></div>
+          <div className="assets-list">{/* Assets list rendering */  }</div>
         </section>
       </main>
 
-      <footer>{/* Footer content */}</footer>
+      <footer>{/* Footer content */  }</footer>
     </div>
   );
 }
 
 export default Assets;
+
+
+

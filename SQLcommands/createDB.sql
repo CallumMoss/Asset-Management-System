@@ -1,53 +1,39 @@
--- Used to refresh the database before each coding session
-DROP TABLE users CASCADE;
-DROP TABLE asset_types CASCADE;
-DROP TABLE assets CASCADE;
-DROP TABLE asset_attributes CASCADE;
-DROP TABLE asset_attribute_values CASCADE;
-
--- Creates database
-CREATE TABLE users (
-    user_name VARCHAR(30) PRIMARY KEY,
-    user_first_name VARCHAR(30) NOT NULL,
-    user_last_name VARCHAR(30) NOT NULL,
-    user_password VARCHAR(30) NOT NULL,
-    user_role VARCHAR(15) NOT NULL -- Admin, regular user or viewer
-);
-
--- Types of possible asset types, such as python files or documentation
-CREATE TABLE asset_types (
-    -- should type have an ID?
-    type_name VARCHAR(30) PRIMARY KEY,
-    description VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE assets (
-    asset_id INT PRIMARY KEY,
-    link VARCHAR(150) NOT NULL,
-    asset_description VARCHAR(255) NOT NULL,
-    title VARCHAR(150) NOT NULL,
-    asset_type VARCHAR(30) REFERENCES asset_types(type_name) NOT NULL,
-    upload_date DATE NOT NULL,
-    author VARCHAR(30) REFERENCES users(user_name) NOT NULL -- Should be in the user table
-);
+INSERT INTO asset_types (type_name, description)
+VALUES
+    ('Python File', 'A file that contains python code for a given project.'),
+    ('Documentation', 'A file that contains documentation to supply extra information about any given asset.'),
+    ('Project', 'A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.'),
+    ('Java File', 'A file that contains java code for a given project.');
 
 
--- Attributes that belong to a given asset type, such that any asset of a given asset type has these attributes, such as number of lines.
-CREATE TABLE asset_attributes (
-    asset_attribute_id INT PRIMARY KEY, -- should it be made SERIAL?
-    -- might need to have asset_id in this table too, to communicate properly with assets AND asset types
-    asset_type VARCHAR(30) REFERENCES asset_types(type_name) NOT NULL,
-    attribute_name VARCHAR(50) NOT NULL,
-    attribute_description VARCHAR(255) NOT NULL
-);
+INSERT INTO assets(asset_id, link, asset_description, title, asset_type, upload_date, author)
+VALUES
+    ('1', 'website.com/piece.py', 'A python program that contains a class which describes the attributes and functions of a chess piece.', 'Piece.py', 'Python File', '1999-12-31', 'BaseUser'),
+    ('2', 'website.com/projects/heroes_rising/readme.md', 'Read me file for the project Heroes Rising', 'README.md', 'Documentation', '2024-02-25', 'BaseUser'),
+    ('3', 'website.com/projects/heroes_rising', '2D Game developed as part of the first year games module.', 'Heroes Rising', 'Project', '2024-01-25', 'BaseUser');
 
-CREATE TABLE asset_attribute_values (
-    value_id INT PRIMARY KEY,
-    belonging_to_asset_id INT REFERENCES assets(asset_id) NOT NULL,
-    asset_type VARCHAR(30) REFERENCES asset_types(type_name) NOT NULL,
-    attribute_type_id INT REFERENCES asset_attributes(asset_attribute_id) NOT NULL,
-    value VARCHAR (255) NOT NULL
-);
-    
-    -- should have the name or id of the asset, the name or id of the asset type, the name or id of the attribute, and its value.
-    
+INSERT INTO asset_attributes(asset_attribute_id, asset_type, attribute_name, attribute_description)
+VALUES -- Later could make the relationship between attribute and asset type a many to many relationship, where one attribute can have many asset types, such as number of lines belonging to python and java file, rather than creating a new number_of_lines for each asset type.
+       ('1', 'Python File', 'number_of_lines', 'Number of lines in a python file.'), -- currently belongs to Python File Asset Type
+       ('2', 'Java File', 'number_of_lines', 'Number of lines in a java file.'),
+       ('3', 'Documentation', 'number_of_lines', 'Number of lines in a documentation file');
+
+INSERT INTO asset_attribute_values(value_id, belonging_to_asset_id, asset_type, attribute_type_id, value)
+VALUES
+
+    ('1', '1', 'Python File', '1', '67'), -- a identifier
+    -- becomes possible for an asset to have many values for a single attribute? We dont need this
+    -- by having valye in the other table, it would allow one value. maybe include a stock value?
+    ('2', '1', 'Python File', '1', '76');
+-- should attributes have values?
+
+-- an asset type has a set of asset attributes. These describe various measurements that an asset of that asset type can hold. Such as a python file having a number of lines.
+-- Should the asset type have values for these asset attributes? Or should I split table into asset type attributes and asset attributes. Asset Type attributes having variables describing the -- necessary information for an attribute, like its name. Asset attributes having values of asset attributes for a given asset.
+--Asset: Piece.py
+-- Asset has an asset type: Python File
+--Python File asset type has attributes associated with the type, such as number of lines
+--Attributes should hold values for what it is. Should it be inserted with
+
+--Seperate Table with asset values. Can have attribute name on one column, and value in another column, along with the asset id it belongs to.
+--Hopefully this means that one attribute can have many values but associated with many assets.
+

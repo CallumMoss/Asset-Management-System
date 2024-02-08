@@ -141,7 +141,9 @@ main {
 }
 
 .assets-container {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .assets-container h1 {
@@ -210,6 +212,44 @@ main {
 
 .admin-section h2 {
     margin-bottom: 15px;
+}
+
+.search-and-filter {
+    margin: 0 auto;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.search-and-filter .search-input, .search-and-filter .filter-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-and-filter .search-input:focus, .search-and-filter .filter-dropdown:focus {
+    outline: none;
+    border-color: #3498DB;
+    box-shadow: 0 2px 4px rgba(50, 152, 219, 0.25);
+}
+
+
+
+.search-and-filter .search-btn {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-and-filter .search-btn:hover {
+    background-color: #2980B9;
 }
 
 footer {
