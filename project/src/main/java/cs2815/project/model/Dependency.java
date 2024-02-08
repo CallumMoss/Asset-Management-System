@@ -24,6 +24,6 @@ public class Dependency {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToMany(mappedBy = "dependencies")
-    private List<Asset> dependentAssets;
+    // @ManyToMany(mappedBy = "dependencies")
+    // private List<Asset> dependentAssets;
 }

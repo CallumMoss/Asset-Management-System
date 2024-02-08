@@ -37,8 +37,8 @@ public class User {
 
     private String user_role;
 
-    @ManyToMany(mappedBy = "authors")
-    private List<Asset> authoredAssets;
+    // @ManyToMany(mappedBy = "authors")
+    // private List<Asset> authoredAssets;
 
     public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
         this.user_name = uName;
