@@ -1,13 +1,16 @@
 package cs2815.project.service.Implementations;
 
 import java.util.List;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import cs2815.project.model.Log;
 import cs2815.project.model.User;
+import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
 
@@ -18,14 +21,26 @@ public class UserServiceImpl implements UserService {
     private UserRepo repo;
 
     @Autowired
+    private LogRepo logrepo;
+
+    @Autowired
     private PasswordEncoder key;
 
     @Override
-    public void registerUser(User user) {
-        if (user == null) {
-            System.out.println("Error: User is null.");
-            return;
+    public void createBaseUsers() {
+        if (repo.findByUserName("BaseAdmin") == null) {
+            User baseViewer = new User("BaseViewer", "Viewer", "Smith", "password", "Viewer", key);
+            User baseUser = new User("BaseUser", "User", "Martinez", "password", "User", key);
+            User baseAdmin = new User("BaseAdmin", "Admin", "Johnson", "password", "Admin", key);
+            repo.save(baseViewer);
+            repo.save(baseUser);
+            repo.save(baseAdmin);
         }
+    }
+
+    @Override
+    public void registerUser(User user) {
+
         user.encryptPassword(key);
         repo.save(user);
     }
@@ -33,6 +48,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean logIn(User user) {
         User existingUser = repo.findByUserName(user.getUser_name());
+
+        Log loginLog = new Log();
+        loginLog.setUser(existingUser);
+        loginLog.setUpdateDescription("Logging in");
+        loginLog.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        logrepo.save(loginLog);
+
         return existingUser != null && key.matches(user.getUser_password(), existingUser.getUser_password());
     }
 
@@ -44,12 +66,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void editUser(User user) {
-
-        System.out.println(user.getId());
-        System.out.println(user.getUser_name());
-        System.out.println(user.getUser_first_name());
-        System.out.println(user.getUser_last_name());
-        System.out.println(user.getUser_role());
 
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
                 user.getUser_last_name(), user.getUser_role());
@@ -73,22 +89,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<String> searchByUsername(String searchString) {
-        System.out.println("test1");
         List<String> usernameList = repo.findAllUserNames();
         List<String> compatibleList = new ArrayList<>();
         for (String username : usernameList) {
-            System.out.println(username);
             if (isSimilar(searchString, username)) {
-                System.out.println("test2");
                 compatibleList.add(username);
             }
         }
         return compatibleList;
     }
 
+    @Override
+    public List<String> searchByFirstName(String searchString) {
+        List<String> FNameList = repo.findAllFNames();
+        List<String> compatibleList = new ArrayList<>();
+        for (String firstname : FNameList) {
+            if (isSimilar(searchString, firstname)) {
+                compatibleList.add(firstname);
+            }
+        }
+        return compatibleList;
+    }
+
+    @Override
+    public List<String> searchByLastName(String searchString) {
+        List<String> LNameList = repo.findAllLNames();
+        List<String> compatibleList = new ArrayList<>();
+        for (String lastname : LNameList) {
+            if (isSimilar(searchString, lastname)) {
+                compatibleList.add(lastname);
+            }
+        }
+        return compatibleList;
+    }
+
     public boolean isSimilar(String searchString, String compareString) {
-        System.out.println(compareString.toLowerCase().contains(searchString.toLowerCase()));
-        return compareString.toLowerCase().contains(searchString.toLowerCase());
+        int pointerSearch = 0;
+        int pointerCompare = 0;
+        while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
+            if (searchString.toLowerCase().charAt(pointerSearch) == compareString.toLowerCase()
+                    .charAt(pointerCompare)) {
+                pointerSearch++;
+            }
+            pointerCompare++;
+        }
+        return pointerSearch == searchString.length();
     }
 
 }

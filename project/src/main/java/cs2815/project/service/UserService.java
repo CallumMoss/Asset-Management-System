@@ -6,6 +6,8 @@ import cs2815.project.model.User;
 
 public interface UserService {
 
+    public void createBaseUsers();
+
     public void registerUser(User user);
 
     public boolean logIn(User user);
@@ -19,6 +21,10 @@ public interface UserService {
     public List<User> refreshUser();
 
     public List<String> searchByUsername(String searchword);
+
+    public List<String> searchByFirstName(String searchword);
+
+    public List<String> searchByLastName(String searchword);
 
     public void resetPassword(int userId, String newPassword);
 
