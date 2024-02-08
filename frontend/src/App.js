@@ -1,8 +1,8 @@
 import user from '../src/user.png';
+import change_password from '../src/change_password.png'; // Import change_password image
 import logout from '../src/logout.png';
 import './App.css';
-import React, {useState, useEffect, useRef} from 'react';
-
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -11,68 +11,29 @@ import Dashboard from "./components/dashboard";
 import Assets from "./components/Assets";
 import Admin from "./components/Admin";
 
-{/*imports for dropdown lines 1-5*/}
-
-
-function App() {
-
-  const [open, setOpen] = useState(false);
-  let menuRef = useRef();
-  useEffect(() => {
-    let handler = (e)=>{
-      if(!menuRef.current.contains(e.target)){
-      setOpen(false);
-      console.log(menuRef.current);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-
-    return() =>{
-      document.removeEventListener("mousedown", handler);
-    }
-  });
-  return (
-    <div className="App">
-
-      <div>
-      <AppRoutes />
-    </div>
-
-      <div className= 'menu-container' ref={menuRef}>
-        <div className='menu-trigger' onClick={()=>{setOpen(!open)}}>
-          <img src={user}></img>
-        </div>
-
-        <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} >
-          <ul>
-            <DropdownItem img = {logout} text = {"Logout"}/>
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+// AppRoutes component
 function AppRoutes() {
   const [currentUserName, setCurrentUserName] = useState("");
   const [currentUserType, setCurrentUserType] = useState("");
 
+  // Function to update current user's data
   const updateCurrentUser = (userName, userType) => {
     setCurrentUserName(userName);
     setCurrentUserType(userType);
   };
 
+  // JSX structure for routing
   return (
     <div>
       <BrowserRouter>
         <Routes>
+          {/* Define routes */}
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/login"
             element={<Login updateCurrentUser={updateCurrentUser} />}
           />
-          {/* Pass the updateCurrentUser function to the Login component */}
           <Route
             path="/dashboard"
             element={
@@ -101,19 +62,87 @@ function AppRoutes() {
             }
           />
 
+          {/* Default route */}
           <Route path="*" element={<div> Page not found!</div>} />
         </Routes>
       </BrowserRouter>
     </div>
   );
 }
-{/*Dropdown method to drop items*/}
-function DropdownItem(props){
-  return(
-    <li className = 'dropdownItem'>
-      <img src = {props.img}></img>
+
+// DropdownItem component
+export function DropdownItem(props) {
+  const handleNavigation = () => {
+    // Redirect to the specified destination page
+    window.location.href = props.destination;
+  };
+
+  return (
+    <li className='dropdownItem' onClick={handleNavigation}>
+      <img src={props.img} alt="Dropdown Icon" />
       <a> {props.text}</a>
     </li>
+  );
+}
+
+// ViewerElement component, UserElement, AdminElement, App component remains the same...
+
+// App component
+function App() {
+  // State for controlling the menu open/close
+  const [open, setOpen] = useState(false);
+
+  //Setting Username and type
+  const [currentUserName, setCurrentUserName] = useState("");
+  const [currentUserType, setCurrentUserType] = useState("");
+
+  // Function to update current user's data
+  const updateCurrentUser = (userName, userType) => {
+    setCurrentUserName(userName);
+    setCurrentUserType(userType);
+  };
+
+  // Reference for the menu container
+  let menuRef = useRef();
+
+  // Effect to handle clicks outside the menu container
+  useEffect(() => {
+    let handler = (e) => {
+      if (!menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    }
+  });
+
+  // JSX structure for the App component
+  return (
+    <div className="App">
+      <div>
+        {/* Rendering AppRoutes component */}
+        <AppRoutes />
+      </div>
+
+      <div className='menu-container' ref={menuRef}>
+        {/* Menu trigger */}
+        <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
+          <img src={user} alt="User Icon" />
+        </div>
+
+        {/* Dropdown menu */}
+        <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} >
+          <ul>
+            {/* Rendering DropdownItem components with different destinations */}
+            <DropdownItem img={change_password} text={"Change Password"} destination="/change-password" />
+            <DropdownItem img={logout} text={"Logout"} destination="/login" />
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 }
 
