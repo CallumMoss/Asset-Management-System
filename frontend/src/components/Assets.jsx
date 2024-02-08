@@ -70,13 +70,16 @@ function Assets({ username, userRole }) {
             <button id="createAssetBtn">Create New Asset</button>
           </Link>
 
-          <div className="assets-list">{/* Assets list rendering */ }</div>
+          <div className="assets-list">{/* Assets list rendering */  }</div>
         </section>
       </main>
 
-      <footer>{/* Footer content */ }</footer>
+      <footer>{/* Footer content */  }</footer>
     </div>
   );
 }
 
 export default Assets;
+
+
+
