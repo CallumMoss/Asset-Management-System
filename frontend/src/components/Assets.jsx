@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 function Assets({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
 
   const handleSearch = () => {
     console.log("Searching for:", searchTerm);
@@ -23,12 +25,20 @@ function Assets({ username, userRole }) {
         <nav className="navbar">
           <Link to="/">Log Out</Link>
           <Link to="/dashboard">Dashboard</Link>
-          {userRole === "Admin" || userRole === "User" ? (
-            <>
-              <Link to="/assets">Assets</Link>
-              {userRole === "Admin" ? <Link to="/admin">Admin</Link> : null}
-            </>
-          ) : null}
+          <Link to="/assets">Assets</Link>
+          {userRole === "Admin" && (
+              <div className="dropdown">
+                <Link to="#" className="dropbtn" onClick={toggleDropdown}>Admin</Link>
+                {isDropdownVisible && (
+                    <div className="dropdown-content">
+                      <Link to="/admin/user-management">User Management</Link>
+                      <Link to="/admin/asset-types">Asset Types</Link>
+                      <Link to="/admin/asset-attributes">Asset Attributes</Link>
+                      <Link to="/admin/logs">Logs</Link>
+                    </div>
+                )}
+              </div>
+          )}
         </nav>
         <div className="login-info">
           <span>Welcome, {username}</span> <span>Role: {userRole}</span>
@@ -41,23 +51,23 @@ function Assets({ username, userRole }) {
 
           <div className="search-and-filter">
             <input
-              type="text"
-              id="assetSearchInput"
-              placeholder="Search assets..."
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                id="assetSearchInput"
+                placeholder="Search assets..."
+                className="search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-              id="assetSearchBtn"
-              className="search-btn"
-              onClick={handleSearch}>
+                id="assetSearchBtn"
+                className="search-btn"
+                onClick={handleSearch}>
               Search
             </button>
             <select
-              value={filter}
-              onChange={handleFilterChange}
-              className="filter-dropdown">
+                value={filter}
+                onChange={handleFilterChange}
+                className="filter-dropdown">
               <option value="">Filter</option>
               <option value="type">Type</option>
               <option value="date">Date</option>
