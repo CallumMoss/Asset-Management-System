@@ -16,274 +16,6 @@ header {
     background-color: #2C3E50;
     color: #ecf0f1;
     display: flex;
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body,
-    html {
-        width: 100%;
-        min-height: 100vh;
-        background-color: #f4f4f4;
-    }
-
-    header {
-        background-color: #2C3E50;
-        color: #ecf0f1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.5em 1em;
-    }
-
-    .hero {
-        text-align: center;
-        padding: 50px;
-        background: #e7e7e7;
-    }
-
-    .hero h1 {
-        margin-bottom: 20px;
-        font-size: 2.5em;
-    }
-
-    .hero p {
-        font-size: 1.2em;
-        margin-bottom: 20px;
-    }
-
-    .hero button {
-        padding: 10px 20px;
-        font-size: 1em;
-        background-color: #3498DB;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    .features {
-        padding: 20px;
-        background: #f4f4f4;
-    }
-
-    .feature-item {
-        margin-bottom: 30px;
-        text-align: center;
-    }
-
-    .features h2 {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .call-to-action {
-        background: #333;
-        color: white;
-        text-align: center;
-        padding: 50px;
-    }
-
-    .call-to-action h2 {
-        margin-bottom: 20px;
-        font-size: 2em;
-    }
-
-    .call-to-action button {
-        padding: 10px 20px;
-        font-size: 1em;
-        background-color: #2980B9;
-        border: none;
-        cursor: pointer;
-    }
-
-    .navbar {
-        display: flex;
-        align-items: center;
-    }
-
-    .navbar a {
-        color: #ecf0f1;
-        text-decoration: none;
-        padding: 0.5em 1em;
-        transition: background-color 0.3s ease;
-    }
-
-    .navbar a:hover,
-    .navbar a:focus {
-        background-color: #34495E;
-        border-radius: 4px;
-    }
-
-    .login-info {
-        display: flex;
-        align-items: center;
-    }
-
-    .login-info span {
-        margin-left: 20px;
-        font-size: 0.9em;
-        color: #bdc3c7;
-    }
-
-    .quick-access {
-        display: flex;
-        justify-content: center;
-        padding: 2em;
-        background-color: #ecf0f1;
-        flex-wrap: wrap;
-    }
-
-    .quick-access button {
-        padding: 10px 20px;
-        margin: 0.5em;
-        cursor: pointer;
-        background-color: #3498DB;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-        font-size: 1em;
-    }
-
-    .quick-access button:hover,
-    .quick-access button:focus {
-        background-color: #2980B9;
-    }
-
-    main {
-        padding: 20px;
-        text-align: center;
-    }
-
-    .assets-container {
-        padding: 20px;
-    }
-
-    .assets-container h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    #createAssetBtn {
-        display: block;
-        margin: 10px auto;
-        padding: 10px 20px;
-        background-color: #3498DB;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    .assets-list {
-        /* Add styles for the container that will hold all assets */
-    }
-
-    .navbar a.active {
-        background-color: #2980B9;
-        /* Or any color that signifies an active state */
-        border-radius: 4px;
-    }
-
-    .search-section {
-        text-align: center;
-        margin: 20px 0;
-    }
-
-    .search-input {
-        padding: 10px;
-        margin-right: 10px;
-        font-size: 1em;
-        border: 2px solid #333;
-        border-radius: 4px;
-    }
-
-    .search-btn {
-        padding: 10px 20px;
-        background-color: #3498DB;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    .admin-functions {
-        padding: 20px;
-    }
-
-    .admin-functions h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .admin-section {
-        margin-bottom: 30px;
-        background-color: #f4f4f4;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    .admin-section h2 {
-        margin-bottom: 15px;
-    }
-
-    .search-and-filter {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .search-and-filter .search-input,
-    .search-and-filter .filter-dropdown {
-        padding: 8px 12px;
-        border: 1px solid #ccc;
-        border-radius: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    .search-and-filter .search-input:focus,
-    .search-and-filter .filter-dropdown:focus {
-        outline: none;
-        border-color: #3498DB;
-        box-shadow: 0 2px 4px rgba(50, 152, 219, 0.25);
-    }
-
-
-
-    .search-and-filter .search-btn {
-        background-color: #3498DB;
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .search-and-filter .search-btn:hover {
-        background-color: #2980B9;
-    }
-
-    footer {
-        background-color: #2C3E50;
-        color: #ecf0f1;
-        text-align: center;
-        padding: 1em 0;
-        position: relative;
-        bottom: 0;
-        width: 100%;
-    }
-
-    footer p {
-        margin: 0;
-        font-size: 0.9em;
-    }
-
     justify-content: space-between;
     align-items: center;
     padding: 0.5em 1em;
@@ -409,7 +141,9 @@ main {
 }
 
 .assets-container {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .assets-container h1 {
@@ -426,49 +160,6 @@ main {
     border: none;
     cursor: pointer;
 }
-
-.form-container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 40px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.form-container input[type="text"],
-.form-container input[type="date"],
-.form-container textarea {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #f5f5f5;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-}
-
-.form-container textarea {
-    min-height: 100px;
-}
-
-.form-container button[type="submit"] {
-    width: 100%;
-    padding: 15px;
-    background-color: #3498db;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.form-container button[type="submit"]:hover {
-    background-color: #2980b9;
-}
-
 
 .assets-list {
     /* Add styles for the container that will hold all assets */
@@ -521,6 +212,44 @@ main {
 
 .admin-section h2 {
     margin-bottom: 15px;
+}
+
+.search-and-filter {
+    margin: 0 auto;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.search-and-filter .search-input, .search-and-filter .filter-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-and-filter .search-input:focus, .search-and-filter .filter-dropdown:focus {
+    outline: none;
+    border-color: #3498DB;
+    box-shadow: 0 2px 4px rgba(50, 152, 219, 0.25);
+}
+
+
+
+.search-and-filter .search-btn {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-and-filter .search-btn:hover {
+    background-color: #2980B9;
 }
 
 footer {
