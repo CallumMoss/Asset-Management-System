@@ -13,13 +13,15 @@ public class AssetImpl implements AssetService {
     @Autowired
     private AssetRepo repo;
 
-    @Override
-    public void createAsset(Asset asset) {
-        if (asset == null) {
-            System.out.println("Error: Asset is null.");
-            return;
+    @Transactional
+    public void createAsset(Asset asset, Set<String> languageNames) {
+        // Save the asset
+        Asset savedAsset = assetRepo.save(asset);
+
+        // Associate languages with the asset
+        for (String languageName : languageNames) {
+            assetRepo.addLanguageToAsset(savedAsset.getAsset_id(), languageName);
         }
-        repo.save(asset);
     }
 
 }

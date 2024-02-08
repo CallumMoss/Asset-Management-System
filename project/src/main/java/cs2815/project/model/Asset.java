@@ -1,8 +1,8 @@
 package cs2815.project.model;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
+
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,7 +35,7 @@ public class Asset {
 
     @ManyToMany
     @JoinTable(name = "asset_language", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
-    private List<Language> languages;
+    private Set<Language> languages;
 
     @ManyToOne
     @JoinColumn(name = "asset_type_id")
@@ -45,9 +45,9 @@ public class Asset {
 
     @ManyToMany
     @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> authors;
+    private Set<User> authors;
 
     @ManyToMany
     @JoinTable(name = "asset_dependency", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "dependency_id"))
-    private List<Dependency> dependencies;
+    private Set<Dependency> dependencies;
 }

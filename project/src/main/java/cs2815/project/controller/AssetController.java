@@ -15,7 +15,7 @@ public class AssetController {
     @Autowired
     private AssetService assetService;
 
-    @PostMapping("/createAsset")
+    @PostMapping("/createasset")
     public void createAsset(@RequestBody Asset title) {
         assetService.createAsset(title);
     }

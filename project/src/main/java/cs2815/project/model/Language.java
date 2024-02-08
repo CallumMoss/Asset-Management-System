@@ -1,6 +1,7 @@
 package cs2815.project.model;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,5 +28,5 @@ public class Language {
     private String language_name;
 
     @ManyToMany(mappedBy = "languages")
-    private List<Asset> assets;
+    private Set<Asset> assets;
 }
