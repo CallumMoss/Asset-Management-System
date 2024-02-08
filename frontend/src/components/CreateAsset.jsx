@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate instead of useHistory
-import "./style.css";
+import { useNavigate } from "react-router-dom";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+
+const defaultTheme = createTheme();
 
 function CreateAsset() {
     const [title, setTitle] = useState('');
@@ -10,26 +18,112 @@ function CreateAsset() {
     const [author, setAuthor] = useState('');
     const [link, setLink] = useState('');
 
-    const navigate = useNavigate(); // Use useNavigate hook
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Logic to handle form submission, typically involving setting state or a Redux action
         console.log({ title, description, type, dateCreated, author, link });
-        // Redirect back to the assets list page after form submission
-        navigate('/assets'); // Use navigate function to redirect
+        navigate('/assets');
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description"></textarea>
-            <input type="text" value={type} onChange={(e) => setType(e.target.value)} placeholder="Type" />
-            <input type="date" value={dateCreated} onChange={(e) => setDateCreated(e.target.value)} placeholder="Date Created" />
-            <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Author" />
-            <input type="text" value={link} onChange={(e) => setLink(e.target.value)} placeholder="Link to the asset" />
-            <button type="submit">Submit</button>
-        </form>
+        <ThemeProvider theme={defaultTheme}>
+            <Container component="main" maxWidth="sm">
+                <CssBaseline />
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}>
+                    <Typography component="h1" variant="h5">
+                        Create Asset
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="title"
+                            label="Title"
+                            name="title"
+                            autoComplete="title"
+                            autoFocus
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="description"
+                            label="Description"
+                            name="description"
+                            multiline
+                            rows={4}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="type"
+                            label="Type"
+                            name="type"
+                            autoComplete="type"
+                            value={type}
+                            onChange={(e) => setType(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="dateCreated"
+                            label="Date Created"
+                            type="date"
+                            name="dateCreated"
+                            autoComplete="dateCreated"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={dateCreated}
+                            onChange={(e) => setDateCreated(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="author"
+                            label="Author"
+                            name="author"
+                            autoComplete="author"
+                            value={author}
+                            onChange={(e) => setAuthor(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="link"
+                            label="Link to the asset"
+                            name="link"
+                            autoComplete="link"
+                            value={link}
+                            onChange={(e) => setLink(e.target.value)}
+                        />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}>
+                            Submit
+                        </Button>
+                    </Box>
+                </Box>
+            </Container>
+        </ThemeProvider>
     );
 }
 
