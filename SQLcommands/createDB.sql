@@ -1,3 +1,15 @@
+DO $$ 
+DECLARE 
+    cur_table_name text;
+BEGIN
+    -- Select all table names
+    FOR cur_table_name IN (SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE') 
+    LOOP
+        -- Drop each table
+        EXECUTE 'DROP TABLE IF EXISTS ' || cur_table_name || ' CASCADE';
+    END LOOP;
+END $$;
+
 INSERT INTO asset_types (type_name, description)
 VALUES
     ('Python File', 'A file that contains python code for a given project.'),

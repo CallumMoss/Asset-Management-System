@@ -1,11 +1,10 @@
 package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Asset;
-import cs2815.project.model.AssetType;
-import cs2815.project.model.Dependency;
 import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.repo.AssetRepo;
+import cs2815.project.repo.AssetTypeRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.AssetService;
 import jakarta.transaction.Transactional;
@@ -14,6 +13,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AssetImpl implements AssetService {
@@ -25,17 +27,40 @@ public class AssetImpl implements AssetService {
     private UserRepo userRepo;
 
     @Autowired
+    private AssetTypeRepo assetTypeRepo;
+
+    @Autowired
     private UserServiceImpl userService;
 
     public static HashMap<String, Integer> languageIDMap = Asset.languageIDMap;
 
-    @Override
     @Transactional
     public void createAsset(AssetWrapper assetdto) {
-
         Asset asset = convertWrapperToAsset(assetdto);
 
         repo.save(asset);
+
+        List<User> authors = new ArrayList<>();
+
+        for (String author : assetdto.getAuthors()) {
+            User user = userRepo.findByUserName(author);
+            if (user != null) {
+                authors.add(user);
+            }
+        }
+
+        asset.setAuthors(authors);
+
+        List<Asset> dependents = new ArrayList<>();
+
+        for (String title : assetdto.getDependencies()) {
+            Asset tempAsset = repo.findAssetByTitle(title);
+            if (tempAsset != null) {
+                dependents.add(tempAsset);
+            }
+        }
+
+        asset.setDependent(dependents);
 
         if (asset.getLangList() != null) {
             String[] langList = asset.getLangList().split("/");
@@ -51,7 +76,8 @@ public class AssetImpl implements AssetService {
                 }
             }
         }
-        // repo.save(asset);
+
+        repo.save(asset);
 
     }
 
@@ -92,27 +118,10 @@ public class AssetImpl implements AssetService {
         asset.setAsset_description(assetDto.getAsset_description());
         asset.setLink(assetDto.getLink());
         asset.setLangList(assetDto.getLangList());
+
+        asset.setAsset_type(assetTypeRepo.findByTypeName(assetDto.getAsset_type()));
+
         asset.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
-
-        List<String> authorNames = assetDto.getAuthors();
-
-        // Use ArrayList instead of List
-        List<User> authors = new ArrayList<>();
-
-        for (String name : authorNames) {
-            // Assuming userRepo.findByUserName returns a User object
-            User author = userRepo.findByUserName(name);
-            if (author != null) {
-                authors.add(author);
-            }
-        }
-
-        for (User name : authors) {
-            System.out.println(name.getUser_name());
-
-        }
-
-        asset.setAuthors(authors);
 
         return asset;
     }

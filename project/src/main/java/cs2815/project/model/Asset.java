@@ -3,7 +3,9 @@ package cs2815.project.model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,15 +36,21 @@ public class Asset {
     private String langList;
     private long asset_languages;
 
-    @ManyToOne
-    @JoinColumn(name = "asset_type")
-    private AssetType asset_type;
-
     private Timestamp updateTimestamp;
 
-    @ManyToMany
-    @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "asset_id"))
-    private List<Asset> authoredAssets;
+    @ManyToOne
+    @JoinColumn(name = "asset_type_id")
+    private AssetType Asset_type;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+            CascadeType.REFRESH })
+    @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> authors;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+            CascadeType.REFRESH })
+    @JoinTable(name = "dependency", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "belonging_id"))
+    private List<Asset> dependent;
 
     public void addLanguageID(int languageID) {
         String strLanguages = Long.toString(asset_languages);

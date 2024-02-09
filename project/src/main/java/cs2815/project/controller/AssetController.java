@@ -12,8 +12,6 @@ import cs2815.project.model.Asset;
 import cs2815.project.model.specialmodels.AssetWrapper;
 
 import cs2815.project.service.AssetService;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
