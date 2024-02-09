@@ -5,15 +5,15 @@ import cs2815.project.model.AssetType;
 
 public interface AssetTypeService {
 
-    public void createAssetType(AssetType assetType);
+    void createAssetType(AssetType assetType);
 
-    public void editAssetType(AssetType assetType);
+    void editAssetType(AssetType assetType);
 
-    public void deleteAssetType(int assetTypeId);
+    void deleteAssetType(int assetTypeId);
 
-    public List<AssetType> refreshAssetType();
+    List<AssetType> refreshAssetType();
 
-    public List<String> searchTypes(String searchword);
+    List<String> searchTypes(String searchword);
 
 
 }
