@@ -32,6 +32,13 @@ public class AssetController {
         }
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<List<Asset>> refresh() {
+
+        return ResponseEntity.ok(assetService.refresh());
+
+    }
+
     @PostMapping("/searchAsset")
     public ResponseEntity<List<Asset>> searchAsset(@RequestBody String searchString) {
         List<Asset> compatibleAssets = assetService.searchAsset(searchString);

@@ -9,6 +9,8 @@ public interface AssetService {
 
     void createAsset(AssetWrapper asset);
 
+    List<Asset> refresh();
+
     List<Asset> searchAsset(String searchString);
 
     List<String> searchLanguage(String searchString);

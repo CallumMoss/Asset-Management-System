@@ -125,4 +125,9 @@ public class AssetImpl implements AssetService {
 
         return asset;
     }
+
+    @Override
+    public List<Asset> refresh() {
+        return repo.getAllAssets();
+    }
 }
