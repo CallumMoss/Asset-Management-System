@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -37,8 +39,9 @@ public class User {
 
     private String user_role;
 
-    // @ManyToMany(mappedBy = "authors")
-    // private List<Asset> authoredAssets;
+    @ManyToMany
+    @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "asset_id"))
+    private List<Asset> authoredAssets;
 
     public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
         this.user_name = uName;

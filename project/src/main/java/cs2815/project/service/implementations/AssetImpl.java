@@ -1,11 +1,19 @@
 package cs2815.project.service.Implementations;
 
-import cs2815.project.model.Asset;
-import cs2815.project.repo.AssetRepo;
-import cs2815.project.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cs2815.project.model.Asset;
+import cs2815.project.model.AssetType;
+import cs2815.project.model.Dependency;
+import cs2815.project.model.User;
+import cs2815.project.model.specialmodels.AssetWrapper;
+import cs2815.project.repo.AssetRepo;
+import cs2815.project.repo.UserRepo;
+import cs2815.project.service.AssetService;
+import jakarta.transaction.Transactional;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,16 +25,21 @@ public class AssetImpl implements AssetService {
     private AssetRepo repo;
 
     @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
     private UserServiceImpl userService;
 
     public static HashMap<String, Integer> languageIDMap = Asset.languageIDMap;
 
     @Override
-    public void createAsset(Asset asset) {
-        if (asset == null) {
-            System.out.println("Error: Asset is null.");
-            return;
-        }
+    @Transactional
+    public void createAsset(AssetWrapper assetdto) {
+
+        Asset asset = convertWrapperToAsset(assetdto);
+
+        repo.save(asset);
+
         if (asset.getLangList() != null) {
             String[] langList = asset.getLangList().split("/");
             for (int i = 0; i < langList.length; i++) {
@@ -41,7 +54,8 @@ public class AssetImpl implements AssetService {
                 }
             }
         }
-        repo.save(asset);
+        // repo.save(asset);
+
     }
 
     @Override
@@ -73,5 +87,36 @@ public class AssetImpl implements AssetService {
             }
         }
         return compatibleList;
+    }
+
+    public Asset convertWrapperToAsset(AssetWrapper assetDto) {
+        Asset asset = new Asset();
+        asset.setTitle(assetDto.getTitle());
+        asset.setAsset_description(assetDto.getAsset_description());
+        asset.setLink(assetDto.getLink());
+        asset.setLangList(assetDto.getLangList());
+        asset.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        List<String> authorNames = assetDto.getAuthors();
+
+        // Use ArrayList instead of List
+        List<User> authors = new ArrayList<>();
+
+        for (String name : authorNames) {
+            // Assuming userRepo.findByUserName returns a User object
+            User author = userRepo.findByUserName(name);
+            if (author != null) {
+                authors.add(author);
+            }
+        }
+
+        for (User name : authors) {
+            System.out.println(name.getUser_name());
+
+        }
+
+        asset.setAuthors(authors);
+
+        return asset;
     }
 }

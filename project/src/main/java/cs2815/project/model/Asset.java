@@ -1,5 +1,6 @@
 package cs2815.project.model;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 import jakarta.persistence.Entity;
@@ -7,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -35,11 +38,11 @@ public class Asset {
     @JoinColumn(name = "asset_type")
     private AssetType asset_type;
 
-    private Date upload_date;
+    private Timestamp updateTimestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "author", referencedColumnName = "user_name")
-    private User author;
+    @ManyToMany
+    @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "asset_id"))
+    private List<Asset> authoredAssets;
 
     public void addLanguageID(int languageID) {
         String strLanguages = Long.toString(asset_languages);
@@ -55,8 +58,7 @@ public class Asset {
             "SQL", "Shell", "Assembly", "R", "Dart", "Haskell", "Lua", "Julia", "MATLAB",
             "Groovy", "Clojure", "VBScript", "Pascal", "Fortran", "Ada", "Lisp", "Scheme",
             "Prolog", "Erlang", "D", "Dylan", "Smalltalk", "Tcl", "Elixir", "Racket", "COBOL",
-            "F#", "PowerShell", "Bash", "Objective-J", "Delphi", "LabVIEW", "Scratch", "PL/SQL"
-    ));
+            "F#", "PowerShell", "Bash", "Objective-J", "Delphi", "LabVIEW", "Scratch", "PL/SQL"));
 
     public static HashMap<String, Integer> languageIDMap = createLanguageIDMap(languages);
 
