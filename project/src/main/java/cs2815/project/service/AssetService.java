@@ -9,6 +9,8 @@ public interface AssetService {
 
     void createAsset(AssetWrapper asset);
 
+    void deleteAsset(int assetID);
+
     List<Asset> refresh();
 
     List<Asset> searchAsset(String searchString);

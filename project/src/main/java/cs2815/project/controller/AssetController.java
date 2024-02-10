@@ -51,4 +51,12 @@ public class AssetController {
         return ResponseEntity.ok(compatibleLanguages);
     }
 
+    
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteAsset(@RequestBody int assetID){
+        assetService.deleteAsset(assetID);
+        return ResponseEntity.ok("Asset deleted successfully");
+    } 
+    
+
 }

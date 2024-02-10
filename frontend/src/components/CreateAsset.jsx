@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import axios from "axios";
 
 const defaultTheme = createTheme();
 
@@ -21,9 +22,19 @@ function CreateAsset() {
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
+        try{
         e.preventDefault();
+        await.axios.post("http://localhost:8080/assets/createasset", {
+            title: title,
+            asset_description: description,
+        })
         console.log({ title, description, type, dateCreated, author, link });
         navigate('/assets');
+        }
+        catch(error){
+            console.error("Assert creation failed: ", error);
+        }
+
     };
 
     return (

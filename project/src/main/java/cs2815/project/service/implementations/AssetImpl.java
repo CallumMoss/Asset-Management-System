@@ -130,4 +130,12 @@ public class AssetImpl implements AssetService {
     public List<Asset> refresh() {
         return repo.getAllAssets();
     }
+
+	
+    @Override
+	public void deleteAsset(int assetID) {
+        repo.deleteAssetbyID(assetID);
+    }
+    
+		
 }
