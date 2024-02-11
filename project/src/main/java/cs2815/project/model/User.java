@@ -41,11 +41,6 @@ public class User {
 
     private String user_role;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-            CascadeType.REFRESH })
-    @JoinTable(name = "user_asset", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "asset_id"))
-    private List<Asset> authoredAssets;
-
     public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
         this.user_name = uName;
         this.user_first_name = uFName;

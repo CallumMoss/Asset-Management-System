@@ -44,13 +44,14 @@ public class UserServiceImpl implements UserService {
         user.encryptPassword(key);
 
         Log log = new Log();
+
+        repo.save(user);
         log.setUser(user);
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUpdateDescription(user.getUser_name() + " was created!");
 
         logrepo.save(log);
 
-        repo.save(user);
     }
 
     @Override
@@ -59,11 +60,21 @@ public class UserServiceImpl implements UserService {
 
         Log loginLog = new Log();
         loginLog.setUser(existingUser);
-        loginLog.setUpdateDescription(user.getUser_name() + " logged in!");
+
         loginLog.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        boolean authenticated = existingUser != null
+                && key.matches(user.getUser_password(), existingUser.getUser_password());
+        if (authenticated) {
+            loginLog.setUpdateDescription(user.getUser_name() + " succesfully logged in!");
+
+        } else {
+            loginLog.setUpdateDescription(user.getUser_name() + " failed to log in!");
+        }
+
         logrepo.save(loginLog);
 
-        return existingUser != null && key.matches(user.getUser_password(), existingUser.getUser_password());
+        return authenticated;
     }
 
     @Override
