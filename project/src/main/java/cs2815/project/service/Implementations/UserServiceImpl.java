@@ -42,6 +42,14 @@ public class UserServiceImpl implements UserService {
     public void registerUser(User user) {
 
         user.encryptPassword(key);
+
+        Log log = new Log();
+        log.setUser(user);
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUpdateDescription(user.getUser_name() + " was created!");
+
+        logrepo.save(log);
+
         repo.save(user);
     }
 
@@ -51,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
         Log loginLog = new Log();
         loginLog.setUser(existingUser);
-        loginLog.setUpdateDescription("Logging in");
+        loginLog.setUpdateDescription(user.getUser_name() + " logged in!");
         loginLog.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         logrepo.save(loginLog);
 
@@ -67,17 +75,38 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(User user) {
 
+        Log log = new Log();
+        log.setUser(user);
+        log.setUpdateDescription(user.getUser_name() + " was succesfully edited!");
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        logrepo.save(log);
+
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
                 user.getUser_last_name(), user.getUser_role());
     }
 
     @Override
     public void deleteUser(int userId) {
+
+        Log log = new Log();
+        User tempUser = repo.findById(userId);
+        log.setUser(tempUser);
+        log.setUpdateDescription(tempUser.getUser_name() + " was succefully deleted!");
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        logrepo.save(log);
+
         repo.deleteById(userId);
     }
 
     @Override
     public void resetPassword(int userId, String newPassword) {
+
+        Log log = new Log();
+        User tempUser = repo.findById(userId);
+        log.setUser(tempUser);
+        log.setUpdateDescription(tempUser.getUser_name() + " password succesfully reseted!");
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        logrepo.save(log);
 
         repo.resetPassword(userId, key.encode(newPassword));
     }

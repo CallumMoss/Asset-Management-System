@@ -5,6 +5,7 @@ import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.repo.AssetRepo;
 import cs2815.project.repo.AssetTypeRepo;
+import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.AssetService;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,9 @@ public class AssetImpl implements AssetService {
 
     @Autowired
     private AssetTypeRepo assetTypeRepo;
+
+    @Autowired
+    private LogRepo logRepo;
 
     @Autowired
     private UserServiceImpl userService;
@@ -131,11 +135,9 @@ public class AssetImpl implements AssetService {
         return repo.getAllAssets();
     }
 
-	
     @Override
-	public void deleteAsset(int assetID) {
+    public void deleteAsset(int assetID) {
         repo.deleteAssetbyID(assetID);
     }
-    
-		
+
 }
