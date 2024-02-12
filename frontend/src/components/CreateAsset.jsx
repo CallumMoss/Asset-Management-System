@@ -27,6 +27,8 @@ function CreateAsset() {
     const [link, setLink] = useState([]);
     const [authorsList, setAuthorsList] = useState([]);
     const [dependenciesList, setDependenciesList] = useState([]);
+    const [languages, setLanguages] = useState([]);
+    const [langList, setLangList] = useState([]);
 
     // These functions retrieve information from the database
     useEffect(() => {
@@ -71,6 +73,19 @@ function CreateAsset() {
         }
     };
     
+    useEffect(() => {
+        fetchLanguages();
+    }, []);
+    
+    const fetchLanguages = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/assets/refresh');
+            setLangList(response.data);
+            console.log('Fetched dependencies:', response.data);
+        } catch (error) {
+            console.error('Error fetching dependencies:', error);
+        }
+    };
     
 
     const navigate = useNavigate();
@@ -82,7 +97,7 @@ function CreateAsset() {
                 title: title,
                 asset_description: description,
                 link: link,
-                langList: "C#/SQL",
+                lang_list: languages,
                 asset_type: type,
                 authors: authors,
                 dependencies: dependencies // Split dependencies string into an array
@@ -183,6 +198,24 @@ function CreateAsset() {
                             {dependenciesList.map(dependencies => (
                                 <MenuItem key={dependencies.asset_id} value={dependencies.asset_id}>
                                     {dependencies.title}
+                                </MenuItem>
+                            ))}
+                        </Select>
+
+                        <Typography component="h1" variant="h5">
+                            Languages
+                        </Typography>
+                        <Select
+                            id="languages"
+                            name="languages"
+                            autoComplete="languages"
+                            multiple // allows multiple inputs, as a project can have multiple languages
+                            value={languages}
+                            onChange={(e) => setLanguages(e.target.value)}
+                        >
+                            {langList.map(languages => (
+                                <MenuItem key={languages.asset_id} value={languages.asset_id}>
+                                    {languages.lang_list}
                                 </MenuItem>
                             ))}
                         </Select>
