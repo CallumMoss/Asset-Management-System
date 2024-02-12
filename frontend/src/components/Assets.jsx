@@ -26,6 +26,8 @@ function Assets({ username, userRole }) {
   // State for search term and filter
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
 
   // Function to handle search
   const handleSearch = () => {
@@ -72,14 +74,22 @@ function Assets({ username, userRole }) {
       {/* Header section */}
       <header>
         <nav className="navbar">
-          <Link to="/dashboard">Dashboard</Link> {/* Dashboard link */}
-          {/* Conditional rendering of Assets and Admin links based on userRole */}
-          {userRole === "Admin" || userRole === "User" ? (
-            <>
-              <Link to="/assets">Assets</Link> {/* Assets link */}
-              {userRole === "Admin" ? <Link to="/admin">Admin</Link> : null} {/* Admin link (visible only for Admin) */}
-            </>
-          ) : null}
+          <Link to="/">Log Out</Link>
+          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/assets">Assets</Link>
+          {userRole === "Admin" && (
+              <div className="dropdown">
+                <Link to="#" className="dropbtn" onClick={toggleDropdown}>Admin</Link>
+                {isDropdownVisible && (
+                    <div className="dropdown-content">
+                      <Link to="/admin/user-management">User Management</Link>
+                      <Link to="/admin/asset-types">Asset Types</Link>
+                      <Link to="/admin/asset-attributes">Asset Attributes</Link>
+                      <Link to="/admin/logs">Logs</Link>
+                    </div>
+                )}
+              </div>
+          )}
         </nav>
       </header>
 
@@ -92,18 +102,18 @@ function Assets({ username, userRole }) {
           <div className="search-and-filter">
             {/* Search input field */}
             <input
-              type="text"
-              id="assetSearchInput"
-              placeholder="Search assets..."
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+                type="text"
+                id="assetSearchInput"
+                placeholder="Search assets..."
+                className="search-input"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
             />
             {/* Button to trigger search */}
             <button
-              id="assetSearchBtn"
-              className="search-btn"
-              onClick={handleSearch}>
+                id="assetSearchBtn"
+                className="search-btn"
+                onClick={handleSearch}>
               Search
             </button>
             {/* Dropdown for filter selection */}
@@ -150,3 +160,6 @@ function Assets({ username, userRole }) {
 }
 
 export default Assets;
+
+
+

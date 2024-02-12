@@ -7,6 +7,8 @@ import Home from "./components/Home";
 import Dashboard from "./components/dashboard";
 import Assets from "./components/Assets";
 import Admin from "./components/Admin";
+import CreateAsset from "./components/CreateAsset";
+
 
 // AppRoutes component
 function AppRoutes() {
@@ -50,6 +52,15 @@ function AppRoutes() {
               </ViewerElement>
             }
           />
+          <Route
+              path="/create-asset"
+              element={
+                <ViewerElement currentUserType={currentUserType}>
+                  <CreateAsset username={currentUserName} userRole={currentUserType} />
+                </ViewerElement>
+              } />
+
+
           <Route
             path="/admin"
             element={
