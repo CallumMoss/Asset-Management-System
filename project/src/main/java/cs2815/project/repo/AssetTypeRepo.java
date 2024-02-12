@@ -33,4 +33,6 @@ public interface AssetTypeRepo extends JpaRepository<AssetType, Integer> {
         void updateAssetTypeFieldsById(@Param("assetTypeId") int assetTypeId,
                         @Param("newTypeName") String newTypeName,
                         @Param("newDescription") String newDescription);
+
+                
 }
