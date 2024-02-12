@@ -2,39 +2,42 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 function Dashboard({ username, userRole }) {
+  // Hook from React Router to navigate programmatically
   const navigate = useNavigate();
 
   return (
     <div>
+      {/* Header section */}
       <header>
+        {/* Navigation links */}
         <nav className="navbar">
-          <Link to="/">Log Out</Link>
-          <Link to="/dashboard">Dashboard</Link>
+          <Link to="/dashboard">Dashboard</Link> {/* Dashboard link */}
+          {/* Conditional rendering based on user role */}
           {userRole === "Admin" || userRole === "User" ? (
             <>
-              <Link to="/assets">Assets</Link>
-              {userRole === "Admin" ? <Link to="/admin">Admin</Link> : null}
+              <Link to="/assets">Assets</Link> {/* Assets link */}
+              {userRole === "Admin" ? <Link to="/admin">Admin</Link> : null} {/* Admin link (visible only for Admin) */}
             </>
           ) : null}
         </nav>
-        <div className="login-info">
-          <span>Welcome, {username}</span> <span>Role: {userRole}</span>
-        </div>
       </header>
 
+      {/* Main content section */}
       <main>
+        {/* Quick access buttons */}
         <div className="quick-access">
           <button onClick={() => (window.location.href = "add-asset.html")}>
             Add New Asset
-          </button>
+          </button> {/* Button to add a new asset */}
           <button
             onClick={() => (window.location.href = "recent-updates.html")}>
             View Recent Updates
-          </button>
-          <button id="searchLink">Search</button>
+          </button> {/* Button to view recent updates */}
+          <button id="searchLink">Search</button> {/* Button for search */}
         </div>
       </main>
 
+      {/* Footer section */}
       <footer>{/* Your footer content */}</footer>
     </div>
   );
