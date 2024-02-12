@@ -1,6 +1,3 @@
-import user from '../src/user.png';
-import change_password from '../src/change_password.png'; // Import change_password image
-import logout from '../src/logout.png';
 import './App.css';
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
@@ -102,45 +99,12 @@ function App() {
     setCurrentUserType(userType);
   };
 
-  // Reference for the menu container
-  let menuRef = useRef();
-
-  // Effect to handle clicks outside the menu container
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    }
-  });
-
   // JSX structure for the App component
   return (
     <div className="App">
       <div>
         {/* Rendering AppRoutes component */}
         <AppRoutes />
-      </div>
-
-      <div className='menu-container' ref={menuRef}>
-        {/* Menu trigger */}
-        <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
-          <img src={user} alt="User Icon" />
-        </div>
-
-        {/* Dropdown menu */}
-        <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} >
-          <ul>
-            {/* Rendering DropdownItem components with different destinations */}
-            <DropdownItem img={change_password} text={"Change Password"} destination="/change-password" />
-            <DropdownItem img={logout} text={"Logout"} destination="/login" />
-          </ul>
-        </div>
       </div>
     </div>
   );
