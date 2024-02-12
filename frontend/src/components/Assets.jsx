@@ -122,8 +122,9 @@ function Assets({ username, userRole }) {
           </div>
 
           {/* Button to create a new asset */}
-          <button id="createAssetBtn">Create New Asset</button>
-
+          <Link to="/create-asset">
+            <button id="createAssetBtn">Create New Asset</button>
+          </Link>
           <div className="assets-list">{/* Assets list rendering */}</div> {/* Rendering of assets list */}
         </section>
       </main>
