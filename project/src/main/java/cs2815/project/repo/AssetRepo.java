@@ -13,6 +13,8 @@ import java.util.List;
 @RepositoryRestResource
 public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer being the type of the primary key
 
+    // does createAsset need to go here?
+    
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
 
