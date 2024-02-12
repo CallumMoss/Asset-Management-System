@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // Importing Link component from react-router-dom
-
 import user from './user.png';
 import change_password from './change_password.png'; // Import change_password image
 import logout from './logout.png';
@@ -28,20 +27,17 @@ function Assets({ username, userRole }) {
   const [filter, setFilter] = useState("");
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
-
   // Function to handle search
   const handleSearch = () => {
     console.log("Searching for:", searchTerm);
     // Add your search logic here, considering the selected filter
   };
-
   // Function to handle filter change
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
     console.log("Filtering by:", e.target.value);
     // You can also add logic here to filter the displayed assets based on the selected filter
   };
-
   const [currentUserName, setCurrentUserName] = useState("");
   const [currentUserType, setCurrentUserType] = useState("");
   // State for controlling the menu open/close
@@ -51,10 +47,8 @@ function Assets({ username, userRole }) {
     setCurrentUserName(userName);
     setCurrentUserType(userType);
   };
-
   // Reference for the menu container
   let menuRef = useRef();
-
   // Effect to handle clicks outside the menu container
   useEffect(() => {
     let handler = (e) => {
@@ -63,7 +57,6 @@ function Assets({ username, userRole }) {
       }
     };
     document.addEventListener("mousedown", handler);
-
     return () => {
       document.removeEventListener("mousedown", handler);
     }
@@ -74,7 +67,6 @@ function Assets({ username, userRole }) {
       {/* Header section */}
       <header>
         <nav className="navbar">
-          <Link to="/">Log Out</Link>
           <Link to="/dashboard">Dashboard</Link>
           <Link to="/assets">Assets</Link>
           {userRole === "Admin" && (

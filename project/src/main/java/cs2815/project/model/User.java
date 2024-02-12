@@ -39,10 +39,6 @@ public class User {
     private String user_password;
     private String user_role;
 
-    private String user_password;
-
-    private String user_role;
-
     public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
         this.user_name = uName;
         this.user_first_name = uFName;

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // Importing Link component from react-router-dom
-
 import user from './user.png';
 import change_password from './change_password.png'; // Import change_password image
 import logout from './logout.png';
@@ -23,18 +22,15 @@ function DropdownItem(props) {
 }
 
 function Admin({ username, userRole }) {
-
   const [currentUserName, setCurrentUserName] = useState("");
   const [currentUserType, setCurrentUserType] = useState("");
   // State for controlling the menu open/close
   const [open, setOpen] = useState(false);
-
   // Function to update current user's data
   const updateCurrentUser = (userName, userType) => {
     setCurrentUserName(userName);
     setCurrentUserType(userType);
   };
-
     // Reference for the menu container
     let menuRef = useRef();
 
@@ -46,7 +42,6 @@ function Admin({ username, userRole }) {
         }
       };
       document.addEventListener("mousedown", handler);
-  
       return () => {
         document.removeEventListener("mousedown", handler);
       }
