@@ -22,12 +22,14 @@ function DropdownItem(props) {
   );
 }
 
-function Dashboard({ username, userRole }) {
+function Dashboard({ username, userRole }){
   // Hook from React Router to navigate programmatically
   const navigate = useNavigate();
 
   const [currentUserName, setCurrentUserName] = useState("");
   const [currentUserType, setCurrentUserType] = useState("");
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
   // State for controlling the menu open/close
   const [open, setOpen] = useState(false);
   // Function to update current user's data
@@ -54,58 +56,62 @@ function Dashboard({ username, userRole }) {
   });
 
   return (
-    <div>
-      {/* Header section */}
-      <header>
-        {/* Navigation links */}
-        <nav className="navbar">
-          <Link to="/dashboard">Dashboard</Link> {/* Dashboard link */}
-          {/* Conditional rendering based on user role */}
-          {userRole === "Admin" || userRole === "User" ? (
-            <>
-              <Link to="/assets">Assets</Link> {/* Assets link */}
-              {userRole === "Admin" ? <Link to="/admin">Admin</Link> : null} {/* Admin link (visible only for Admin) */}
-            </>
-          ) : null}
-        </nav>
-      </header>
+      <div>
+        <header>
+          <nav className="navbar">
+            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/assets">Assets</Link>
+            {userRole === "Admin" && (
+                <div className="dropdown">
+                  <Link to="#" className="dropbtn" onClick={toggleDropdown}>Admin</Link>
+                  {isDropdownVisible && (
+                      <div className="dropdown-content">
+                        <Link to="/admin/user-management">User Management</Link>
+                        <Link to="/admin/asset-types">Asset Types</Link>
+                        <Link to="/admin/asset-attributes">Asset Attributes</Link>
+                        <Link to="/admin/logs">Logs</Link>
+                      </div>
+                  )}
+                </div>
+            )}
+          </nav>
+        </header>
 
-      {/* Main content section */}
-      <main>
-        {/* Quick access buttons */}
-        <div className="quick-access">
-          <button onClick={() => (window.location.href = "add-asset.html")}>
-            Add New Asset
-          </button> {/* Button to add a new asset */}
-          <button
-            onClick={() => (window.location.href = "recent-updates.html")}>
-            View Recent Updates
-          </button> {/* Button to view recent updates */}
-          <button id="searchLink">Search</button> {/* Button for search */}
+
+        {/* Main content section */}
+        <main>
+          <div className="quick-access">
+            <Link to="/create-asset">
+              <button>Create New Asset</button>
+            </Link>
+            <button onClick={() => (window.location.href = "recent-updates.html")}>View Recent Updates</button>
+            <button id="searchLink">Search</button>
+          </div>
+        </main>
+
+        <div className="App">
+          <div className='menu-container' ref={menuRef}>
+            {/* Menu trigger */}
+            <div className='menu-trigger' onClick={() => {
+              setOpen(!open)
+            }}>
+              <img src={user} alt="User Icon"/>
+            </div>
+
+            {/* Dropdown menu */}
+            <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`}>
+              <ul>
+                {/* Rendering DropdownItem components with different destinations */}
+                <DropdownItem img={change_password} text={"Change Password"} destination="/change-password"/>
+                <DropdownItem img={logout} text={"Logout"} destination="/login"/>
+              </ul>
+            </div>
+          </div>
         </div>
-      </main>
 
-      <div className="App">
-       <div className='menu-container' ref={menuRef}>
-         {/* Menu trigger */}
-         <div className='menu-trigger' onClick={() => { setOpen(!open) }}>
-           <img src={user} alt="User Icon" />
-         </div>
-
-         {/* Dropdown menu */}
-         <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`} >
-           <ul>
-             {/* Rendering DropdownItem components with different destinations */}
-             <DropdownItem img={change_password} text={"Change Password"} destination="/change-password" />
-             <DropdownItem img={logout} text={"Logout"} destination="/login" />
-           </ul>
-         </div>
-       </div>
-     </div>
-
-      {/* Footer section */}
-      <footer>{/* Your footer content */}</footer>
-    </div>
+        {/* Footer section */}
+        <footer>{/* Your footer content */}</footer>
+      </div>
   );
 }
 
