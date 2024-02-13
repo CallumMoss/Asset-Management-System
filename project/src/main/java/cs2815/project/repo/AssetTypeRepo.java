@@ -18,6 +18,9 @@ public interface AssetTypeRepo extends JpaRepository<AssetType, Integer> {
         @Query("SELECT at FROM AssetType at WHERE at.type_name = :typeName")
         AssetType findByTypeName(@Param("typeName") String typeName);
 
+        @Query("SELECT at FROM AssetType at WHERE at.type_id = :typeId")
+        AssetType findByTypeId(@Param("typeId") int typeId);
+
         @Query("SELECT at.type_name FROM AssetType at")
         List<String> getAllAssetTypeNames();
 

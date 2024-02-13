@@ -1,6 +1,7 @@
 package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Asset;
+import cs2815.project.model.Log;
 import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.repo.AssetRepo;
@@ -41,6 +42,13 @@ public class AssetImpl implements AssetService {
     @Transactional
     public void createAsset(AssetWrapper assetdto) {
         Asset asset = convertWrapperToAsset(assetdto);
+
+        Log log = new Log();
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setAsset(asset);
+        log.setUpdateDescription(asset.getTitle() + " was created!");
+
+        logRepo.save(log);
 
         repo.save(asset);
 
@@ -137,6 +145,13 @@ public class AssetImpl implements AssetService {
 
     @Override
     public void deleteAsset(int assetID) {
+
+        Log log = new Log();
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUpdateDescription(repo.findAssetById(assetID).getTitle() + " was deleted!");
+
+        logRepo.save(log);
+
         repo.deleteAssetbyID(assetID);
     }
 
