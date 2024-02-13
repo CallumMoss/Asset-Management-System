@@ -141,7 +141,9 @@ main {
 }
 
 .assets-container {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .assets-container h1 {
@@ -210,6 +212,80 @@ main {
 
 .admin-section h2 {
     margin-bottom: 15px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 0.5em 1em;
+    background-color: #2C3E50;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown .dropbtn:focus + .dropdown-content {
+    display: block;
+}
+
+.search-and-filter {
+    margin: 0 auto;
+    max-width: 600px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.search-and-filter .search-input, .search-and-filter .filter-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-and-filter .search-input:focus, .search-and-filter .filter-dropdown:focus {
+    outline: none;
+    border-color: #3498DB;
+    box-shadow: 0 2px 4px rgba(50, 152, 219, 0.25);
+}
+
+
+
+.search-and-filter .search-btn {
+    background-color: #3498DB;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-and-filter .search-btn:hover {
+    background-color: #2980B9;
 }
 
 footer {
