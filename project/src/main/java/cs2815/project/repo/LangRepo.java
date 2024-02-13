@@ -1,6 +1,5 @@
 package cs2815.project.repo;
 
-import cs2815.project.model.Asset;
 import cs2815.project.model.Languages;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,7 +16,6 @@ public interface LangRepo extends JpaRepository<Languages, Integer> { // Integer
     @Query("SELECT l.language_name FROM Languages l ")
     List<String> getAllLanguageNames();
 
-    
     @Query("SELECT l FROM Languages l WHERE l.language_id = :langID")
     Languages findLanguageById(@Param("langID") int langID);
 
@@ -28,5 +26,5 @@ public interface LangRepo extends JpaRepository<Languages, Integer> { // Integer
     @Transactional
     @Query("DELETE FROM Languages l WHERE l.language_id = :langID")
     void deleteLanguageByID(@Param("langID") int langID);
-    
+
 }

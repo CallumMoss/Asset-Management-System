@@ -7,7 +7,6 @@ import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.repo.*;
 import cs2815.project.service.AssetService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +40,7 @@ public class AssetImpl implements AssetService {
 
         Asset asset = convertWrapperToAsset(assetdto);
 
+        repo.save(asset);
 
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
@@ -48,9 +48,6 @@ public class AssetImpl implements AssetService {
         log.setUpdateDescription(asset.getTitle() + " was created!");
 
         logRepo.save(log);
-
-        repo.save(asset);
-
 
         List<User> authors = new ArrayList<>();
 
@@ -76,7 +73,6 @@ public class AssetImpl implements AssetService {
 
         List<Languages> languages = new ArrayList<>();
 
-
         for (String language : assetdto.getLanguages()) {
             Languages tempLang = langRepo.findLanguageByName(language);
             if (tempLang != null) {
@@ -84,8 +80,9 @@ public class AssetImpl implements AssetService {
             }
         }
 
-
         asset.setLanguages(languages);
+
+        repo.save(asset);
 
     }
 
