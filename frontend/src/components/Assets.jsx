@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // Import
 import user from './user.png';
 import change_password from './change_password.png'; // Import change_password image
 import logout from './logout.png';
+import axios from "axios";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -20,6 +21,57 @@ function DropdownItem(props) {
     </li>
   );
 }
+
+
+function ShowAssets(){
+  const [assets, setAssets] = useState([]);
+
+  useEffect(() =>{
+    fetchAssets();
+  },[]);
+
+  const fetchAssets = async () => {
+    try{
+      const response = await axios.get('http://localhost:8080/assets/refresh')
+      .then(res => res.json())
+      .then(data =>{
+        setAssets(response.data)
+      })
+      console.log("Fetched assets", response.data)
+    }
+    catch(e){
+      console.error("Error fetching assets",e);
+    }
+
+  }
+  
+  return (
+    <div>
+      <h1>Assets</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            {/* Add more headers as per your data structure */}
+          </tr>
+        </thead>
+        <tbody>
+          {assets.map(assets => (
+            <tr key={assets.asset_id}>
+              <td>{assets.title}</td>
+              <td>{assets.asset_description}</td>
+              {/* Add more table data cells as per your data structure */}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+
+
 
 function Assets({ username, userRole }) {
   // State for search term and filter
@@ -84,7 +136,8 @@ function Assets({ username, userRole }) {
           )}
         </nav>
       </header>
-
+                
+    
       {/* Main content section */}
       <main>
         <section className="assets-container">
@@ -125,7 +178,8 @@ function Assets({ username, userRole }) {
           <Link to="/create-asset">
             <button id="createAssetBtn">Create New Asset</button>
           </Link>
-          <div className="assets-list">{/* Assets list rendering */}</div> {/* Rendering of assets list */}
+          <div className="assets-list">{/* Assets list rendering */}
+          </div> {/* Rendering of assets list */}
         </section>
       </main>
 
