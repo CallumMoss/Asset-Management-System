@@ -88,7 +88,7 @@ function CreateAsset() {
     };
     
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
     const handleSubmit = async (e) => { // this adds to the database
         e.preventDefault();

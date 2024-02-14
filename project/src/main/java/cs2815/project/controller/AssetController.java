@@ -40,16 +40,18 @@ public class AssetController {
 
     }
 
-    @PostMapping("/searchAsset")
-    public ResponseEntity<List<Asset>> searchAsset(@RequestBody String searchString) {
-        List<Asset> compatibleAssets = assetService.searchAsset(searchString);
-        return ResponseEntity.ok(compatibleAssets);
-    }
-
     @PostMapping("/searchLanguage")
     public ResponseEntity<List<String>> searchLanguage(@RequestBody String searchString) {
         List<String> compatibleLanguages = assetService.searchLanguage(searchString);
         return ResponseEntity.ok(compatibleLanguages);
     }
+
+    
+    @PostMapping("/delete")
+    public ResponseEntity<String> deleteAsset(@RequestBody int assetID){
+        assetService.deleteAsset(assetID);
+        return ResponseEntity.ok("Asset deleted successfully");
+    } 
+    
 
 }
