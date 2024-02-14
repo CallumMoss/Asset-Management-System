@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
+import "./DisplayAssets.css";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom"; // Importing Link component from react-router-dom
 import user from './user.png';
 import change_password from './change_password.png'; // Import change_password image
@@ -23,55 +24,54 @@ function DropdownItem(props) {
 }
 
 
-function ShowAssets(){
-  const [assets, setAssets] = useState([]);
 
-  useEffect(() =>{
-    fetchAssets();
-  },[]);
+//Will be used to display assets in table format.
+function DisplayAssets() {
+    const [assets, setAssets] = useState([]);
+    // These functions retrieve information from the database
+    useEffect(() => {
+      fetchAssets();
+  }, []);
 
   const fetchAssets = async () => {
-    try{
-      const response = await axios.get('http://localhost:8080/assets/refresh')
-      .then(res => res.json())
-      .then(data =>{
-        setAssets(response.data)
-      })
-      console.log("Fetched assets", response.data)
-    }
-    catch(e){
-      console.error("Error fetching assets",e);
-    }
-
+      try {
+          const response = await axios.get('http://localhost:8080/assets/refresh');
+          setAssets(response.data);
+          console.log('Fetched asset types:', response.data);
+      } catch (error) {
+          console.error('Error fetching asset types:', error);
+      }
+  };
+  //Code for table
+  const createTable = () => {
+    return assets.map(assets => {
+      return (
+        <tr>
+          <td>{assets.asset_title}</td>
+          <td>{assets.lang_list}</td>
+          <td>{assets.lang_list}</td>
+          <td>{assets.asset_link}</td>
+        </tr>
+      )
+    })
   }
-  
   return (
     <div>
-      <h1>Assets</h1>
-      <table>
+      <h3 id = "Assets">API TABLE</h3>
+      <table id ="assets">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            {/* Add more headers as per your data structure */}
+            <th>{assets.asset_title}</th>
+            <th>{assets.lang_list}</th>
+            <th>{assets.lang_list}</th>
+            <th>{assets.asset_link}</th>
           </tr>
         </thead>
-        <tbody>
-          {assets.map(assets => (
-            <tr key={assets.asset_id}>
-              <td>{assets.title}</td>
-              <td>{assets.asset_description}</td>
-              {/* Add more table data cells as per your data structure */}
-            </tr>
-          ))}
-        </tbody>
+        <tbody>{createTable()}</tbody>
       </table>
     </div>
-  );
+  )
 }
-
-
-
 
 function Assets({ username, userRole }) {
   // State for search term and filter
