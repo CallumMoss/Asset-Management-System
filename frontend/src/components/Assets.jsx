@@ -162,7 +162,6 @@ function Assets({ username, userRole }) {
           </div>
         </div>
 
-        <footer>{/* Footer content */}</footer> {/* Footer section */}
       </div>
   );
 }

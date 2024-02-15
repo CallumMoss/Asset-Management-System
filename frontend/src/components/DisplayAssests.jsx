@@ -8,8 +8,8 @@ function DisplayAssets() {
     useEffect (() => {
         const getAssets = async () => {
             try{
-                const response = await axios.get('http://localhost:8080/assets/refresh')
-                if (response.data && response.data_embedded && Array.isArray(response.data._embedded.assets)) {
+                const response = await axios.get('http://localhost:8080/assets')
+                if (response.data && response.data._embedded && Array.isArray(response.data._embedded.assets)) {
                     setAssets(response.data._embedded.assets)
                 } else{
                     console.error("Unexpected structure", response.data);
@@ -33,6 +33,7 @@ function DisplayAssets() {
                         <TableCell style={{ fontWeight: 'bold' }}>Description</TableCell>
                         <TableCell style={{ fontWeight: 'bold' }}>Link</TableCell>
                         <TableCell style={{ fontWeight: 'bold' }}>Languages</TableCell>
+                        <TableCell style = {{fontWeight: 'bold'}}>Authors</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
@@ -42,6 +43,7 @@ function DisplayAssets() {
                             <TableCell>{asset.asset_description}</TableCell>
                             <TableCell>{asset.link}</TableCell>
                             <TableCell>{asset.lang_list}</TableCell>
+                            <TableCell>{asset.authors}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
