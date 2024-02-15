@@ -8,6 +8,7 @@ import Dashboard from "./components/dashboard";
 import Assets from "./components/Assets";
 import Admin from "./components/Admin";
 import CreateAsset from "./components/CreateAsset";
+import UserManagement from "./components/UserManagement";
 import CreateAssetType from "./components/CreateAssetType";
 import { Switch } from "@mui/material";
 
@@ -61,7 +62,7 @@ function AppRoutes() {
                   <CreateAsset username={currentUserName} userRole={currentUserType} />
                 </UserElement>
               } />
-              
+
             {/* <Route
               path="/admin/asset-types" // /admin/asset-types ?
               element={
@@ -78,6 +79,16 @@ function AppRoutes() {
               </AdminElement>
             }
           />
+
+          <Route
+              path="/admin/user-management"
+              element={
+                <AdminElement currentUserType={currentUserType}>
+                  <UserManagement />
+                </AdminElement>
+              }
+          />
+
 
           {/* Default route */}
           <Route path="*" element={<div> Page not found!</div>} />
@@ -101,6 +112,10 @@ export function DropdownItem(props) {
     </li>
   );
 }
+
+
+
+
 
 // ViewerElement component, UserElement, AdminElement, App component remains the same...
 
