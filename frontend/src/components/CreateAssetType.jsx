@@ -50,7 +50,7 @@ function CreateAssetType() {
                         alignItems: 'center',
                     }}>
                     <Typography component="h1" variant="h5">
-                        Create Asset
+                        Create Asset Type
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
@@ -58,9 +58,8 @@ function CreateAssetType() {
                             required
                             fullWidth
                             id="typeName"
-                            label="TypeName"
+                            label="Type Name"
                             name="typeName"
-                            autoComplete="typeName"
                             autoFocus
                             value={typeName}
                             onChange={(e) => setTypeName(e.target.value)}

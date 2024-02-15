@@ -8,7 +8,9 @@ import Dashboard from "./components/dashboard";
 import Assets from "./components/Assets";
 import Admin from "./components/Admin";
 import CreateAsset from "./components/CreateAsset";
+import CreateUser from "./components/CreateUser";
 import UserManagement from "./components/UserManagement";
+import DisplayAssets from './components/DisplayAssests';
 import CreateAssetType from "./components/CreateAssetType";
 import { Switch } from "@mui/material";
 
@@ -52,6 +54,7 @@ function AppRoutes() {
             element={
               <ViewerElement currentUserType={currentUserType}>
                 <Assets username={currentUserName} userRole={currentUserType} />
+                <DisplayAssets />
               </ViewerElement>
             }
           />
@@ -63,13 +66,13 @@ function AppRoutes() {
                 </UserElement>
               } />
 
-            {/* <Route
-              path="/admin/asset-types" // /admin/asset-types ?
+            <Route
+              path="/admin/asset-types"
               element={
                 <AdminElement currentUserType={currentUserType}>
                   <CreateAssetType username={currentUserName} userRole={currentUserType} />
                 </AdminElement>
-              } /> */}
+              } />
 
           <Route
             path="/admin"
@@ -85,6 +88,16 @@ function AppRoutes() {
               element={
                 <AdminElement currentUserType={currentUserType}>
                   <UserManagement />
+                </AdminElement>
+              }
+          />
+
+              
+          <Route
+              path="/createuserpage" // when navigating to this page (when navigate is used in UserManagement)
+              element={ // show CreateUser
+                <AdminElement currentUserType={currentUserType}>
+                  <CreateUser/>
                 </AdminElement>
               }
           />
