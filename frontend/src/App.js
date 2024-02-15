@@ -9,6 +9,7 @@ import Assets from "./components/Assets";
 import Admin from "./components/Admin";
 import CreateAsset from "./components/CreateAsset";
 import UserManagement from "./components/UserManagement";
+import DisplayAssets from './components/DisplayAssests';
 import CreateAssetType from "./components/CreateAssetType";
 import { Switch } from "@mui/material";
 
@@ -52,6 +53,7 @@ function AppRoutes() {
             element={
               <ViewerElement currentUserType={currentUserType}>
                 <Assets username={currentUserName} userRole={currentUserType} />
+                <DisplayAssets />
               </ViewerElement>
             }
           />
