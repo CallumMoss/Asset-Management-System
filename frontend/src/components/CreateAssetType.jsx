@@ -50,7 +50,7 @@ function CreateAssetType() {
                         alignItems: 'center',
                     }}>
                     <Typography component="h1" variant="h5">
-                        Create Asset
+                        Create Asset Type
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
