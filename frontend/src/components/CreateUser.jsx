@@ -17,7 +17,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 const defaultTheme = createTheme(); // can be used to create a default theme
 
-function CreateAssetType() {
+function CreateUser() {
     const [first_name, setFirstName] = useState('');
     const [last_name, setLastName] = useState('');
     const [user_name, setUserName] = useState('');
@@ -115,4 +115,4 @@ function CreateAssetType() {
     );
 }
 
-export default CreateAssetType;
+export default CreateUser;

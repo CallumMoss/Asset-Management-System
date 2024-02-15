@@ -154,6 +154,7 @@ function CreateAsset() {
                         <Select
                             id="type"
                             name="type"
+                            required // added this, might break idk
                             value={type}
                             onChange={(e) => setType(e.target.value)}
                         >
@@ -171,6 +172,7 @@ function CreateAsset() {
                             id="authors"
                             name="authors"
                             multiple // allows multiple inputs
+                            required
                             value={authors}
                             onChange={(e) => setAuthors(e.target.value)}
                         >
@@ -187,7 +189,6 @@ function CreateAsset() {
                         <Select
                             id="dependencies"
                             name="dependencies"
-                            autoComplete="dependencies"
                             multiple // allows multiple inputs
                             value={dependencies}
                             onChange={(e) => setDependencies(e.target.value)}
@@ -205,7 +206,6 @@ function CreateAsset() {
                         <Select
                             id="languages"
                             name="languages"
-                            autoComplete="languages"
                             multiple // allows multiple inputs, as a project can have multiple languages
                             value={languages}
                             onChange={(e) => setLanguages(e.target.value)}
@@ -224,7 +224,6 @@ function CreateAsset() {
                             id="link"
                             label="Link"
                             name="link"
-                            autoComplete="link"
                             value={link}
                             onChange={(e) => setLink(e.target.value)}
                         />

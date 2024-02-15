@@ -58,9 +58,8 @@ function CreateAssetType() {
                             required
                             fullWidth
                             id="typeName"
-                            label="TypeName"
+                            label="Type Name"
                             name="typeName"
-                            autoComplete="typeName"
                             autoFocus
                             value={typeName}
                             onChange={(e) => setTypeName(e.target.value)}
