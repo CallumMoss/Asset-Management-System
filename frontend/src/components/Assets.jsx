@@ -46,13 +46,13 @@ function Navbar({ userRole }) {
               <div className="dropdown">
                 <button onClick={toggleAdminDropdown}>Admin</button>
                 {showAdminDropdown && (
-                    <ul className="dropdown-content">
-                      <DropdownItem img={user} text={"User Management"} destination="/admin/user-management" />
-                      <DropdownItem img={change_password} text={"Asset Types"} destination="/admin/asset-types" />
-                      <DropdownItem img={logout} text={"Asset Attributes"} destination="/admin/asset-attributes" />
-                      <DropdownItem img={logout} text={"Logs"} destination="/admin/logs" />
-                    </ul>
-                )}
+                    <div className="dropdown-content">
+                      <button onClick={() => handleNavigate('/admin/user-management')}>User Management</button>
+                      <button onClick={() => handleNavigate('/admin/asset-types')}>Asset Types</button>
+                      <button onClick={() => handleNavigate('/admin/asset-attributes')}>Asset Attributes</button>
+                      <button onClick={() => handleNavigate('/admin/logs')}>Logs</button>
+              </div>
+          )}
               </div>
           )}
         </nav>
