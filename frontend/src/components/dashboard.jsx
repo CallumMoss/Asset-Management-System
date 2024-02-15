@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
-import { BrowserRouter, Routes, Route, useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import user from './user.png';
 import change_password from './change_password.png'; // Import change_password image
@@ -22,9 +22,10 @@ function DropdownItem(props) {
   );
 }
 
-function Navbar() {
+// Modified Navbar component to accept userRole as a prop
+function Navbar({ userRole }) {
   const navigate = useNavigate();
-  const [showAdminDropdown, setShowAdminDropdown] = React.useState(false);
+  const [showAdminDropdown, setShowAdminDropdown] = useState(false);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -33,72 +34,60 @@ function Navbar() {
   const toggleAdminDropdown = () => {
     setShowAdminDropdown(!showAdminDropdown);
   };
+
   return (
       <header>
         <nav className="navbar">
           <button onClick={() => handleNavigate('/dashboard')}>Dashboard</button>
           <button onClick={() => handleNavigate('/assets')}>Assets</button>
 
-          <div className="dropdown">
-            <button onClick={toggleAdminDropdown}>Admin</button>
-            {showAdminDropdown && (
-                <div className="dropdown-content">
-                  <button onClick={() => handleNavigate('/admin/user-management')}>User Management</button>
-                  <button onClick={() => handleNavigate('/admin/asset-types')}>Asset Types</button>
-                  <button onClick={() => handleNavigate('/admin/asset-attributes')}>Asset Attributes</button>
-                  <button onClick={() => handleNavigate('/admin/logs')}>Logs</button>
-                </div>
-            )}
-          </div>
+          {userRole === 'Admin' && (
+              <div className="dropdown">
+                <button onClick={toggleAdminDropdown}>Admin</button>
+                {showAdminDropdown && (
+                    <div className="dropdown-content">
+                      <button onClick={() => handleNavigate('/admin/user-management')}>User Management</button>
+                      <button onClick={() => handleNavigate('/admin/asset-types')}>Asset Types</button>
+                      <button onClick={() => handleNavigate('/admin/asset-attributes')}>Asset Attributes</button>
+                      <button onClick={() => handleNavigate('/admin/logs')}>Logs</button>
+                    </div>
+                )}
+              </div>
+          )}
         </nav>
       </header>
   );
 }
 
-
-function Dashboard({ username, userRole }){
-  // Hook from React Router to navigate programmatically
-
-  const [currentUserName, setCurrentUserName] = useState("");
-  const [currentUserType, setCurrentUserType] = useState("");
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
-  // State for controlling the menu open/close
+function Dashboard({ username, userRole }) {
   const [open, setOpen] = useState(false);
-  // Function to update current user's data
-  const updateCurrentUser = (userName, userType) => {
-    setCurrentUserName(userName);
-    setCurrentUserType(userType);
-  };
-
-  // Reference for the menu container
   let menuRef = useRef();
 
-  // Effect to handle clicks outside the menu container
   useEffect(() => {
-    let handler = (e) => {
+    const handler = (e) => {
       if (!menuRef.current.contains(e.target)) {
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handler);
 
+    document.addEventListener("mousedown", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
-    }
-  });
+    };
+  }, []);
 
   return (
       <div>
-        <Navbar />
-        {/* Main content section */}
+        <Navbar userRole={userRole} />
         <main>
           <div className="quick-access">
             <Link to="/create-asset">
               <button>Create New Asset</button>
             </Link>
             <button onClick={() => (window.location.href = "recent-updates.html")}>View Recent Updates</button>
-            <button id="searchLink">Search</button>
+            <Link to="/search">
+              <button id="searchLink">Search</button>
+            </Link>
           </div>
         </main>
 
@@ -127,5 +116,6 @@ function Dashboard({ username, userRole }){
       </div>
   );
 }
+
 
 export default Dashboard;
