@@ -14,7 +14,6 @@ import Chip from "@mui/material/Chip";
 import Checkbox from "@mui/material/Checkbox";
 import ListItemText from "@mui/material/ListItemText";
 
-
 const defaultTheme = createTheme(); // can be used to create a default theme
 
 function CreateAsset() {
@@ -24,7 +23,7 @@ function CreateAsset() {
     const [authors, setAuthors] = useState([]);
     const [dependencies, setDependencies] = useState([]);
     const [assetTypes, setAssetTypes] = useState([]);
-    const [link, setLink] = useState([]);
+    const [link, setLink] = useState(''); // have changed from []
     const [authorsList, setAuthorsList] = useState([]);
     const [dependenciesList, setDependenciesList] = useState([]);
     const [languages, setLanguages] = useState([]);
@@ -79,11 +78,11 @@ function CreateAsset() {
     
     const fetchLanguages = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/assets/refresh');
+            const response = await axios.get('http://localhost:8080/languages/refresh');
             setLangList(response.data);
-            console.log('Fetched dependencies:', response.data);
+            console.log('Fetched languages:', response.data);
         } catch (error) {
-            console.error('Error fetching dependencies:', error);
+            console.error('Error fetching languages:', error);
         }
     };
     
@@ -92,15 +91,16 @@ function CreateAsset() {
 
     const handleSubmit = async (e) => { // this adds to the database
         e.preventDefault();
+
         try {
             await axios.post("http://localhost:8080/assets/createasset", {
                 title: title,
                 asset_description: description,
                 link: link,
-                lang_list: languages,
+                languages: languages,
                 asset_type: type,
                 authors: authors,
-                dependencies: dependencies // Split dependencies string into an array
+                dependencies: dependencies
             });
             console.log("Asset created successfully");
             navigate('/assets');
@@ -214,8 +214,8 @@ function CreateAsset() {
                             onChange={(e) => setLanguages(e.target.value)}
                         >
                             {langList.map(languages => (
-                                <MenuItem key={languages.asset_id} value={languages.asset_id}>
-                                    {languages.lang_list}
+                                <MenuItem key={languages.language_id} value={languages.language_id}>
+                                    {languages.language_name}
                                 </MenuItem>
                             ))}
                         </Select>
