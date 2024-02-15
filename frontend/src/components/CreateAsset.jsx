@@ -132,7 +132,6 @@ function CreateAsset() {
                             id="title"
                             label="Title"
                             name="title"
-                            autoComplete="title"
                             autoFocus
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
@@ -155,7 +154,6 @@ function CreateAsset() {
                         <Select
                             id="type"
                             name="type"
-                            autoComplete="type"
                             value={type}
                             onChange={(e) => setType(e.target.value)}
                         >
@@ -172,7 +170,6 @@ function CreateAsset() {
                         <Select
                             id="authors"
                             name="authors"
-                            autoComplete="authors"
                             multiple // allows multiple inputs
                             value={authors}
                             onChange={(e) => setAuthors(e.target.value)}
