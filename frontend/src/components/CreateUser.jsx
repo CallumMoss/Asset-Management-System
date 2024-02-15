@@ -100,7 +100,26 @@ function CreateUser() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        
+                        <Typography component="h1" variant="h5">
+                            User Role
+                        </Typography>
+                        <Select
+                            id="role"
+                            name="role"
+                            required
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            sx={{ marginTop: 2 }} // Add some spacing between the text field and the dropdown
+                        >
+                            <MenuItem value="" disabled>
+                                Select a role
+                            </MenuItem>
+                            <MenuItem value="Viewer">Viewer</MenuItem>
+                            <MenuItem value="User">User</MenuItem>
+                            <MenuItem value="Admin">Admin</MenuItem>
+                        </Select>
+
+
                         <Button
                             type="submit"
                             fullWidth
