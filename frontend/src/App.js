@@ -8,6 +8,7 @@ import Dashboard from "./components/dashboard";
 import Assets from "./components/Assets";
 import Admin from "./components/Admin";
 import CreateAsset from "./components/CreateAsset";
+import UserManagement from "./components/UserManagement";
 
 
 // AppRoutes component
@@ -70,6 +71,16 @@ function AppRoutes() {
             }
           />
 
+          <Route
+              path="/admin/user-management"
+              element={
+                <AdminElement currentUserType={currentUserType}>
+                  <UserManagement />
+                </AdminElement>
+              }
+          />
+
+
           {/* Default route */}
           <Route path="*" element={<div> Page not found!</div>} />
         </Routes>
@@ -92,6 +103,10 @@ export function DropdownItem(props) {
     </li>
   );
 }
+
+
+
+
 
 // ViewerElement component, UserElement, AdminElement, App component remains the same...
 

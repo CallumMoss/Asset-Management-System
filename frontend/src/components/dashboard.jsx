@@ -15,16 +15,49 @@ function DropdownItem(props) {
   };
 
   return (
-    <li className='dropdownItem' onClick={handleNavigation}>
-      <img src={props.img} alt="Dropdown Icon" />
-      <a> {props.text}</a>
-    </li>
+      <li className='dropdownItem' onClick={handleNavigation}>
+        <img src={props.img} alt="Dropdown Icon" />
+        <a> {props.text}</a>
+      </li>
   );
 }
 
+function Navbar() {
+  const navigate = useNavigate();
+  const [showAdminDropdown, setShowAdminDropdown] = React.useState(false);
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
+  const toggleAdminDropdown = () => {
+    setShowAdminDropdown(!showAdminDropdown);
+  };
+  return (
+      <header>
+        <nav className="navbar">
+          <button onClick={() => handleNavigate('/dashboard')}>Dashboard</button>
+          <button onClick={() => handleNavigate('/assets')}>Assets</button>
+
+          <div className="dropdown">
+            <button onClick={toggleAdminDropdown}>Admin</button>
+            {showAdminDropdown && (
+                <div className="dropdown-content">
+                  <button onClick={() => handleNavigate('/admin/user-management')}>User Management</button>
+                  <button onClick={() => handleNavigate('/admin/asset-types')}>Asset Types</button>
+                  <button onClick={() => handleNavigate('/admin/asset-attributes')}>Asset Attributes</button>
+                  <button onClick={() => handleNavigate('/admin/logs')}>Logs</button>
+                </div>
+            )}
+          </div>
+        </nav>
+      </header>
+  );
+}
+
+
 function Dashboard({ username, userRole }){
   // Hook from React Router to navigate programmatically
-  const navigate = useNavigate();
 
   const [currentUserName, setCurrentUserName] = useState("");
   const [currentUserType, setCurrentUserType] = useState("");
@@ -34,8 +67,8 @@ function Dashboard({ username, userRole }){
   const [open, setOpen] = useState(false);
   // Function to update current user's data
   const updateCurrentUser = (userName, userType) => {
-  setCurrentUserName(userName);
-  setCurrentUserType(userType);
+    setCurrentUserName(userName);
+    setCurrentUserType(userType);
   };
 
   // Reference for the menu container
@@ -57,27 +90,7 @@ function Dashboard({ username, userRole }){
 
   return (
       <div>
-        <header>
-          <nav className="navbar">
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/assets">Assets</Link>
-            {userRole === "Admin" && (
-                <div className="dropdown">
-                  <Link to="#" className="dropbtn" onClick={toggleDropdown}>Admin</Link>
-                  {isDropdownVisible && (
-                      <div className="dropdown-content">
-                        <Link to="/admin/user-management">User Management</Link>
-                        <Link to="/admin/asset-types">Asset Types</Link>
-                        <Link to="/admin/asset-attributes">Asset Attributes</Link>
-                        <Link to="/admin/logs">Logs</Link>
-                      </div>
-                  )}
-                </div>
-            )}
-          </nav>
-        </header>
-
-
+        <Navbar />
         {/* Main content section */}
         <main>
           <div className="quick-access">
