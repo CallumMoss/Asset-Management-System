@@ -13,7 +13,5 @@ public interface AssetService {
 
     List<Asset> refresh();
 
-    List<Asset> searchAsset(String searchString);
-
     List<String> searchLanguage(String searchString);
 }
