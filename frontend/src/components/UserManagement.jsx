@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Table, TableBody, TableCell, TableHead, TableRow, Paper, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
 function UserManagement() {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -13,7 +15,7 @@ function UserManagement() {
                     setUsers(response.data._embedded.users);
                 } else {
                     console.error('Unexpected response structure:', response.data);
-                    setUsers([]); // Fallback to an empty array
+                    setUsers([]);
                 }
             } catch (error) {
                 console.error("Failed to fetch users:", error);
@@ -25,18 +27,23 @@ function UserManagement() {
     }, []);
 
     const handleEdit = (userName) => {
-        // Implement your edit functionality here
         console.log('Edit user:', userName);
     };
 
     const handleDelete = (userName) => {
-        // Implement your delete functionality here
         console.log('Delete user:', userName);
+    };
+
+    const handleCreateUser = () => {
+        navigate('/createuserpage');
     };
 
     return (
         <Container component={Paper}>
-            <h1>User Management</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h1 style={{ marginBottom: '30px' }}>User Management</h1> {/* Increased space */}
+                <Button onClick={handleCreateUser} variant="contained" color="primary">Create User</Button>
+            </div>
             <Table>
                 <TableHead>
                     <TableRow>
