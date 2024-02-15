@@ -158,11 +158,14 @@ function CreateAsset() {
                             value={type}
                             onChange={(e) => setType(e.target.value)}
                         >
-                            {assetTypes.map(assetType => (
-                                <MenuItem key={assetType.type_id} value={assetType.type_id}>
-                                    {assetType.type_name}
-                                </MenuItem>
-                            ))}
+                        <MenuItem value="" disabled>
+                            Select an asset type
+                        </MenuItem>
+                        {assetTypes.map(assetType => (
+                            <MenuItem key={assetType.type_id} value={assetType.type_id}>
+                                {assetType.type_name}
+                            </MenuItem>
+                        ))}
                         </Select>
 
                         <Typography component="h1" variant="h5">
@@ -176,11 +179,14 @@ function CreateAsset() {
                             value={authors}
                             onChange={(e) => setAuthors(e.target.value)}
                         >
-                            {authorsList.map(authors => (
-                                <MenuItem key={authors.id} value={authors.id}>
-                                    {authors.user_name}
-                                </MenuItem>
-                            ))}
+                        <MenuItem value="" disabled>
+                            Select the authors
+                        </MenuItem>
+                        {authorsList.map(authors => (
+                            <MenuItem key={authors.id} value={authors.id}>
+                                {authors.user_name}
+                            </MenuItem>
+                        ))}
                         </Select>
 
                         <Typography component="h1" variant="h5">
@@ -193,11 +199,14 @@ function CreateAsset() {
                             value={dependencies}
                             onChange={(e) => setDependencies(e.target.value)}
                         >
-                            {dependenciesList.map(dependencies => (
-                                <MenuItem key={dependencies.asset_id} value={dependencies.asset_id}>
-                                    {dependencies.title}
-                                </MenuItem>
-                            ))}
+                        <MenuItem value="" disabled>
+                            Select the dependencies
+                        </MenuItem>
+                        {dependenciesList.map(dependencies => (
+                            <MenuItem key={dependencies.asset_id} value={dependencies.asset_id}>
+                                {dependencies.title}
+                            </MenuItem>
+                        ))}
                         </Select>
 
                         <Typography component="h1" variant="h5">
@@ -210,11 +219,14 @@ function CreateAsset() {
                             value={languages}
                             onChange={(e) => setLanguages(e.target.value)}
                         >
-                            {langList.map(languages => (
-                                <MenuItem key={languages.language_id} value={languages.language_id}>
-                                    {languages.language_name}
-                                </MenuItem>
-                            ))}
+                        <MenuItem value="" disabled>
+                            Select the languages
+                        </MenuItem>
+                        {langList.map(languages => (
+                            <MenuItem key={languages.language_id} value={languages.language_id}>
+                                {languages.language_name}
+                            </MenuItem>
+                        ))}
                         </Select>
 
                         <TextField
