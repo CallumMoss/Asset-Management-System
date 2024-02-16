@@ -3,7 +3,9 @@ package cs2815.project.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,12 +48,10 @@ public class AssetController {
         return ResponseEntity.ok(compatibleLanguages);
     }
 
-    
-    @PostMapping("/delete")
-    public ResponseEntity<String> deleteAsset(@RequestBody int assetID){
-        assetService.deleteAsset(assetID);
+    @DeleteMapping("/{asset_id}")
+    public ResponseEntity<String> deleteAsset(@PathVariable int asset_id) {
+        assetService.deleteAsset(asset_id);
         return ResponseEntity.ok("Asset deleted successfully");
-    } 
-    
+    }
 
 }

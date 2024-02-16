@@ -26,33 +26,32 @@ import lombok.Setter;
 @Entity
 @Table(name = "assets")
 public class Asset {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int asset_id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private int asset_id;
 
-    private String title;
-    private String asset_description;
-    private String link;
+        private String title;
+        private String asset_description;
+        private String link;
 
-    private Timestamp updateTimestamp;
+        private Timestamp updateTimestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "asset_type_id")
-    private AssetType Asset_type;
+        @ManyToOne
+        @JoinColumn(name = "asset_type_id")
+        private AssetType Asset_type;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-            CascadeType.REFRESH })
-    @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> authors;
+        @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
+        @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+        private List<User> authors;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-            CascadeType.REFRESH })
-    @JoinTable(name = "dependency", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "belonging_id"))
-    private List<Asset> dependent;
+        @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+                        CascadeType.REFRESH, CascadeType.REMOVE })
+        @JoinTable(name = "dependency", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "belonging_id"))
+        private List<Asset> dependent;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-            CascadeType.REFRESH })
-    @JoinTable(name = "asset_languages", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
-    private List<Languages> languages;
+        @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
+                        CascadeType.REFRESH })
+        @JoinTable(name = "asset_languages", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
+        private List<Languages> languages;
 
 }

@@ -14,14 +14,12 @@ import java.util.List;
 public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer being the type of the primary key
 
     // does createAsset need to go here?
-    
+
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
 
-    
     @Query("SELECT a FROM Asset a WHERE a.asset_id = :assetId")
     Asset findAssetById(@Param("assetId") int assetId);
-    
 
     @Query("SELECT a FROM Asset a WHERE a.title = :title")
     Asset findAssetByTitle(@Param("title") String title);
@@ -30,5 +28,10 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Transactional
     @Query("DELETE FROM Asset at WHERE at.asset_id = :assetID")
     void deleteAssetbyID(@Param("assetID") int assetID);
-    
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "DELETE FROM dependency WHERE belonging_id = :belonging_id")
+    void eraseUserIdFromDependency(@Param("belonging_id") int belonging_id);
+
 }

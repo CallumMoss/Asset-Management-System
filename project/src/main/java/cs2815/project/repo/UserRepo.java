@@ -30,6 +30,11 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
         @Modifying
         @Transactional
+        @Query(nativeQuery = true, value = "DELETE FROM asset_user WHERE user_id = :userId")
+        void eraseUserIdFromAssetUser(@Param("userId") int userId);
+
+        @Modifying
+        @Transactional
         @Query("UPDATE User u SET u.user_name = :newUserName, u.user_first_name = :newFirstName, " +
                         "u.user_last_name = :newLastName, u.user_role = :newUserRole " +
                         "WHERE u.id = :userId")

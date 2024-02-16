@@ -125,6 +125,9 @@ public class AssetImpl implements AssetService {
 
         logRepo.save(log);
 
+        logRepo.eraseAssetIdFromLogs(assetID);
+        repo.eraseUserIdFromDependency(assetID);
+
         repo.deleteAssetbyID(assetID);
     }
 

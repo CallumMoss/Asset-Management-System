@@ -1,5 +1,5 @@
-import './App.css';
-import React, { useState, useEffect, useRef } from 'react';
+import "./App.css";
+import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -10,10 +10,9 @@ import Admin from "./components/Admin";
 import CreateAsset from "./components/CreateAsset";
 import CreateUser from "./components/CreateUser";
 import UserManagement from "./components/UserManagement";
-import DisplayAssets from './components/DisplayAssests';
+import DisplayAssets from "./components/DisplayAssests";
 import CreateAssetType from "./components/CreateAssetType";
 import { Switch } from "@mui/material";
-
 
 // AppRoutes component
 function AppRoutes() {
@@ -59,20 +58,40 @@ function AppRoutes() {
             }
           />
           <Route
-              path="/create-asset"
-              element={
-                <UserElement currentUserType={currentUserType}>
-                  <CreateAsset username={currentUserName} userRole={currentUserType} />
-                </UserElement>
-              } />
+            path="/create-asset"
+            element={
+              <UserElement currentUserType={currentUserType}>
+                <CreateAsset
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
+              </UserElement>
+            }
+          />
 
-            <Route
-              path="/admin/asset-types"
-              element={
-                <AdminElement currentUserType={currentUserType}>
-                  <CreateAssetType username={currentUserName} userRole={currentUserType} />
-                </AdminElement>
-              } />
+          <Route
+            path="/admin/asset-types"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <CreateAssetType
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
+              </AdminElement>
+            }
+          />
+
+          <Route
+            path="/admin/create-user"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <CreateUser
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
+              </AdminElement>
+            }
+          />
 
           <Route
             path="/admin"
@@ -84,24 +103,23 @@ function AppRoutes() {
           />
 
           <Route
-              path="/admin/user-management"
-              element={
-                <AdminElement currentUserType={currentUserType}>
-                  <UserManagement />
-                </AdminElement>
-              }
+            path="/admin/user-management"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <UserManagement />
+              </AdminElement>
+            }
           />
 
-              
           <Route
-              path="/createuserpage" // when navigating to this page (when navigate is used in UserManagement)
-              element={ // show CreateUser
-                <AdminElement currentUserType={currentUserType}>
-                  <CreateUser/>
-                </AdminElement>
-              }
+            path="/createuserpage" // when navigating to this page (when navigate is used in UserManagement)
+            element={
+              // show CreateUser
+              <AdminElement currentUserType={currentUserType}>
+                <CreateUser />
+              </AdminElement>
+            }
           />
-
 
           {/* Default route */}
           <Route path="*" element={<div> Page not found!</div>} />
@@ -119,16 +137,12 @@ export function DropdownItem(props) {
   };
 
   return (
-    <li className='dropdownItem' onClick={handleNavigation}>
+    <li className="dropdownItem" onClick={handleNavigation}>
       <img src={props.img} alt="Dropdown Icon" />
       <a> {props.text}</a>
     </li>
   );
 }
-
-
-
-
 
 // ViewerElement component, UserElement, AdminElement, App component remains the same...
 

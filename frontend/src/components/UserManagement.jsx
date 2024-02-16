@@ -22,14 +22,12 @@ function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/users");
+      const response = await axios.get("http://localhost:8080/users/refresh");
       console.log("API Response:", response.data);
-      if (
-        response.data &&
-        response.data._embedded &&
-        Array.isArray(response.data._embedded.users)
-      ) {
-        setUsers(response.data._embedded.users);
+
+      if (Array.isArray(response.data)) {
+        const usersFromApi = response.data;
+        setUsers(usersFromApi);
       } else {
         console.error("Unexpected response structure:", response.data);
         setUsers([]); // Fallback to an empty array
@@ -45,12 +43,8 @@ function UserManagement() {
     console.log("Edit user:", userName);
   };
 
-  const handleRefresh = () => {
-    fetchUsers();
-  };
-
   const handleCreate = () => {
-    navigate("/create-asset");
+    navigate("/admin/create-user");
   };
 
   const handleDelete = async (user_id) => {
