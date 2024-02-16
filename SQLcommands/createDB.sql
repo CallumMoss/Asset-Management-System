@@ -1,53 +1,25 @@
--- Used to refresh the database before each coding session
-DROP TABLE users CASCADE;
-DROP TABLE asset_types CASCADE;
-DROP TABLE assets CASCADE;
-DROP TABLE asset_attributes CASCADE;
-DROP TABLE asset_attribute_values CASCADE;
+DO $$ 
+DECLARE 
+    cur_table_name text;
+BEGIN
+    -- Select all table names
+    FOR cur_table_name IN (SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE') 
+    LOOP
+        -- Drop each table
+        EXECUTE 'DROP TABLE IF EXISTS ' || cur_table_name || ' CASCADE';
+    END LOOP;
+END $$;
 
--- Creates database
-CREATE TABLE users (
-    user_name VARCHAR(30) PRIMARY KEY,
-    user_first_name VARCHAR(30) NOT NULL,
-    user_last_name VARCHAR(30) NOT NULL,
-    user_password VARCHAR(30) NOT NULL,
-    user_role VARCHAR(15) NOT NULL -- Admin, regular user or viewer
-);
-
--- Types of possible asset types, such as python files or documentation
-CREATE TABLE asset_types (
-    -- should type have an ID?
-    type_name VARCHAR(30) PRIMARY KEY,
-    description VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE assets (
-    asset_id INT PRIMARY KEY,
-    link VARCHAR(150) NOT NULL,
-    asset_description VARCHAR(255) NOT NULL,
-    title VARCHAR(150) NOT NULL,
-    asset_type VARCHAR(30) REFERENCES asset_types(type_name) NOT NULL,
-    upload_date DATE NOT NULL,
-    author VARCHAR(30) REFERENCES users(user_name) NOT NULL -- Should be in the user table
-);
+INSERT INTO asset_types (type_name, description)
+VALUES
+    ('Python File', 'A file that contains python code for a given project.'),
+    ('Documentation', 'A file that contains documentation to supply extra information about any given asset.'),
+    ('Project', 'A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.'),
+    ('Java File', 'A file that contains java code for a given project.');
 
 
--- Attributes that belong to a given asset type, such that any asset of a given asset type has these attributes, such as number of lines.
-CREATE TABLE asset_attributes (
-    asset_attribute_id INT PRIMARY KEY, -- should it be made SERIAL?
-    -- might need to have asset_id in this table too, to communicate properly with assets AND asset types
-    asset_type VARCHAR(30) REFERENCES asset_types(type_name) NOT NULL,
-    attribute_name VARCHAR(50) NOT NULL,
-    attribute_description VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE asset_attribute_values (
-    value_id INT PRIMARY KEY,
-    belonging_to_asset_id INT REFERENCES assets(asset_id) NOT NULL,
-    asset_type VARCHAR(30) REFERENCES asset_types(type_name) NOT NULL,
-    attribute_type_id INT REFERENCES asset_attributes(asset_attribute_id) NOT NULL,
-    value VARCHAR (255) NOT NULL
-);
-    
-    -- should have the name or id of the asset, the name or id of the asset type, the name or id of the attribute, and its value.
-    
+INSERT INTO assets(asset_id, link, asset_description, title, asset_type, upload_date, author)
+VALUES
+    ('1', 'website.com/piece.py', 'A python program that contains a class which describes the attributes and functions of a chess piece.', 'Piece.py', 'Python File', '1999-12-31', 'BaseUser'),
+    ('2', 'website.com/projects/heroes_rising/readme.md', 'Read me file for the project Heroes Rising', 'README.md', 'Documentation', '2024-02-25', 'BaseUser'),
+    ('3', 'website.com/projects/heroes_rising', '2D Game developed as part of the first year games module.', 'Heroes Rising', 'Project', '2024-01-25', 'BaseUser');

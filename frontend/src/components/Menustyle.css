@@ -1,0 +1,126 @@
+/* Root variables for easy customization */
+:root {
+    --primary-bg: #242526; /* Primary background color */
+    --secondary-bg: #e1dfdf; /* Secondary background color */
+    --primary-text-color: #555; /* Primary text color */
+    --secondary-text-color: #cecece; /* Secondary text color */
+    --border-radius: 8px; /* Border radius */
+    --speed: 500ms; /* Transition speed */
+}
+
+/* Global styles */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Code block styling */
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Remove default list styles */
+ul {
+    list-style: none;
+}
+
+/* Remove default hyperlink underline */
+a {
+    text-decoration: none;
+}
+
+/* Styles for the menu trigger */
+.menu-trigger img {
+    position: absolute;
+    top: 3px;
+    right: 20px;
+    height: 45px;
+    width: 65px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Styles for the dropdown menu */
+.dropdown-menu {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    background-color: #e1dfdf;
+    border-radius: var(--border-radius);
+    padding: 10px 20px;
+    width: 200px;
+}
+
+/* Styles for the dropdown menu triangle */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    right: 30px;
+    height: 15px;
+    width: 20px;
+    background: var(--secondary-bg);
+    transform: rotate(45deg);
+}
+
+/* Active state styles for the dropdown menu */
+.dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: var(--speed) ease;
+}
+
+/* Inactive state styles for the dropdown menu */
+.dropdown-menu.inactive {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: var(--speed) ease;
+}
+
+/* Styles for list items in the dropdown menu */
+.dropdown-menu ul li {
+    padding: 10px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Hover styles for links inside dropdown menu */
+.dropdown-menu ul li:hover a {
+    color: rgb(212, 33, 9); /* Change text color on hover */
+    cursor: pointer;
+}
+
+/* Hover styles for images inside dropdown menu */
+.dropdown-menu ul li:hover img {
+    opacity: 1; /* Make image fully visible on hover */
+    cursor: pointer;
+}
+
+/* Styles for dropdown menu items */
+.dropdownItem {
+    display: flex;
+    margin: 10px auto;
+}
+
+/* Styles for images inside dropdown menu items */
+.dropdownItem img {
+    max-width: 25px;
+    max-height: 30px;
+    margin-right: 15px;
+    opacity: 0.5; /* Initial opacity for images */
+    transition: var(--speed); /* Smooth transition */
+}
+
+/* Styles for links inside dropdown menu items */
+.dropdownItem a {
+    max-width: 10px; /* Limiting width */
+    margin-left: 10px;
+    transition: var(--speed); /* Smooth transition */
+}

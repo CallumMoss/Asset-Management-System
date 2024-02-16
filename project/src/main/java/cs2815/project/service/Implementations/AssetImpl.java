@@ -1,11 +1,18 @@
-package cs2815.project.service.implementations;
+package cs2815.project.service.Implementations;
 
+import cs2815.project.model.Asset;
+import cs2815.project.model.Languages;
+import cs2815.project.model.Log;
+import cs2815.project.model.User;
+import cs2815.project.model.specialmodels.AssetWrapper;
+import cs2815.project.repo.*;
+import cs2815.project.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cs2815.project.model.Asset;
-import cs2815.project.repo.AssetRepo;
-import cs2815.project.service.AssetService;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AssetImpl implements AssetService {
@@ -13,13 +20,115 @@ public class AssetImpl implements AssetService {
     @Autowired
     private AssetRepo repo;
 
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private AssetTypeRepo assetTypeRepo;
+
+    @Autowired
+    private LogRepo logRepo;
+
+    @Autowired
+    private LangRepo langRepo;
+
+    @Autowired
+    private UserServiceImpl userService;
+
     @Override
-    public void createAsset(Asset asset) {
-        if (asset == null) {
-            System.out.println("Error: Asset is null.");
-            return;
-        }
+    public void createAsset(AssetWrapper assetdto) {
+
+        Asset asset = convertWrapperToAsset(assetdto);
+
         repo.save(asset);
+
+        Log log = new Log();
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setAsset(asset);
+        log.setUpdateDescription(asset.getTitle() + " was created!");
+
+        logRepo.save(log);
+
+        List<User> authors = new ArrayList<>();
+
+        for (String author : assetdto.getAuthors()) {
+            User user = userRepo.findByUserName(author);
+            if (user != null) {
+                authors.add(user);
+            }
+        }
+
+        asset.setAuthors(authors);
+
+        List<Asset> dependents = new ArrayList<>();
+
+        for (String title : assetdto.getDependencies()) {
+            Asset tempAsset = repo.findAssetByTitle(title);
+            if (tempAsset != null) {
+                dependents.add(tempAsset);
+            }
+        }
+
+        asset.setDependent(dependents);
+
+        List<Languages> languages = new ArrayList<>();
+
+        for (String language : assetdto.getLanguages()) {
+            Languages tempLang = langRepo.findLanguageByName(language);
+            if (tempLang != null) {
+                languages.add(tempLang);
+            }
+        }
+
+        asset.setLanguages(languages);
+
+        repo.save(asset);
+
+    }
+
+    @Override
+    public List<String> searchLanguage(String searchString) {
+        List<String> LanguagesList = langRepo.getAllLanguageNames();
+        List<String> compatibleList = new ArrayList<>();
+        for (String language : LanguagesList) {
+            if (userService.isSimilar(searchString, language)) {
+                compatibleList.add(language);
+            }
+        }
+        return compatibleList;
+    }
+
+    public Asset convertWrapperToAsset(AssetWrapper assetDto) {
+        Asset asset = new Asset();
+        asset.setTitle(assetDto.getTitle());
+        asset.setAsset_description(assetDto.getAsset_description());
+        asset.setLink(assetDto.getLink());
+
+        asset.setAsset_type(assetTypeRepo.findByTypeName(assetDto.getAsset_type()));
+
+        asset.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        return asset;
+    }
+
+    @Override
+    public List<Asset> refresh() {
+        return repo.getAllAssets();
+    }
+
+    @Override
+    public void deleteAsset(int assetID) {
+
+        Log log = new Log();
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUpdateDescription(repo.findAssetById(assetID).getTitle() + " was deleted!");
+
+        logRepo.save(log);
+
+        logRepo.eraseAssetIdFromLogs(assetID);
+        repo.eraseUserIdFromDependency(assetID);
+
+        repo.deleteAssetbyID(assetID);
     }
 
 }

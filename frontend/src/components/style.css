@@ -1,3 +1,4 @@
+/* Global styles */
 * {
     margin: 0;
     padding: 0;
@@ -5,13 +6,19 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body,
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 html {
     width: 100%;
     min-height: 100vh;
     background-color: #f4f4f4;
 }
 
+/* Header styles */
 header {
     background-color: #2C3E50;
     color: #ecf0f1;
@@ -21,34 +28,55 @@ header {
     padding: 0.5em 1em;
 }
 
-.hero {
+/* Main content styles */
+main {
+    padding: 20px;
     text-align: center;
+    flex: 1;
+}
+
+/* Hero section for Home */
+.hero {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 1000px;
     padding: 50px;
-    background: #e7e7e7;
+    text-align: center;
 }
 
 .hero h1 {
-    margin-bottom: 20px;
+    color: #2C3E50;
     font-size: 2.5em;
+    margin-bottom: 20px;
 }
 
 .hero p {
+    color: #34495E;
     font-size: 1.2em;
     margin-bottom: 20px;
 }
 
 .hero button {
-    padding: 10px 20px;
-    font-size: 1em;
     background-color: #3498DB;
-    color: white;
     border: none;
+    border-radius: 4px;
+    color: white;
     cursor: pointer;
+    font-size: 1em;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
 }
 
+.hero button:hover {
+    background-color: #2980B9;
+}
+
+/* Features section for Home */
 .features {
-    padding: 20px;
     background: #f4f4f4;
+    padding: 20px;
 }
 
 .feature-item {
@@ -57,161 +85,207 @@ header {
 }
 
 .features h2 {
-    text-align: center;
+    color: #2C3E50;
     margin-bottom: 30px;
-}
-
-.call-to-action {
-    background: #333;
-    color: white;
     text-align: center;
-    padding: 50px;
 }
 
-.call-to-action h2 {
-    margin-bottom: 20px;
-    font-size: 2em;
-}
-
-.call-to-action button {
-    padding: 10px 20px;
-    font-size: 1em;
-    background-color: #2980B9;
-    border: none;
-    cursor: pointer;
-}
-
-.navbar {
-    display: flex;
-    align-items: center;
-}
-
-.navbar a {
-    color: #ecf0f1;
-    text-decoration: none;
-    padding: 0.5em 1em;
-    transition: background-color 0.3s ease;
-}
-
-.navbar a:hover,
-.navbar a:focus {
-    background-color: #34495E;
-    border-radius: 4px;
-}
-
-.login-info {
-    display: flex;
-    align-items: center;
-}
-
-.login-info span {
-    margin-left: 20px;
-    font-size: 0.9em;
-    color: #bdc3c7;
-}
-
+/* Quick-access section for Dashboard */
 .quick-access {
+    background-color: #ecf0f1;
     display: flex;
     justify-content: center;
     padding: 2em;
-    background-color: #ecf0f1;
     flex-wrap: wrap;
 }
 
 .quick-access button {
-    padding: 10px 20px;
-    margin: 0.5em;
-    cursor: pointer;
     background-color: #3498DB;
-    color: white;
     border: none;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    color: white;
+    cursor: pointer;
     font-size: 1em;
+    margin: 0.5em;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
 }
 
-.quick-access button:hover,
-.quick-access button:focus {
+.quick-access button:hover {
     background-color: #2980B9;
 }
 
+/* Asset container & related styles */
+.assets-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 1000px;
+    padding: 20px;
+}
+
+.assets-container h1 {
+    color: #2C3E50;
+    margin-bottom: 20px;
+}
+
+.search-and-filter {
+    align-items: center;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    border: 2px solid #3498DB;
+    border-radius: 4px;
+    font-size: 1em;
+    padding: 10px;
+    width: 50%;
+}
+
+.search-btn,
+#createAssetBtn {
+    background-color: #3498DB;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover,
+#createAssetBtn:hover {
+    background-color: #2980B9;
+}
+
+/* Navbar styles */
+.navbar {
+    align-items: center;
+    display: flex;
+    justify-content: start;
+    padding: 0.5em 1em;
+}
+
+.navbar button {
+    background-color: transparent;
+    border: none;
+    color: #ecf0f1;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0.5em 1em;
+    transition: color 0.3s ease;
+}
+
+.navbar button:hover {
+    color: #d1d1d1;
+}
+
+/* Dropdown styles */
+.dropdown {
+    display: inline-block;
+    position: relative;
+}
+
+.dropdown-content {
+    background-color: #f9f9f9;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    display: none;
+    left: 0;
+    min-width: 160px;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropdown-content button {
+    background-color: transparent;
+    border: none;
+    color: #333;
+    display: block;
+    padding: 12px 16px;
+    text-align: left;
+    text-decoration: none;
+    width: 100%;
+}
+
+.dropdown-content button:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Main content styles */
 main {
     padding: 20px;
     text-align: center;
 }
 
-.assets-container {
-    padding: 20px;
+/* Hero section styles */
+.hero {
+    background: #e7e7e7;
+    padding: 50px;
+    text-align: center;
 }
 
-.assets-container h1 {
-    text-align: center;
+.hero h1 {
+    font-size: 2.5em;
     margin-bottom: 20px;
 }
 
-#createAssetBtn {
-    display: block;
-    margin: 10px auto;
-    padding: 10px 20px;
+.hero p {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+/* Button styles */
+.hero button,
+.quick-access button {
     background-color: #3498DB;
-    color: white;
     border: none;
-    cursor: pointer;
-}
-
-.assets-list {
-    /* Add styles for the container that will hold all assets */
-}
-
-.navbar a.active {
-    background-color: #2980B9;
-    /* Or any color that signifies an active state */
     border-radius: 4px;
-}
-
-.search-section {
-    text-align: center;
-    margin: 20px 0;
-}
-
-.search-input {
-    padding: 10px;
-    margin-right: 10px;
+    color: white;
+    cursor: pointer;
     font-size: 1em;
-    border: 2px solid #333;
-    border-radius: 4px;
-}
-
-.search-btn {
     padding: 10px 20px;
-    background-color: #3498DB;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
+    transition: background-color 0.3s ease;
 }
 
-.admin-functions {
+.hero button:hover,
+.quick-access button:hover {
+    background-color: #2980B9;
+}
+
+/* Features section styles */
+.features {
+    background: #f4f4f4;
     padding: 20px;
 }
 
-.admin-functions h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.admin-section {
+.features h2 {
     margin-bottom: 30px;
-    background-color: #f4f4f4;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
 }
 
-.admin-section h2 {
-    margin-bottom: 15px;
+.feature-item {
+    margin-bottom: 30px;
+    text-align: center;
 }
 
+/* Quick access styles */
+.quick-access {
+    background-color: #ecf0f1;
+    display: flex;
+    justify-content: center;
+    padding: 2em;
+    flex-wrap: wrap;
+}
+
+/* Footer styles */
 footer {
     background-color: #2C3E50;
     color: #ecf0f1;
@@ -222,7 +296,4 @@ footer {
     width: 100%;
 }
 
-footer p {
-    margin: 0;
-    font-size: 0.9em;
-}
+

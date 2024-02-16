@@ -10,11 +10,6 @@ function Home() {
     navigate("/login");
   };
 
-  const handleSignUpClick = () => {
-    // Navigate to the signup page when "Sign Up Now" is clicked
-    navigate("/register");
-  };
-
   return (
     <div>
       <header>{/* Your header content */}</header>
@@ -49,11 +44,6 @@ function Home() {
               history.
             </p>
           </div>
-        </section>
-
-        <section className="call-to-action">
-          <h2>Ready to take control of your assets?</h2>
-          <button onClick={handleSignUpClick}>Sign Up Now</button>
         </section>
       </main>
 

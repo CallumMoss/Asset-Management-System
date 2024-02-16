@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom"; // Importing components fr
 import user from "./user.png";
 import change_password from "./change_password.png"; // Import change_password image
 import logout from "./logout.png";
-import DisplayAssets from "./DisplayAssets";
+import UserManagementDisplay from "./UserManagementDisplay";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -47,7 +47,6 @@ function Navbar({ userRole }) {
       <nav className="navbar">
         <button onClick={() => handleNavigate("/dashboard")}>Dashboard</button>
         <button onClick={() => handleNavigate("/assets")}>Assets</button>
-
         {/* Render the Admin dropdown only if the userRole is 'Admin' */}
         {userRole === "Admin" && (
           <div className="dropdown">
@@ -99,7 +98,7 @@ function Navbar({ userRole }) {
   );
 }
 
-function Assets({ username, userRole }) {
+function UserManagement({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
@@ -132,18 +131,18 @@ function Assets({ username, userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
-          <h1>Asset Management</h1>
+          <h1>User Search</h1>
           <div className="search-and-filter">
             <input
               type="text"
-              id="assetSearchInput"
-              placeholder="Search assets..."
+              id="userSearchInput"
+              placeholder="Search users..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-              id="assetSearchBtn"
+              id="userSearchBtn"
               className="search-btn"
               onClick={handleSearch}>
               Search
@@ -153,24 +152,21 @@ function Assets({ username, userRole }) {
               onChange={handleFilterChange}
               className="filter-dropdown">
               <option value="">Filter</option>
-              <option value="type">Type</option>
-              <option value="date">Date</option>
-              <option value="author">Author</option>
-              <option value="title">Title</option>
+              <option value="type">Username</option>
+              <option value="date">First Name</option>
+              <option value="author">Last Name</option>
+              <option value="title">Role</option>
             </select>
           </div>
 
-          <Link to="/create-asset">
-            <button id="createAssetBtn">Create New Asset</button>
-          </Link>
           <div className="assets-list"></div>
         </section>
         <section>
-          <DisplayAssets />
+          <UserManagementDisplay />
         </section>
       </main>
     </div>
   );
 }
 
-export default Assets;
+export default UserManagement;
