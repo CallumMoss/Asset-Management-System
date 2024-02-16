@@ -3,9 +3,9 @@ import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
 import { useNavigate, Link } from "react-router-dom";
 
-import user from './user.png';
-import change_password from './change_password.png'; // Import change_password image
-import logout from './logout.png';
+import user from "./user.png";
+import change_password from "./change_password.png"; // Import change_password image
+import logout from "./logout.png";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -15,10 +15,10 @@ function DropdownItem(props) {
   };
 
   return (
-      <li className='dropdownItem' onClick={handleNavigation}>
-        <img src={props.img} alt="Dropdown Icon" />
-        <a> {props.text}</a>
-      </li>
+    <li className="dropdownItem" onClick={handleNavigation}>
+      <img src={props.img} alt="Dropdown Icon" />
+      <a> {props.text}</a>
+    </li>
   );
 }
 
@@ -36,26 +36,32 @@ function Navbar({ userRole }) {
   };
 
   return (
-      <header>
-        <nav className="navbar">
-          <button onClick={() => handleNavigate('/dashboard')}>Dashboard</button>
-          <button onClick={() => handleNavigate('/assets')}>Assets</button>
+    <header>
+      <nav className="navbar">
+        <button onClick={() => handleNavigate("/dashboard")}>Dashboard</button>
+        <button onClick={() => handleNavigate("/assets")}>Assets</button>
 
-          {userRole === 'Admin' && (
-              <div className="dropdown">
-                <button onClick={toggleAdminDropdown}>Admin</button>
-                {showAdminDropdown && (
-                    <div className="dropdown-content">
-                      <button onClick={() => handleNavigate('/admin/user-management')}>User Management</button>
-                      <button onClick={() => handleNavigate('/admin/asset-types')}>Asset Types</button>
-                      <button onClick={() => handleNavigate('/admin/asset-attributes')}>Asset Attributes</button>
-                      <button onClick={() => handleNavigate('/admin/logs')}>Logs</button>
-                    </div>
-                )}
+        {userRole === "Admin" && (
+          <div className="dropdown">
+            <button onClick={toggleAdminDropdown}>Admin</button>
+            {showAdminDropdown && (
+              <div className="dropdown-content">
+                <button
+                  onClick={() => handleNavigate("/admin/user-management")}>
+                  User Management
+                </button>
+                <button onClick={() => handleNavigate("/admin/asset-types")}>
+                  Asset Types
+                </button>
+                <button onClick={() => handleNavigate("/admin/logs")}>
+                  Logs
+                </button>
               </div>
-          )}
-        </nav>
-      </header>
+            )}
+          </div>
+        )}
+      </nav>
+    </header>
   );
 }
 
@@ -77,45 +83,53 @@ function Dashboard({ username, userRole }) {
   }, []);
 
   return (
-      <div>
-        <Navbar userRole={userRole} />
-        <main>
-          <div className="quick-access">
-            <Link to="/create-asset">
-              <button>Create New Asset</button>
-            </Link>
-            <button onClick={() => (window.location.href = "recent-updates.html")}>View Recent Updates</button>
-            <Link to="/search">
-              <button id="searchLink">Search</button>
-            </Link>
-          </div>
-        </main>
+    <div>
+      <Navbar userRole={userRole} />
+      <main>
+        <div className="quick-access">
+          <Link to="/create-asset">
+            <button>Create New Asset</button>
+          </Link>
+          <button
+            onClick={() => (window.location.href = "recent-updates.html")}>
+            View Recent Updates
+          </button>
+          <Link to="/search">
+            <button id="searchLink">Search</button>
+          </Link>
+        </div>
+      </main>
 
-        <div className="App">
-          <div className='menu-container' ref={menuRef}>
-            {/* Menu trigger */}
-            <div className='menu-trigger' onClick={() => {
-              setOpen(!open)
+      <div className="App">
+        <div className="menu-container" ref={menuRef}>
+          {/* Menu trigger */}
+          <div
+            className="menu-trigger"
+            onClick={() => {
+              setOpen(!open);
             }}>
-              <img src={user} alt="User Icon"/>
-            </div>
+            <img src={user} alt="User Icon" />
+          </div>
 
-            {/* Dropdown menu */}
-            <div className={`dropdown-menu ${open ? 'active' : 'inactive'}`}>
-              <ul>
-                {/* Rendering DropdownItem components with different destinations */}
-                <DropdownItem img={change_password} text={"Change Password"} destination="/change-password"/>
-                <DropdownItem img={logout} text={"Logout"} destination="/login"/>
-              </ul>
-            </div>
+          {/* Dropdown menu */}
+          <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
+            <ul>
+              {/* Rendering DropdownItem components with different destinations */}
+              <DropdownItem
+                img={change_password}
+                text={"Change Password"}
+                destination="/change-password"
+              />
+              <DropdownItem img={logout} text={"Logout"} destination="/login" />
+            </ul>
           </div>
         </div>
-
-        {/* Footer section */}
-        <footer>{/* Your footer content */}</footer>
       </div>
+
+      {/* Footer section */}
+      <footer>{/* Your footer content */}</footer>
+    </div>
   );
 }
-
 
 export default Dashboard;
