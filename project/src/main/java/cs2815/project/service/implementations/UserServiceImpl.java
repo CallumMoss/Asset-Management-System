@@ -32,14 +32,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createBaseUsers() {
-        if (repo.findByUserName("BaseAdmin") == null) {
-            User baseViewer = new User("BaseViewer", "Viewer", "Smith", "password", "Viewer", key);
-            User baseUser = new User("BaseUser", "User", "Martinez", "password", "User", key);
-            User baseAdmin = new User("BaseAdmin", "Admin", "Johnson", "password", "Admin", key);
+
+        if (repo.findByUserName("BaseAdmin") == null && repo.findByUserName("BaseViewer") == null
+                && repo.findByUserName("BaseUser") == null) {
+            User baseViewer = new User("BaseViewer", "Viewer", "Smith", "password",
+                    "Viewer", key);
+            User baseUser = new User("BaseUser", "User", "Martinez", "password", "User",
+                    key);
+            User baseAdmin = new User("BaseAdmin", "Admin", "Johnson", "password",
+                    "Admin", key);
             repo.save(baseViewer);
             repo.save(baseUser);
             repo.save(baseAdmin);
         }
+
     }
 
     @Override

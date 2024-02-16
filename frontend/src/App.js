@@ -10,7 +10,9 @@ import Admin from "./components/Admin";
 import CreateAsset from "./components/CreateAsset";
 import CreateUser from "./components/CreateUser";
 import UserManagement from "./components/UserManagement";
+import AssetType from "./components/AssetType";
 import CreateAssetType from "./components/CreateAssetType";
+import Log from "./components/Log";
 import { Switch } from "@mui/material";
 
 // AppRoutes component
@@ -69,18 +71,6 @@ function AppRoutes() {
           />
 
           <Route
-            path="/admin/asset-types"
-            element={
-              <AdminElement currentUserType={currentUserType}>
-                <CreateAssetType
-                  username={currentUserName}
-                  userRole={currentUserType}
-                />
-              </AdminElement>
-            }
-          />
-
-          <Route
             path="/admin/create-user"
             element={
               <AdminElement currentUserType={currentUserType}>
@@ -97,6 +87,38 @@ function AppRoutes() {
             element={
               <AdminElement currentUserType={currentUserType}>
                 <Admin username={currentUserName} userRole={currentUserType} />
+              </AdminElement>
+            }
+          />
+
+          <Route
+            path="/admin/asset-types"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <AssetType
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
+              </AdminElement>
+            }
+          />
+          <Route
+            path="/admin/logs"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <Log username={currentUserName} userRole={currentUserType} />
+              </AdminElement>
+            }
+          />
+
+          <Route
+            path="/admin/create-asset-type"
+            element={
+              <AdminElement currentUserType={currentUserType}>
+                <CreateAssetType
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </AdminElement>
             }
           />

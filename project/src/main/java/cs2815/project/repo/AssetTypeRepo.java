@@ -37,5 +37,4 @@ public interface AssetTypeRepo extends JpaRepository<AssetType, Integer> {
                         @Param("newTypeName") String newTypeName,
                         @Param("newDescription") String newDescription);
 
-                
 }

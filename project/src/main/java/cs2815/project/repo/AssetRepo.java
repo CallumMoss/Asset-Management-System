@@ -31,6 +31,11 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Modifying
     @Transactional
+    @Query("UPDATE Asset a SET a.Asset_type = null WHERE a.Asset_type.id = :AssetTypeId")
+    void eraseTypeIdFromAsset(@Param("AssetTypeId") int AssetTypeId);
+
+    @Modifying
+    @Transactional
     @Query(nativeQuery = true, value = "DELETE FROM dependency WHERE belonging_id = :belonging_id")
     void eraseUserIdFromDependency(@Param("belonging_id") int belonging_id);
 

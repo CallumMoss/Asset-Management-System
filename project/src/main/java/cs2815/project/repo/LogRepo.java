@@ -3,6 +3,8 @@ package cs2815.project.repo;
 import cs2815.project.model.Log;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +22,8 @@ public interface LogRepo extends JpaRepository<Log, Integer> {
     @Transactional
     @Query("UPDATE Log l SET l.asset = null WHERE l.asset.asset_id = :assetId")
     void eraseAssetIdFromLogs(@Param("assetId") int assetId);
+
+    @Query("SELECT l FROM Log l ORDER BY l.updateTimestamp DESC")
+    List<Log> findAllOrderedByUpdateTimestampDesc();
+
 }

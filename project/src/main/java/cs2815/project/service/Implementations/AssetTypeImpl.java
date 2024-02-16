@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cs2815.project.model.AssetType;
 import cs2815.project.model.Log;
+import cs2815.project.repo.AssetRepo;
 import cs2815.project.repo.AssetTypeRepo;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.service.AssetTypeService;
@@ -20,6 +21,9 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Autowired
     private LogRepo logrepo;
+
+    @Autowired
+    private AssetRepo assetrepo;
 
     @Autowired
     private UserServiceImpl userService;
@@ -54,6 +58,8 @@ public class AssetTypeImpl implements AssetTypeService {
         log.setUpdateDescription(repo.findByTypeId(assetTypeId).getType_name() + " was deleted!");
 
         logrepo.save(log);
+
+        assetrepo.eraseTypeIdFromAsset(assetTypeId);
 
         repo.deleteAssetTypeById(assetTypeId);
     }

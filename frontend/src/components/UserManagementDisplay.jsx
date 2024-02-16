@@ -70,7 +70,6 @@ function UserManagementDisplay() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>id</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>UserName</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
@@ -83,7 +82,6 @@ function UserManagementDisplay() {
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
               <TableCell>{user.user_name}</TableCell>
               <TableCell>{user.user_first_name}</TableCell>
               <TableCell>{user.user_last_name}</TableCell>
