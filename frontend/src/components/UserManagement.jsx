@@ -1,102 +1,175 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Paper,
-  Container,
-} from "@mui/material";
+import React, { useState, useEffect, useRef } from "react";
+import "./style.css"; // Importing component-specific styles
+import "./Menustyle.css";
+import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
+import user from "./user.png";
+import change_password from "./change_password.png"; // Import change_password image
+import logout from "./logout.png";
+import UserManagementDisplay from "./UserManagementDisplay";
 
-function UserManagement() {
-  const [users, setUsers] = useState([]);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/users/refresh");
-      console.log("API Response:", response.data);
-
-      if (Array.isArray(response.data)) {
-        const usersFromApi = response.data;
-        setUsers(usersFromApi);
-      } else {
-        console.error("Unexpected response structure:", response.data);
-        setUsers([]); // Fallback to an empty array
-      }
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-      alert("An error occurred while fetching users.");
-    }
-  };
-
-  const handleEdit = (userName) => {
-    // Implement your edit functionality here
-    console.log("Edit user:", userName);
-  };
-
-  const handleCreate = () => {
-    navigate("/admin/create-user");
-  };
-
-  const handleDelete = async (user_id) => {
-    if (typeof user_id !== "number") {
-      console.error("Invalid user_id:", user_id);
-      alert("Invalid user_id. Unable to delete user.");
-      return;
-    }
-
-    try {
-      await axios.delete(`http://localhost:8080/users/${user_id}`);
-      fetchUsers();
-      console.log("User deleted successfully:", user_id);
-    } catch (error) {
-      console.error("Axios Error:", error);
-      alert("An error occurred while deleting the user.");
-    }
+// DropdownItem component
+function DropdownItem(props) {
+  const handleNavigation = () => {
+    // Redirect to the specified destination page
+    window.location.href = props.destination;
   };
 
   return (
-    <Container component={Paper}>
-      <h1>User Management</h1>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>id</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>UserName</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <Button onClick={() => handleCreate()}>Create</Button>
-            <Button onClick={() => fetchUsers()}>Refresh</Button>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
-              <TableCell>{user.user_name}</TableCell>
-              <TableCell>{user.user_first_name}</TableCell>
-              <TableCell>{user.user_last_name}</TableCell>
-              <TableCell>{user.user_role}</TableCell>
-              <TableCell>
-                <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
-                <Button onClick={() => handleDelete(user.id)}>Delete</Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Container>
+    <li className="dropdownItem" onClick={handleNavigation}>
+      <img src={props.img} alt="Dropdown Icon" />
+      <a> {props.text}</a>
+    </li>
+  );
+}
+
+// Navbar component modified to accept userRole as a prop
+function Navbar({ userRole }) {
+  const navigate = useNavigate();
+  const [showAdminDropdown, setShowAdminDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(); // Define menuRef using the useRef hook
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
+  const toggleAdminDropdown = () => {
+    setShowAdminDropdown(!showAdminDropdown);
+  };
+
+  const toggleUserDropdown = () => {
+    setShowUserDropdown(!showUserDropdown);
+  };
+
+  return (
+    <header>
+      <nav className="navbar">
+        <button onClick={() => handleNavigate("/dashboard")}>Dashboard</button>
+        <button onClick={() => handleNavigate("/assets")}>Assets</button>
+        {/* Render the Admin dropdown only if the userRole is 'Admin' */}
+        {userRole === "Admin" && (
+          <div className="dropdown">
+            <button onClick={toggleAdminDropdown}>Admin</button>
+            {showAdminDropdown && (
+              <div className="dropdown-content">
+                <button
+                  onClick={() => handleNavigate("/admin/user-management")}>
+                  User Management
+                </button>
+                <button onClick={() => handleNavigate("/admin/asset-types")}>
+                  Asset Types
+                </button>
+                <button
+                  onClick={() => handleNavigate("/admin/asset-attributes")}>
+                  Asset Attributes
+                </button>
+                <button onClick={() => handleNavigate("/admin/logs")}>
+                  Logs
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Render the User dropdown */}
+        <div className="menu-container" ref={menuRef}>
+          {/* Menu trigger */}
+          <div
+            className="menu-trigger"
+            onClick={() => {
+              setOpen(!open);
+            }}>
+            <img src={user} alt="User Icon" />
+          </div>
+
+          {/* Dropdown menu */}
+          <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
+            <ul>
+              {/* Rendering DropdownItem components with different destinations */}
+              <DropdownItem
+                img={change_password}
+                text={"Change Password"}
+                destination="/change-password"
+              />
+              <DropdownItem img={logout} text={"Logout"} destination="/login" />
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <div className="App">{/* Your other components */}</div>
+    </header>
+  );
+}
+
+function UserManagement({ username, userRole }) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filter, setFilter] = useState("");
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(); // Define menuRef using the useRef hook
+
+  const handleSearch = () => {
+    console.log("Searching for:", searchTerm);
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
+    console.log("Filtering by:", e.target.value);
+  };
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  }, [menuRef, setOpen]);
+
+  return (
+    <div>
+      <Navbar userRole={userRole} />
+      <main>
+        <section className="assets-container">
+          <h1>User Search</h1>
+          <div className="search-and-filter">
+            <input
+              type="text"
+              id="userSearchInput"
+              placeholder="Search users..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              id="userSearchBtn"
+              className="search-btn"
+              onClick={handleSearch}>
+              Search
+            </button>
+            <select
+              value={filter}
+              onChange={handleFilterChange}
+              className="filter-dropdown">
+              <option value="">Filter</option>
+              <option value="type">Username</option>
+              <option value="date">First Name</option>
+              <option value="author">Last Name</option>
+              <option value="title">Role</option>
+            </select>
+          </div>
+
+          <div className="assets-list"></div>
+        </section>
+        <section>
+          <UserManagementDisplay />
+        </section>
+      </main>
+    </div>
   );
 }
 
