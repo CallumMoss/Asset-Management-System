@@ -60,10 +60,6 @@ function Navbar({ userRole }) {
                 <button onClick={() => handleNavigate("/admin/asset-types")}>
                   Asset Types
                 </button>
-                <button
-                  onClick={() => handleNavigate("/admin/asset-attributes")}>
-                  Asset Attributes
-                </button>
                 <button onClick={() => handleNavigate("/admin/logs")}>
                   Logs
                 </button>

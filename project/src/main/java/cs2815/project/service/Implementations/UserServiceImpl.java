@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
-import cs2815.project.repo.AssetRepo;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
@@ -23,9 +22,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private LogRepo logrepo;
-
-    @Autowired
-    private AssetRepo assetRepo;
 
     @Autowired
     private PasswordEncoder key;
