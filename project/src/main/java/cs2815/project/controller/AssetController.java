@@ -48,6 +48,12 @@ public class AssetController {
         return ResponseEntity.ok(compatibleLanguages);
     }
 
+    @PostMapping("/searchByName")
+    public ResponseEntity<List<Asset>> searchByName(@RequestBody String searchString) {
+        List<Asset> compatibleAssets = assetService.searchByName(searchString);
+        return ResponseEntity.ok(compatibleAssets);
+    }
+
     @DeleteMapping("/{asset_id}")
     public ResponseEntity<String> deleteAsset(@PathVariable int asset_id) {
         assetService.deleteAsset(asset_id);

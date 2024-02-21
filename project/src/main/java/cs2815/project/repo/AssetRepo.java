@@ -18,6 +18,12 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
 
+    @Query("SELECT a.title FROM Asset a")
+    List<String> getAllNames();
+
+    @Query("SELECT a FROM Asset a WHERE a.title = :assetName")
+    Asset getAssetByName(@Param("assetName") String assetName);
+
     @Query("SELECT a FROM Asset a WHERE a.asset_id = :assetId")
     Asset findAssetById(@Param("assetId") int assetId);
 

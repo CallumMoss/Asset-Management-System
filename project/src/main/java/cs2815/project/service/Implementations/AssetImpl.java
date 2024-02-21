@@ -98,6 +98,18 @@ public class AssetImpl implements AssetService {
         return compatibleList;
     }
 
+    @Override
+    public List<Asset> searchByName(String searchString) {
+        List<String> assetNames = repo.getAllNames();
+        List<Asset> compatibleAssets = new ArrayList<>();
+        for (String name : assetNames) {
+            if (userService.isSimilar(searchString, name)) {
+                compatibleAssets.add(repo.getAssetByName(name));
+            }
+        }
+        return compatibleAssets;
+    }
+
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();
         asset.setTitle(assetDto.getTitle());
