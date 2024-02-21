@@ -59,4 +59,13 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
         @Query("SELECT u.user_last_name FROM User u")
         List<String> findAllLNames();
+
+        @Query("SELECT u FROM User u WHERE u.user_name = :Username")
+        User getUserByUsername(@Param("Username") String Username);
+
+        @Query("SELECT u FROM User u WHERE u.user_first_name = :FirstName")
+        User getUserByName(@Param("FirstName") String FirstName);
+
+        @Query("SELECT u FROM User u WHERE u.user_last_name = :LastName")
+        User getUserByLastname(@Param("LastName") String LastName);
 }

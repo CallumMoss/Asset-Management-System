@@ -136,39 +136,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<String> searchByUsername(String searchString) {
+    public List<User> searchByUsername(String searchString) {
         List<String> usernameList = repo.findAllUserNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<User> compatibleUsers = new ArrayList<>();
         for (String username : usernameList) {
             if (isSimilar(searchString, username)) {
-                compatibleList.add(username);
+                compatibleUsers.add(repo.getUserByUsername(username));
             }
         }
-        return compatibleList;
+        return compatibleUsers;
     }
 
     @Override
-    public List<String> searchByFirstName(String searchString) {
+    public List<User> searchByFirstName(String searchString) {
         List<String> FNameList = repo.findAllFNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<User> compatibleUsers = new ArrayList<>();
         for (String firstname : FNameList) {
             if (isSimilar(searchString, firstname)) {
-                compatibleList.add(firstname);
+                compatibleUsers.add(repo.getUserByName(firstname));
             }
         }
-        return compatibleList;
+        return compatibleUsers;
     }
 
     @Override
-    public List<String> searchByLastName(String searchString) {
+    public List<User> searchByLastName(String searchString) {
         List<String> LNameList = repo.findAllLNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<User> compatibleUsers = new ArrayList<>();
         for (String lastname : LNameList) {
             if (isSimilar(searchString, lastname)) {
-                compatibleList.add(lastname);
+                compatibleUsers.add(repo.getUserByLastname(lastname));
             }
         }
-        return compatibleList;
+        return compatibleUsers;
     }
 
     public boolean isSimilar(String searchString, String compareString) {
