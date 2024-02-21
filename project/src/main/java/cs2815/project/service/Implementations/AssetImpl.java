@@ -98,6 +98,18 @@ public class AssetImpl implements AssetService {
         return compatibleList;
     }
 
+    //Finds what Assets are dependant on the given AssetID asset
+    @Override
+    public List<Integer> isDependantOn(int assetId) {
+        return repo.isDependantOn(assetId);
+    }
+
+    //Finds the Assets that the given AssetID depends On
+    @Override
+    public List<Integer> isParentOf(int assetId) {
+        return repo.isParentOf(assetId);
+    }
+
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();
         asset.setTitle(assetDto.getTitle());

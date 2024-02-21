@@ -14,4 +14,10 @@ public interface AssetService {
     List<Asset> refresh();
 
     List<String> searchLanguage(String searchString);
+
+    //Finds what Assets are dependant on the given AssetID asset
+    List<Integer> isDependantOn(int assetId);
+
+    //Finds the Assets that the given AssetID depends On
+    List<Integer> isParentOf(int assetId);
 }
