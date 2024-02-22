@@ -66,9 +66,9 @@ public class AssetImpl implements AssetService {
             Asset tempAsset = repo.findAssetByTitle(title);
             if (tempAsset != null) {
                 dependents.add(tempAsset);
+                dependents = findLinkedDependencies(dependents, tempAsset); //Adds dependencies of dependencies :)
             }
         }
-
         asset.setDependent(dependents);
 
         List<Languages> languages = new ArrayList<>();
@@ -84,6 +84,17 @@ public class AssetImpl implements AssetService {
 
         repo.save(asset);
 
+    }
+
+    public List<Asset> findLinkedDependencies(List<Asset> dependents, Asset index) {
+        List<Integer> dependencies = isParentOf(index.getAsset_id());
+        if (!dependencies.isEmpty()) {
+            for (Integer asset_id : dependencies) {
+                dependents.add(repo.findAssetById(asset_id));
+                dependents = findLinkedDependencies(dependents, repo.findAssetById(asset_id));
+            }
+        }
+        return dependents;
     }
 
     @Override
