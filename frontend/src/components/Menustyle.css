@@ -37,7 +37,7 @@ a {
 /* Styles for the menu trigger */
 .menu-trigger img {
     position: absolute;
-    top: 3px;
+    top: 7px;
     right: 20px;
     height: 45px;
     width: 65px;
@@ -49,7 +49,7 @@ a {
 /* Styles for the dropdown menu */
 .dropdown-menu {
     position: absolute;
-    top: 70px;
+    top: 65px;
     right: 10px;
     background-color: #e1dfdf;
     border-radius: var(--border-radius);
