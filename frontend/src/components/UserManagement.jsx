@@ -3,12 +3,11 @@ import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
 import user from "./user.png";
-import change_password from "./change_password.png"; // Import change_password image
-import logout from "./logout.png";
 import UserManagementDisplay from "./UserManagementDisplay";
 
 // DropdownItem component
 function DropdownItem(props) {
+  // Function to handle navigation when dropdown item is clicked
   const handleNavigation = () => {
     // Redirect to the specified destination page
     window.location.href = props.destination;
@@ -16,7 +15,6 @@ function DropdownItem(props) {
 
   return (
     <li className="dropdownItem" onClick={handleNavigation}>
-      <img src={props.img} alt="Dropdown Icon" />
       <a> {props.text}</a>
     </li>
   );
@@ -26,20 +24,15 @@ function DropdownItem(props) {
 function Navbar({ userRole }) {
   const navigate = useNavigate();
   const [showAdminDropdown, setShowAdminDropdown] = useState(false);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef(); // Define menuRef using the useRef hook
 
+  // Function to handle navigation to specified path
   const handleNavigate = (path) => {
     navigate(path);
   };
 
+  // Function to toggle visibility of admin dropdown
   const toggleAdminDropdown = () => {
     setShowAdminDropdown(!showAdminDropdown);
-  };
-
-  const toggleUserDropdown = () => {
-    setShowUserDropdown(!showUserDropdown);
   };
 
   return (
@@ -78,10 +71,12 @@ function UserManagement({ username, userRole }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
+  // Function to handle search
   const handleSearch = () => {
     console.log("Searching for:", searchTerm);
   };
 
+  // Function to handle filter change
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
     console.log("Filtering by:", e.target.value);
@@ -153,10 +148,12 @@ function UserManagement({ username, userRole }) {
 
             {/* Dropdown menu */}
             <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
+              <DropdownItem text={"Username: "}/>
+              <DropdownItem text={"Role: "}/>
               <ul>
                 {/* Rendering DropdownItem components with different destinations */}
-                <DropdownItem img={change_password} text={"Change Password"} destination="/change-password"/>
-                <DropdownItem img={logout} text={"Logout"} destination="/login" />
+                <DropdownItem text={"Change_Password"} destination="/change-password"/>
+                <DropdownItem text={"Logout"} destination="/login" />
               </ul>
             </div>
           </div>

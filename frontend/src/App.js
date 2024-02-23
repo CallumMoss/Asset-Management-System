@@ -32,11 +32,11 @@ function AppRoutes() {
       <BrowserRouter>
         <Routes>
           {/* Define routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={<Home />} /> {/* Home Route */}
+          <Route path="/register" element={<Register />} /> {/* Register Route */}
           <Route
             path="/login"
-            element={<Login updateCurrentUser={updateCurrentUser} />}
+            element={<Login updateCurrentUser={updateCurrentUser} />} // Login Route
           />
           <Route
             path="/dashboard"
@@ -48,15 +48,18 @@ function AppRoutes() {
                 />
               </ViewerElement>
             }
-          />
+          /> {/* Dashboard Route */}
           <Route
             path="/assets"
             element={
               <ViewerElement currentUserType={currentUserType}>
-                <Assets username={currentUserName} userRole={currentUserType} />
+                <Assets
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </ViewerElement>
             }
-          />
+          /> {/* Assets Route */}
 
           <Route
             path="/create-asset"
@@ -68,7 +71,7 @@ function AppRoutes() {
                 />
               </UserElement>
             }
-          />
+          /> {/* Create Asset Route */}
 
           <Route
             path="/admin/create-user"
@@ -80,16 +83,19 @@ function AppRoutes() {
                 />
               </AdminElement>
             }
-          />
+          /> {/* Create User Route */}
 
           <Route
             path="/admin"
             element={
               <AdminElement currentUserType={currentUserType}>
-                <Admin username={currentUserName} userRole={currentUserType} />
+                <Admin
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </AdminElement>
             }
-          />
+          /> {/* Admin Route */}
 
           <Route
             path="/admin/asset-types"
@@ -101,15 +107,18 @@ function AppRoutes() {
                 />
               </AdminElement>
             }
-          />
+          /> {/* Asset Types Route */}
           <Route
             path="/admin/logs"
             element={
               <AdminElement currentUserType={currentUserType}>
-                <Log username={currentUserName} userRole={currentUserType} />
+                <Log
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </AdminElement>
             }
-          />
+          /> {/* Logs Route */}
 
           <Route
             path="/admin/create-asset-type"
@@ -121,7 +130,7 @@ function AppRoutes() {
                 />
               </AdminElement>
             }
-          />
+          /> {/* Create Asset Type Route */}
 
           <Route
             path="/admin/user-management"
@@ -133,7 +142,7 @@ function AppRoutes() {
                 />
               </AdminElement>
             }
-          />
+          /> {/* User Management Route */}
 
           <Route
             path="/createuserpage" // when navigating to this page (when navigate is used in UserManagement)
@@ -143,7 +152,7 @@ function AppRoutes() {
                 <CreateUser />
               </AdminElement>
             }
-          />
+          /> {/* Create User Page Route */}
 
           {/* Default route */}
           <Route path="*" element={<div> Page not found!</div>} />
@@ -162,6 +171,7 @@ export function DropdownItem(props) {
 
   return (
     <li className="dropdownItem" onClick={handleNavigation}>
+      {/* Display the image and text */}
       <img src={props.img} alt="Dropdown Icon" />
       <a> {props.text}</a>
     </li>
@@ -196,6 +206,7 @@ function App() {
   );
 }
 
+// ViewerElement, UserElement, AdminElement components remain unchanged...
 export function ViewerElement({ currentUserType, children }) {
   if (
     currentUserType === "Viewer" ||

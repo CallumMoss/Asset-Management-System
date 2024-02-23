@@ -284,16 +284,3 @@ main {
     padding: 2em;
     flex-wrap: wrap;
 }
-
-/* Footer styles */
-footer {
-    background-color: #2C3E50;
-    color: #ecf0f1;
-    text-align: center;
-    padding: 1em 0;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
-
-

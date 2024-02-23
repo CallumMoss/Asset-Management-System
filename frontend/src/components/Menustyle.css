@@ -97,12 +97,6 @@ a {
     cursor: pointer;
 }
 
-/* Hover styles for images inside dropdown menu */
-.dropdown-menu ul li:hover img {
-    opacity: 1; /* Make image fully visible on hover */
-    cursor: pointer;
-}
-
 /* Styles for dropdown menu items */
 .dropdownItem {
     display: flex;
