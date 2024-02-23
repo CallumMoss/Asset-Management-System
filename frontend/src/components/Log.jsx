@@ -67,33 +67,7 @@ function Navbar({ userRole }) {
             )}
           </div>
         )}
-
-        {/* Render the User dropdown */}
-        <div className="menu-container" ref={menuRef}>
-          {/* Menu trigger */}
-          <div
-            className="menu-trigger"
-            onClick={() => {
-              setOpen(!open);
-            }}>
-            <img src={user} alt="User Icon" />
-          </div>
-
-          {/* Dropdown menu */}
-          <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
-            <ul>
-              {/* Rendering DropdownItem components with different destinations */}
-              <DropdownItem
-                img={change_password}
-                text={"Change Password"}
-                destination="/change-password"
-              />
-              <DropdownItem img={logout} text={"Logout"} destination="/login" />
-            </ul>
-          </div>
-        </div>
       </nav>
-      <div className="App">{/* Your other components */}</div>
     </header>
   );
 }
@@ -163,6 +137,28 @@ function Log({ username, userRole }) {
           <LogDisplay />
         </section>
       </main>
+      <div className="App">{/* Your other components */}
+        {/* Render the User dropdown */}
+        <div className="menu-container" ref={menuRef}>
+            {/* Menu trigger */}
+            <div
+              className="menu-trigger"
+              onClick={() => {
+                setOpen(!open);
+              }}>
+              <img src={user} alt="User Icon" />
+            </div>
+
+            {/* Dropdown menu */}
+            <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
+              <ul>
+                {/* Rendering DropdownItem components with different destinations */}
+                <DropdownItem img={change_password} text={"Change Password"} destination="/change-password"/>
+                <DropdownItem img={logout} text={"Logout"} destination="/login" />
+              </ul>
+            </div>
+          </div>
+        </div>
     </div>
   );
 }
