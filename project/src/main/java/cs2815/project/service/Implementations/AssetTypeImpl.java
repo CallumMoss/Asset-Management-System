@@ -70,13 +70,16 @@ public class AssetTypeImpl implements AssetTypeService {
     }
 
     @Override
-    public List<String> searchTypes(String searchString) {
+    public List<AssetType> searchTypes(String searchString) {
 
         List<String> TypeList = repo.getAllAssetTypeNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<AssetType> compatibleList = new ArrayList<>();
         for (String type : TypeList) {
+            if (searchString.equals(type)) {
+                compatibleList.add(repo.findByTypeName(type));
+            }
             if (userService.isSimilar(searchString, type)) {
-                compatibleList.add(type);
+                compatibleList.add(repo.findByTypeName(type));
             }
         }
         return compatibleList;
