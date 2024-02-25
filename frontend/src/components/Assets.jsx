@@ -6,6 +6,7 @@ import user from "./user.png";
 import change_password from "./change_password.png"; // Import change_password image
 import logout from "./logout.png";
 import DisplayAssets from "./DisplayAssets";
+import axios from "axios";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -101,12 +102,26 @@ function Navbar({ userRole }) {
 
 function Assets({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchedAssets, setSearchedAssets] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Searching for:", searchTerm);
+      let response = null;
+      if (searchTerm !== "") { // if user has searched something, show search results
+        response = await axios.post("http://localhost:8080/assets/searchByName", searchTerm); // searches by title
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/assets/refresh");
+      }
+      setSearchedAssets(response.data);
+    } catch (error) {
+      console.error("Error searching for the asset:", error);
+      alert("An error occurred while searching for the assets");
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -166,7 +181,7 @@ function Assets({ username, userRole }) {
           <div className="assets-list"></div>
         </section>
         <section>
-          <DisplayAssets />
+          <DisplayAssets assetList = {searchedAssets}/>
         </section>
       </main>
     </div>
