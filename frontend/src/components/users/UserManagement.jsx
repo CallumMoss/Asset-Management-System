@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./style.css"; // Importing component-specific styles
-import "./Menustyle.css";
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "./user.png";
-import change_password from "./change_password.png"; // Import change_password image
-import logout from "./logout.png";
-import AssetTypeDisplay from "./AssetTypeDisplay";
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import UserManagementDisplay from "./UserManagementDisplay";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -98,7 +98,7 @@ function Navbar({ userRole }) {
   );
 }
 
-function AssetType({ username, userRole }) {
+function UserManagement({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
@@ -131,12 +131,12 @@ function AssetType({ username, userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
-          <h1>Asset Type Search</h1>
+          <h1>User Search</h1>
           <div className="search-and-filter">
             <input
               type="text"
-              id="assetTypeSearchInput"
-              placeholder="Search asset types..."
+              id="userSearchInput"
+              placeholder="Search users..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -162,11 +162,11 @@ function AssetType({ username, userRole }) {
           <div className="assets-list"></div>
         </section>
         <section>
-          <AssetTypeDisplay />
+          <UserManagementDisplay />
         </section>
       </main>
     </div>
   );
 }
 
-export default AssetType;
+export default UserManagement;

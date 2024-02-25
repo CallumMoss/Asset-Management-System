@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./style.css"; // Importing component-specific styles
-import "./Menustyle.css";
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "./user.png";
-import change_password from "./change_password.png"; // Import change_password image
-import logout from "./logout.png";
-import LogDisplay from "./LogDisplay";
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import AssetTypeDisplay from "./AssetTypeDisplay";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -98,7 +98,7 @@ function Navbar({ userRole }) {
   );
 }
 
-function Log({ username, userRole }) {
+function AssetType({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
@@ -131,12 +131,12 @@ function Log({ username, userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
-          <h1>Log Search</h1>
+          <h1>Asset Type Search</h1>
           <div className="search-and-filter">
             <input
               type="text"
-              id="logSearchInput"
-              placeholder="Search logs..."
+              id="assetTypeSearchInput"
+              placeholder="Search asset types..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -152,19 +152,21 @@ function Log({ username, userRole }) {
               onChange={handleFilterChange}
               className="filter-dropdown">
               <option value="">Filter</option>
-              <option value="type">Description</option>
-              <option value="date">Time</option>
+              <option value="type">Username</option>
+              <option value="date">First Name</option>
+              <option value="author">Last Name</option>
+              <option value="title">Role</option>
             </select>
           </div>
 
           <div className="assets-list"></div>
         </section>
         <section>
-          <LogDisplay />
+          <AssetTypeDisplay />
         </section>
       </main>
     </div>
   );
 }
 
-export default Log;
+export default AssetType;

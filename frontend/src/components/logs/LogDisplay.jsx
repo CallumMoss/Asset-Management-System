@@ -12,31 +12,31 @@ import {
   Container,
 } from "@mui/material";
 
+export async function fetchLogs(setLogs) {
+  try {
+    const response = await axios.get("http://localhost:8080/logs/refresh");
+    console.log("API Response:", response.data);
+
+    if (Array.isArray(response.data)) {
+      const logsFromApi = response.data;
+      setLogs(logsFromApi);
+    } else {
+      console.error("Unexpected response structure:", response.data);
+      setLogs([]); // Fallback to an empty array
+    }
+  } catch (error) {
+    console.error("Failed to fetch logs:", error);
+    alert("An error occurred while fetching logs.");
+  }
+}
+
 function LogDisplay() {
   const [logs, setLogs] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchLogs();
+    fetchLogs(setLogs);
   }, []);
-
-  const fetchLogs = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/logs/refresh");
-      console.log("API Response:", response.data);
-
-      if (Array.isArray(response.data)) {
-        const usersFromApi = response.data;
-        setLogs(usersFromApi);
-      } else {
-        console.error("Unexpected response structure:", response.data);
-        setLogs([]); // Fallback to an empty array
-      }
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-      alert("An error occurred while fetching users.");
-    }
-  };
 
   return (
     <Container component={Paper}>

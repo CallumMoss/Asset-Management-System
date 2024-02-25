@@ -9,10 +9,16 @@ import {
   TableRow,
   Paper,
   Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 function DisplayAssets() {
   const [assets, setAssets] = useState([]);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     getAssets();
@@ -51,6 +57,15 @@ function DisplayAssets() {
     }
   };
 
+  const handleTitleClick = (asset) => {
+    setSelectedAsset(asset);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   return (
     <Container component={Paper}>
       <h1>Assets</h1>
@@ -70,7 +85,9 @@ function DisplayAssets() {
         <TableBody>
           {assets.map((asset) => (
             <TableRow key={asset.asset_id}>
-              <TableCell>{asset.title}</TableCell>
+              <TableCell onClick={() => handleTitleClick(asset)}>
+                {asset.title}
+              </TableCell>
               <TableCell>{asset.asset_description}</TableCell>
               <TableCell>{asset.link}</TableCell>
               <TableCell>
@@ -96,6 +113,54 @@ function DisplayAssets() {
           ))}
         </TableBody>
       </Table>
+
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
+        <DialogContent>
+          {/* Add detailed information here */}
+          {selectedAsset && (
+            <div>
+              <p>Description: {selectedAsset.asset_description}</p>
+              <p>Link: {selectedAsset.link}</p>
+              <p>Asset Type: {selectedAsset.asset_type?.type_name}</p>
+              <p>
+                Languages:{" "}
+                {selectedAsset.languages
+                  .map((language) => language.language_name)
+                  .join(", ")}
+              </p>
+              <p>
+                Authors:{" "}
+                {selectedAsset.authors
+                  .map((author) => author.user_name)
+                  .join(", ")}
+              </p>
+              <p>
+                Dependant Assets:{" "}
+                {selectedAsset.dependent
+                  .map((dependency) => dependency.title)
+                  .join(", ")}
+              </p>
+              <p>
+                Assets depending on current asset:{" "}
+                {selectedAsset.dependent
+                  .map((dependency) => dependency.title)
+                  .join(", ")}
+              </p>
+              <p>
+                Audit Trail:{" "}
+                <Button
+                  onClick={() => ViewLog({ asset_id: selectedAsset.asset_id })}>
+                  View
+                </Button>
+              </p>
+            </div>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
