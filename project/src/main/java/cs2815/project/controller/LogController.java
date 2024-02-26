@@ -30,4 +30,15 @@ public class LogController {
         return ResponseEntity.ok(compatibleLogs);
     }
 
+    @PostMapping("/userLog")
+    public ResponseEntity<List<Log>> userLog() {
+        List<Log> compatibleLogs = logService.getUserLog();
+        return ResponseEntity.ok(compatibleLogs);
+    }
+
+    @PostMapping("/assetLog")
+    public ResponseEntity<List<Log>> assetLog() {
+        List<Log> compatibleLogs = logService.getAssetLog();
+        return ResponseEntity.ok(compatibleLogs);
+    }
 }
