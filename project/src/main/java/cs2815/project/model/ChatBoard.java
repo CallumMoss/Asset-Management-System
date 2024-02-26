@@ -30,6 +30,8 @@ public class ChatBoard {
 
     private String textMessage;
 
+    // private User user;
+
     private Timestamp messageSent;
 
 }

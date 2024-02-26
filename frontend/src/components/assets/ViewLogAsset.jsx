@@ -1,5 +1,23 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+
 function ViewLog({ asset_id }) {
   const [logs, setLogs] = useState([]);
+  console.log({ asset_id });
 
   useEffect(() => {
     const fetchLogs = async (assetId) => {
@@ -34,3 +52,5 @@ function ViewLog({ asset_id }) {
     </div>
   );
 }
+
+export default ViewLog;

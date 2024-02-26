@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import ViewLog from "./ViewLogAsset";
 import {
   Button,
   Table,
@@ -60,6 +61,10 @@ function DisplayAssets() {
   const handleTitleClick = (asset) => {
     setSelectedAsset(asset);
     setOpenDialog(true);
+  };
+
+  const handleViewLog = (asset_id) => {
+    <ViewLog />;
   };
 
   const handleCloseDialog = () => {
@@ -135,6 +140,7 @@ function DisplayAssets() {
                   .map((author) => author.user_name)
                   .join(", ")}
               </p>
+              <br></br>
               <p>
                 Dependant Assets:{" "}
                 {selectedAsset.dependent
@@ -147,12 +153,20 @@ function DisplayAssets() {
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
+              <br></br>
               <p>
-                Audit Trail:{" "}
-                <Button
-                  onClick={() => ViewLog({ asset_id: selectedAsset.asset_id })}>
-                  View
-                </Button>
+                <p>
+                  Audit Trail:
+                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                    View
+                  </Button>
+                </p>
+                <p>
+                  Discussion Board:
+                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                    Open
+                  </Button>
+                </p>
               </p>
             </div>
           )}
