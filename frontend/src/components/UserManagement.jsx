@@ -6,6 +6,7 @@ import user from "./user.png";
 import change_password from "./change_password.png"; // Import change_password image
 import logout from "./logout.png";
 import UserManagementDisplay from "./UserManagementDisplay";
+import axios from "axios";
 
 // DropdownItem component
 function DropdownItem(props) {
@@ -100,12 +101,26 @@ function Navbar({ userRole }) {
 
 function UserManagement({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchedUsers, setSearchedUsers] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Searching for:", searchTerm);
+      let response = null;
+      if (searchTerm !== "") { // if user has searched something, show search results
+        response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/users/refresh");
+      }
+      setSearchedUsers(response.data);
+    } catch (error) {
+      console.error("Error searching for the user:", error);
+      alert("An error occurred while searching for the user");
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -162,7 +177,7 @@ function UserManagement({ username, userRole }) {
           <div className="assets-list"></div>
         </section>
         <section>
-          <UserManagementDisplay />
+          <UserManagementDisplay userList = {searchedUsers} />
         </section>
       </main>
     </div>

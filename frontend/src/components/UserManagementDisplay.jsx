@@ -12,13 +12,22 @@ import {
   Container,
 } from "@mui/material";
 
-function UserManagementDisplay() {
+function UserManagementDisplay({userList}) {
   const [users, setUsers] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  /*
+    Give UserManagementDisplay arguments, use this to setUsers
+    in useEffect, check if setUsers == null or empty, if it is, fetch
+    otherwise, use ours to display.
+  */
+    useEffect(() => {
+      if(userList.length == 0) {
+        fetchUsers();
+      }
+        setUsers(userList);
+        console.log("Set users to the searched users.");
+      
+    }, [userList]); // only called if userList is updated.
 
   const fetchUsers = async () => {
     try {
@@ -80,6 +89,8 @@ function UserManagementDisplay() {
           </TableRow>
         </TableHead>
         <TableBody>
+
+
           {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.user_name}</TableCell>

@@ -11,12 +11,17 @@ import {
   Container,
 } from "@mui/material";
 
-function DisplayAssets() {
+function DisplayAssets({assetList}) {
   const [assets, setAssets] = useState([]);
 
   useEffect(() => {
-    getAssets();
-  }, []);
+    if(assetList.length == 0) {
+      getAssets();
+    }
+      setAssets(assetList);
+      console.log("Set assets to the searched assets.");
+    
+  }, [assetList]); // only called if userList is updated.
 
   const getAssets = async () => {
     try {

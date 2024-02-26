@@ -12,19 +12,22 @@ import {
   Container,
 } from "@mui/material";
 
-function AssetTypeDisplay() {
+function AssetTypeDisplay({assetTypeList}) {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchAssetTypes();
-  }, []);
+    if(assetTypeList.length == 0) {
+      fetchAssetTypes();
+    }
+      setAssetTypes(assetTypeList);
+      console.log("Set assetTypes to the searched asset types.");
+    
+  }, [assetTypeList]); // only called if userList is updated.
 
   const fetchAssetTypes = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/asset_types/refresh"
-      );
+      const response = await axios.get("http://localhost:8080/asset_types/refresh");
       console.log("API Response:", response.data);
 
       if (Array.isArray(response.data)) {
@@ -35,8 +38,8 @@ function AssetTypeDisplay() {
         setAssetTypes([]); // Fallback to an empty array
       }
     } catch (error) {
-      console.error("Failed to fetch users:", error);
-      alert("An error occurred while fetching users.");
+      console.error("Failed to fetch asset types:", error);
+      alert("An error occurred while fetching asset types.");
     }
   };
 
@@ -72,9 +75,9 @@ function AssetTypeDisplay() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>id</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <Button onClick={() => handleCreate()}>Create</Button>
             <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
           </TableRow>
@@ -82,12 +85,10 @@ function AssetTypeDisplay() {
         <TableBody>
           {assetTypes.map((assetType) => (
             <TableRow key={assetType.type_id}>
-              <TableCell>{assetType.type_id}</TableCell>
               <TableCell>{assetType.type_name}</TableCell>
               <TableCell>{assetType.description}</TableCell>
-
               <TableCell>
-                <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
+                <Button onClick={() => handleEdit(assetType.type_name)}>Edit</Button>
                 <Button onClick={() => handleDelete(assetType.type_id)}>
                   Delete
                 </Button>
