@@ -8,4 +8,5 @@ public interface LogService {
 
     List<Log> refreshLogs();
 
+    List<Log> searchByDescription(String searchString);
 }

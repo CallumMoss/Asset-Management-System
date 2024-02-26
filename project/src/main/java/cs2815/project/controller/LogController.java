@@ -1,10 +1,9 @@
 package cs2815.project.controller;
 
+import cs2815.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cs2815.project.model.Log;
 import cs2815.project.service.LogService;
@@ -23,6 +22,12 @@ public class LogController {
         List<Log> logs = logService.refreshLogs();
         return ResponseEntity.ok(logs);
 
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<List<Log>> searchLog(@RequestBody String searchString) {
+        List<Log> compatibleLogs = logService.searchByDescription(searchString);
+        return ResponseEntity.ok(compatibleLogs);
     }
 
 }
