@@ -109,13 +109,14 @@ function Dashboard({ username, userRole }) {
 
           {/* Dropdown menu */}
           <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
-            <DropdownItem text={"Username: "}/>
-            <DropdownItem text={"Role: "}/>
-            <ul>
-              {/* Rendering DropdownItem components with different destinations */}
-              <DropdownItem text={"Change_Password"} destination="/change-password"/>
-              <DropdownItem text={"Logout"} destination="/login" />
-            </ul>
+              <DropdownItem text={"Username: " + username}/>
+              <DropdownItem text={"Role: " + userRole}/>
+              <ul>
+                {/* Rendering DropdownItem components with different destinations */}
+                <DropdownItem text={"Change_Password"} destination="/change-password"/>
+                <DropdownItem text={"Reset_Password"} destination="/reset-password"/>
+                <DropdownItem text={"Logout"} destination="/login" />
+              </ul>
           </div>
         </div>
       </div>

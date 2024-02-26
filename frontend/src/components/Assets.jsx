@@ -3,8 +3,6 @@ import "./style.css"; // Importing component-specific styles
 import "./Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
 import user from "./user.png";
-import change_password from "./change_password.png"; // Import change_password image
-import logout from "./logout.png";
 import DisplayAssets from "./DisplayAssets";
 
 // DropdownItem component
@@ -16,7 +14,6 @@ function DropdownItem(props) {
 
   return (
     <li className="dropdownItem" onClick={handleNavigation}>
-      <img src={props.img} alt="Dropdown Icon" />
       <a> {props.text}</a>
     </li>
   );
@@ -73,7 +70,7 @@ function Navbar({ userRole }) {
   );
 }
 
-function Assets({ username, userRole }) {
+function Assets({ username, userRole}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
@@ -157,10 +154,13 @@ function Assets({ username, userRole }) {
 
             {/* Dropdown menu */}
             <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
+              <DropdownItem text={"Username: " + username}/>
+              <DropdownItem text={"Role: " + userRole}/>
               <ul>
                 {/* Rendering DropdownItem components with different destinations */}
-                <DropdownItem img={change_password} text={"Change Password"} destination="/change-password"/>
-                <DropdownItem img={logout} text={"Logout"} destination="/login" />
+                <DropdownItem text={"Change_Password"} destination="/change-password"/>
+                <DropdownItem text={"Reset_Password"} destination="/reset-password"/>
+                <DropdownItem text={"Logout"} destination="/login" />
               </ul>
             </div>
           </div>
