@@ -1,16 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../style.css"; // Importing component-specific styles
-import "../Menustyle.css";
 import { useNavigate, Link } from "react-router-dom";
+import "../Menustyle.css";
+
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import AdbIcon from '@mui/icons-material/Adb';
 
 import user from "../user.png";
-import change_password from "../change_password.png"; // Import change_password image
+import change_password from "../change_password.png";
 import logout from "../logout.png";
 
-// DropdownItem component
 function DropdownItem(props) {
   const handleNavigation = () => {
-    // Redirect to the specified destination page
     window.location.href = props.destination;
   };
 
@@ -22,46 +33,155 @@ function DropdownItem(props) {
   );
 }
 
-// Modified Navbar component to accept userRole as a prop
-function Navbar({ userRole }) {
+function ResponsiveAppBar({ userRole }) {
   const navigate = useNavigate();
-  const [showAdminDropdown, setShowAdminDropdown] = useState(false);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const pages = userRole === "Admin" ? ["Dashboard", "Assets", "Admin"] : ["Dashboard", "Assets"];
+  const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
   const handleNavigate = (path) => {
     navigate(path);
+    setAnchorElNav(null); // Close menu upon navigation
   };
 
-  const toggleAdminDropdown = () => {
-    setShowAdminDropdown(!showAdminDropdown);
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   return (
-    <header>
-      <nav className="navbar">
-        <button onClick={() => handleNavigate("/dashboard")}>Dashboard</button>
-        <button onClick={() => handleNavigate("/assets")}>Assets</button>
+    <AppBar position="static">
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <Typography
+            variant="h6"
+            noWrap
+            component="a"
+            href="#"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            LOGO
+          </Typography>
 
-        {userRole === "Admin" && (
-          <div className="dropdown">
-            <button onClick={toggleAdminDropdown}>Admin</button>
-            {showAdminDropdown && (
-              <div className="dropdown-content">
-                <button
-                  onClick={() => handleNavigate("/admin/user-management")}>
-                  User Management
-                </button>
-                <button onClick={() => handleNavigate("/admin/asset-types")}>
-                  Asset Types
-                </button>
-                <button onClick={() => handleNavigate("/admin/logs")}>
-                  Logs
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </nav>
-    </header>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
+              sx={{
+                display: { xs: 'block', md: 'none' },
+              }}
+            >
+              {pages.map((page) => (
+                <MenuItem key={page} onClick={() => handleNavigate(`/${page.toLowerCase()}`)}>
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href="#"
+            sx={{
+              mr: 2,
+              display: { xs: 'flex', md: 'none' },
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+            }}
+          >
+            LOGO
+          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            {pages.map((page) => (
+              <Button
+                key={page}
+                onClick={() => handleNavigate(`/${page.toLowerCase()}`)}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            ))}
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <Tooltip title="Open settings">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="User" src={user} />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }
 
@@ -84,14 +204,13 @@ function Dashboard({ username, userRole }) {
 
   return (
     <div>
-      <Navbar userRole={userRole} />
+      <ResponsiveAppBar userRole={userRole} />
       <main>
         <div className="quick-access">
           <Link to="/create-asset">
             <button>Create New Asset</button>
           </Link>
-          <button
-            onClick={() => (window.location.href = "recent-updates.html")}>
+          <button onClick={() => (window.location.href = "recent-updates.html")}>
             View Recent Updates
           </button>
           <Link to="/search">
@@ -102,32 +221,27 @@ function Dashboard({ username, userRole }) {
 
       <div className="App">
         <div className="menu-container" ref={menuRef}>
-          {/* Menu trigger */}
           <div
             className="menu-trigger"
             onClick={() => {
               setOpen(!open);
-            }}>
-            <img src={user} alt="User Icon" />
+            }}
+          >
+            <img src={user} alt="User" />
+            <span>{username}</span>
           </div>
-
-          {/* Dropdown menu */}
-          <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
-            <ul>
-              {/* Rendering DropdownItem components with different destinations */}
+          {open && (
+            <ul className="dropdown">
               <DropdownItem
-                img={change_password}
-                text={"Change Password"}
                 destination="/change-password"
+                img={change_password}
+                text="Change Password"
               />
-              <DropdownItem img={logout} text={"Logout"} destination="/login" />
+              <DropdownItem destination="/logout" img={logout} text="Logout" />
             </ul>
-          </div>
+          )}
         </div>
       </div>
-
-      {/* Footer section */}
-      <footer>{/* Your footer content */}</footer>
     </div>
   );
 }
