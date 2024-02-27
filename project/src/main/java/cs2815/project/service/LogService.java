@@ -8,4 +8,6 @@ public interface LogService {
 
     List<Log> refreshLogs();
 
+    public List<Log> getLogsAssId(int id);
+
 }

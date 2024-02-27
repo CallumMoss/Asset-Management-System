@@ -19,4 +19,9 @@ public class LogServiceImpl implements LogService {
         return repo.findAllOrderedByUpdateTimestampDesc();
     }
 
+    @Override
+    public List<Log> getLogsAssId(int id) {
+        return repo.findLogsByAssetId(id);
+    }
+
 }

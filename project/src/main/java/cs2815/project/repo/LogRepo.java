@@ -26,4 +26,7 @@ public interface LogRepo extends JpaRepository<Log, Integer> {
     @Query("SELECT l FROM Log l ORDER BY l.updateTimestamp DESC")
     List<Log> findAllOrderedByUpdateTimestampDesc();
 
+    @Query("SELECT l FROM Log l WHERE l.asset.asset_id = :assetId ORDER BY l.updateTimestamp DESC")
+    List<Log> findLogsByAssetId(@Param("assetId") int assetId);
+
 }
