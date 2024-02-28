@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ViewLog from "./ViewLogAsset";
+
 import {
   Button,
   Table,
@@ -20,6 +20,7 @@ function DisplayAssets() {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
     getAssets();
@@ -64,7 +65,27 @@ function DisplayAssets() {
   };
 
   const handleViewLog = (asset_id) => {
-    <ViewLog />;
+    const fetchLogs = async (assetId) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/logs/refresh/${assetId}`
+        );
+        console.log("API Response:", response.data);
+
+        if (Array.isArray(response.data)) {
+          const logsFromApi = response.data;
+          setLogs(logsFromApi);
+        } else {
+          console.error("Unexpected response structure:", response.data);
+          setLogs([]); // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error("Failed to fetch logs:", error);
+        alert("An error occurred while fetching logs.");
+      }
+    };
+    fetchLogs(asset_id);
+    console.log({ logs });
   };
 
   const handleCloseDialog = () => {
