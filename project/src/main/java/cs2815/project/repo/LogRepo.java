@@ -29,6 +29,6 @@ public interface LogRepo extends JpaRepository<Log, Integer> {
     List<String> findAllDescriptions();
 
     @Query("SELECT l FROM Log l WHERE l.updateDescription = :Description")
-    Log getLogByDescription(@Param("Description") String Description);
+    List<Log> getLogByDescription(@Param("Description") String Description);
 
 }
