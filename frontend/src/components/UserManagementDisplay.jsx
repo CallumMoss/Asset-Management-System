@@ -47,17 +47,22 @@ function UserManagementDisplay() {
 
   const handleSave = async () => {
     try {
-      await axios.put('http://localhost:8080/users/${user_id}');
-      fetchUsers();
+      await axios.post('http://localhost:8080/users/edit}', editingUser);
+      const response = await axios.get("http://localhost:8080/users/refresh");
+      setUsers(response.data);
       setEditingUser(null);
     } catch (error) {
       console.error("Failed to update user:", error);
     }
-    }
+  };
   
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
+
+  const handleChange = (e, field) => {
+    setEditingUser({ ...editingUser, [field]: e.target.value });
+  }
 
   const handleDelete = async (user_id) => {
     if (typeof user_id !== "number") {
@@ -94,12 +99,41 @@ function UserManagementDisplay() {
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.id}>
-              <TableCell>{user.user_name}</TableCell>
-              <TableCell>{user.user_first_name}</TableCell>
-              <TableCell>{user.user_last_name}</TableCell>
-              <TableCell>{user.user_role}</TableCell>
               <TableCell>
-                <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
+                {editingUser === user ? (
+                  <input value={editingUser.user_name} onChange={(e) => handleChange(e, "user_name")} />
+                ) : (
+                  user.user_name
+                )}
+              </TableCell>
+              <TableCell>
+                {editingUser === user ? (
+                  <input value={editingUser.user_first_name} onChange={(e) => handleChange(e, "user_first_name")} />
+                ) : (
+                  user.user_first_name
+                )}
+              </TableCell>
+              <TableCell>
+                {editingUser === user ? (
+                  <input value={editingUser.user_last_name} onChange={(e) => handleChange(e, "user_last_name")} />
+                ) : (
+                  user.user_last_name
+                )}
+              </TableCell>
+              <TableCell>
+                {editingUser === user ? (
+                  <input value={editingUser.user_role} onChange={(e) => handleChange(e, "user_role")} />
+                ) : (
+                  user.user_role
+                )}
+              </TableCell>
+              <TableCell>
+                {editingUser === user ? (
+                  <Button onClick={handleSave}>Save</Button>
+                ) : (
+                  <Button onClick={() => handleEdit(user)}>Edit</Button>
+                )}
+                {/* <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>  */}
                 <Button onClick={() => handleDelete(user.id)}>Delete</Button>
               </TableCell>
             </TableRow>
