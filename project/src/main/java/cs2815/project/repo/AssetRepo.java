@@ -39,4 +39,9 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query(nativeQuery = true, value = "DELETE FROM dependency WHERE belonging_id = :belonging_id")
     void eraseUserIdFromDependency(@Param("belonging_id") int belonging_id);
 
+    @Query(nativeQuery = true, value = "SELECT asset_id FROM dependency WHERE belonging_id = :assetId")
+    List<Integer> isDependantOn(@Param("assetId") int assetId);
+
+    @Query(nativeQuery = true, value = "SELECT belonging_id FROM dependency WHERE asset_id = :assetId")
+    List<Integer> isParentOf(@Param("assetId") int assetId);
 }
