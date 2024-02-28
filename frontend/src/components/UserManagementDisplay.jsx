@@ -53,16 +53,19 @@ function UserManagementDisplay() {
       setEditingUser(null);
     } catch (error) {
       console.error("Failed to update user:", error);
+      alert("An error occurred while updating the user.");
     }
   };
-  
+
+  const handleChange = (e, field) => {
+    console.log("handleChange", editingUser);
+    setEditingUser({ ...editingUser, [field]: e.target.value });
+  }
+
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
 
-  const handleChange = (e, field) => {
-    setEditingUser({ ...editingUser, [field]: e.target.value });
-  }
 
   const handleDelete = async (user_id) => {
     if (typeof user_id !== "number") {
@@ -70,7 +73,6 @@ function UserManagementDisplay() {
       alert("Invalid user_id. Unable to delete user.");
       return;
     }
-
     try {
       await axios.delete(`http://localhost:8080/users/${user_id}`);
       fetchUsers();
@@ -133,7 +135,6 @@ function UserManagementDisplay() {
                 ) : (
                   <Button onClick={() => handleEdit(user)}>Edit</Button>
                 )}
-                {/* <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>  */}
                 <Button onClick={() => handleDelete(user.id)}>Delete</Button>
               </TableCell>
             </TableRow>
