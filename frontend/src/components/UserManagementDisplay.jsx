@@ -14,6 +14,7 @@ import {
 
 function UserManagementDisplay() {
   const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,10 +40,21 @@ function UserManagementDisplay() {
   };
 
   const handleEdit = (userName) => {
+    setEditingUser(userName)
     // Implement your edit functionality here
     console.log("Edit user:", userName);
   };
 
+  const handleSave = async () => {
+    try {
+      await axios.put('http://localhost:8080/users/${user_id}');
+      fetchUsers();
+      setEditingUser(null);
+    } catch (error) {
+      console.error("Failed to update user:", error);
+    }
+    }
+  
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
