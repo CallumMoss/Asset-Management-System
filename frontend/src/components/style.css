@@ -166,7 +166,7 @@ main {
 .navbar {
     align-items: center;
     display: flex;
-    justify-content: start;
+    justify-content: flex-start;
     padding: 0.5em 1em;
 }
 
