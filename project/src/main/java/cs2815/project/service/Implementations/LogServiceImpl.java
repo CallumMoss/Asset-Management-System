@@ -24,6 +24,11 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
+    public List<Log> getLogsAssId(int id) {
+        return repo.findLogsByAssetId(id);
+    }
+
+    @Override
     public List<Log> searchByDescription(String searchString) {
         List<String> descriptionList = repo.findAllDescriptions();
         List<Log> compatibleLogs = new ArrayList<>();

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./style.css"; // Importing component-specific styles
-import "./Menustyle.css";
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "./user.png";
-import change_password from "./change_password.png"; // Import change_password image
-import logout from "./logout.png";
-import UserManagementDisplay from "./UserManagementDisplay";
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import AssetTypeDisplay from "./AssetTypeDisplay";
 import axios from "axios";
 
 // DropdownItem component
@@ -99,9 +99,9 @@ function Navbar({ userRole }) {
   );
 }
 
-function UserManagement({ username, userRole }) {
+function AssetType({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchedUsers, setSearchedUsers] = useState([]);
+  const [searchedTypes, setSearchedTypes] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
@@ -112,14 +112,14 @@ function UserManagement({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
       } else { // if user hasnt searched, show regular results
-        response = await axios.get("http://localhost:8080/users/refresh");
+        response = await axios.get("http://localhost:8080/asset_types/refresh");
       }
-      setSearchedUsers(response.data);
+      setSearchedTypes(response.data);
     } catch (error) {
-      console.error("Error searching for the user:", error);
-      alert("An error occurred while searching for the user");
+      console.error("Error searching for the asset type:", error);
+      alert("An error occurred while searching for the asset types");
     }
   };
 
@@ -146,18 +146,18 @@ function UserManagement({ username, userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
-          <h1>User Search</h1>
+          <h1>Asset Type Search</h1>
           <div className="search-and-filter">
             <input
               type="text"
-              id="userSearchInput"
-              placeholder="Search users..."
+              id="assetTypeSearchInput"
+              placeholder="Search asset types..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-              id="userSearchBtn"
+              id="assetTypeSearchBtn"
               className="search-btn"
               onClick={handleSearch}>
               Search
@@ -177,11 +177,11 @@ function UserManagement({ username, userRole }) {
           <div className="assets-list"></div>
         </section>
         <section>
-          <UserManagementDisplay userList = {searchedUsers} />
+          <AssetTypeDisplay assetTypeList = {searchedTypes} />
         </section>
       </main>
     </div>
   );
 }
 
-export default UserManagement;
+export default AssetType;

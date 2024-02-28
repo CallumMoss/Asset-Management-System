@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./style.css"; // Importing component-specific styles
-import "./Menustyle.css";
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "./user.png";
-import change_password from "./change_password.png"; // Import change_password image
-import logout from "./logout.png";
-import DisplayAssets from "./DisplayAssets";
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import LogDisplay from "./LogDisplay";
 import axios from "axios";
 
 // DropdownItem component
@@ -48,7 +48,6 @@ function Navbar({ userRole }) {
       <nav className="navbar">
         <button onClick={() => handleNavigate("/dashboard")}>Dashboard</button>
         <button onClick={() => handleNavigate("/assets")}>Assets</button>
-
         {/* Render the Admin dropdown only if the userRole is 'Admin' */}
         {userRole === "Admin" && (
           <div className="dropdown">
@@ -100,12 +99,16 @@ function Navbar({ userRole }) {
   );
 }
 
-function Assets({ username, userRole }) {
+function Log({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchedAssets, setSearchedAssets] = useState([]);
+  const [searchedTypes, setSearchedTypes] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
+
+  const handleSearch = () => {
+    console.log("Searching for:", searchTerm);
+  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -113,14 +116,14 @@ function Assets({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/assets/searchByName", searchTerm); // searches by title
+        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
       } else { // if user hasnt searched, show regular results
-        response = await axios.get("http://localhost:8080/assets/refresh");
+        response = await axios.get("http://localhost:8080/asset_types/refresh");
       }
-      setSearchedAssets(response.data);
+      setSearchedTypes(response.data);
     } catch (error) {
-      console.error("Error searching for the asset:", error);
-      alert("An error occurred while searching for the assets");
+      console.error("Error searching for the asset type:", error);
+      alert("An error occurred while searching for the asset types");
     }
   };
 
@@ -147,18 +150,18 @@ function Assets({ username, userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
-          <h1>Asset Management</h1>
+          <h1>Log Search</h1>
           <div className="search-and-filter">
             <input
               type="text"
-              id="assetSearchInput"
-              placeholder="Search assets..."
+              id="logSearchInput"
+              placeholder="Search logs..."
               className="search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
-              id="assetSearchBtn"
+              id="userSearchBtn"
               className="search-btn"
               onClick={handleSearch}>
               Search
@@ -168,24 +171,19 @@ function Assets({ username, userRole }) {
               onChange={handleFilterChange}
               className="filter-dropdown">
               <option value="">Filter</option>
-              <option value="type">Type</option>
-              <option value="date">Date</option>
-              <option value="author">Author</option>
-              <option value="title">Title</option>
+              <option value="type">Description</option>
+              <option value="date">Time</option>
             </select>
           </div>
 
-          <Link to="/create-asset">
-            <button id="createAssetBtn">Create New Asset</button>
-          </Link>
           <div className="assets-list"></div>
         </section>
         <section>
-          <DisplayAssets assetList = {searchedAssets}/>
+          <LogDisplay />
         </section>
       </main>
     </div>
   );
 }
 
-export default Assets;
+export default Log;
