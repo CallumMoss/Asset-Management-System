@@ -78,7 +78,7 @@ public class AssetTypeImpl implements AssetTypeService {
             if (searchString.equals(type)) {
                 compatibleList.add(repo.findByTypeName(type));
             }
-            if (userService.isSimilar(searchString, type)) {
+            else if (userService.isSimilar(searchString, type)) {
                 compatibleList.add(repo.findByTypeName(type));
             }
         }

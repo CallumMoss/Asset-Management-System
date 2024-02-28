@@ -14,7 +14,7 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-
+import ViewLog from "./ViewLogAsset"
 function DisplayAssets({assetList}) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
@@ -27,7 +27,7 @@ function DisplayAssets({assetList}) {
       setAssets(assetList);
       console.log("Set assets to the searched assets.");
     
-  }, [assetList]); // only called if userList is updated.
+  }, [assetList]); // only called if assetList is updated.
 
   const getAssets = async () => {
     try {

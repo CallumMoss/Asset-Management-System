@@ -12,32 +12,39 @@ import {
   Container,
 } from "@mui/material";
 
-export async function fetchLogs(setLogs) {
-  try {
-    const response = await axios.get("http://localhost:8080/logs/refresh");
-    console.log("API Response:", response.data);
 
-    if (Array.isArray(response.data)) {
-      const logsFromApi = response.data;
-      setLogs(logsFromApi);
-    } else {
-      console.error("Unexpected response structure:", response.data);
-      setLogs([]); // Fallback to an empty array
-    }
-  } catch (error) {
-    console.error("Failed to fetch logs:", error);
-    alert("An error occurred while fetching logs.");
-  }
-}
 
-function LogDisplay() {
+function LogDisplay({logList}) {
   const [logs, setLogs] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchLogs(setLogs);
-  }, []);
+    if(logList.length == 0) {
+      fetchLogs();
+    }
+      setLogs(logList);
+      console.log("Set logs to the searched logs.");
+    
+  }, [logList]); // only called if logList is updated.
 
+  const fetchLogs = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/logs/refresh");
+      console.log("API Response:", response.data);
+  
+      if (Array.isArray(response.data)) {
+        const logsFromApi = response.data;
+        setLogs(logsFromApi);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        setLogs([]); // Fallback to an empty array
+      }
+    } catch (error) {
+      console.error("Failed to fetch logs:", error);
+      alert("An error occurred while fetching logs.");
+    }
+  }
+  
   return (
     <Container component={Paper}>
       <h1>Logs</h1>

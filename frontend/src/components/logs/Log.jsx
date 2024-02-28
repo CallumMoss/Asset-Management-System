@@ -101,14 +101,11 @@ function Navbar({ userRole }) {
 
 function Log({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchedTypes, setSearchedTypes] = useState([]);
+  const [searchedLogs, setSearchedLogs] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
-  };
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -116,14 +113,14 @@ function Log({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
+        response = await axios.post("http://localhost:8080/logs/search", searchTerm); // searches by description
       } else { // if user hasnt searched, show regular results
-        response = await axios.get("http://localhost:8080/asset_types/refresh");
+        response = await axios.get("http://localhost:8080/logs/refresh");
       }
-      setSearchedTypes(response.data);
+      setSearchedLogs(response.data);
     } catch (error) {
-      console.error("Error searching for the asset type:", error);
-      alert("An error occurred while searching for the asset types");
+      console.error("Error searching for the log:", error);
+      alert("An error occurred while searching for the logs");
     }
   };
 
@@ -179,7 +176,7 @@ function Log({ username, userRole }) {
           <div className="assets-list"></div>
         </section>
         <section>
-          <LogDisplay />
+          <LogDisplay logList = {searchedLogs}/>
         </section>
       </main>
     </div>

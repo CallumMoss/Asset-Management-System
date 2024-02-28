@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
         boolean authenticated = existingUser != null
                 && key.matches(user.getUser_password(), existingUser.getUser_password());
         if (authenticated) {
-            loginLog.setUpdateDescription(user.getUser_name() + " succesfully logged in!");
+            loginLog.setUpdateDescription(user.getUser_name() + " successfully logged in!");
 
         } else {
             loginLog.setUpdateDescription(user.getUser_name() + " failed to log in!");

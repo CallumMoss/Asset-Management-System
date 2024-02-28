@@ -103,7 +103,10 @@ public class AssetImpl implements AssetService {
         List<String> assetNames = repo.getAllNames();
         List<Asset> compatibleAssets = new ArrayList<>();
         for (String name : assetNames) {
-            if (userService.isSimilar(searchString, name)) {
+            if(searchString.equals(name)) {
+                compatibleAssets.add(repo.getAssetByName(name));
+            }
+            else if (userService.isSimilar(searchString, name)) {
                 compatibleAssets.add(repo.getAssetByName(name));
             }
         }

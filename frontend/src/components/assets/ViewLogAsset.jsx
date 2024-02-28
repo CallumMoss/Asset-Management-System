@@ -1,3 +1,6 @@
+import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+
 function ViewLog({ asset_id }) {
   const [logs, setLogs] = useState([]);
 
@@ -34,3 +37,4 @@ function ViewLog({ asset_id }) {
     </div>
   );
 }
+export default ViewLog;
