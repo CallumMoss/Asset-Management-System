@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
@@ -171,10 +173,25 @@ public class UserServiceImpl implements UserService {
         List<User> compatibleUsers = new ArrayList<>();
         for (String lastname : LNameList) {
             if (searchString.equals(lastname)) {
-                compatibleUsers.add(repo.getUserByUsername(lastname));
+                compatibleUsers.add(repo.getUserByLastname(lastname));
             }
             else if (isSimilar(searchString, lastname)) {
                 compatibleUsers.add(repo.getUserByLastname(lastname));
+            }
+        }
+        return compatibleUsers;
+    }
+
+    @Override
+    public List<User> searchByRole(@RequestBody String searchString) {
+        List<String> roleList = repo.findAllRoles();
+        List<User> compatibleUsers = new ArrayList<>();
+        for (String role : roleList) {
+            if (searchString.equals(role)) {
+                compatibleUsers.add(repo.getUserByRole(role));
+            }
+            else if (isSimilar(searchString, role)) {
+                compatibleUsers.add(repo.getUserByRole(role));
             }
         }
         return compatibleUsers;

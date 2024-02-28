@@ -112,7 +112,26 @@ function UserManagement({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+        console.log("Successfully searched by lastname");
+        console.log(filter);
+        switch(filter) {
+          case "": // if they havent searched by using a filter, search by username as default.
+            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+            break;
+          case "Username":
+            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+            break;
+          case "FirstName":
+            response = await axios.post("http://localhost:8080/users/search/firstname", searchTerm);
+            break;
+          case "LastName":
+            response = await axios.post("http://localhost:8080/users/search/lastname", searchTerm);
+            break;
+          case "Role":
+            response = await axios.post("http://localhost:8080/users/search/role", searchTerm);
+            break;
+        }
+
       } else { // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/users/refresh");
       }
@@ -167,10 +186,10 @@ function UserManagement({ username, userRole }) {
               onChange={handleFilterChange}
               className="filter-dropdown">
               <option value="">Filter</option>
-              <option value="type">Username</option>
-              <option value="date">First Name</option>
-              <option value="author">Last Name</option>
-              <option value="title">Role</option>
+              <option value="Username">Username</option>
+              <option value="FirstName">First Name</option>
+              <option value="LastName">Last Name</option>
+              <option value="Role">Role</option>
             </select>
           </div>
 

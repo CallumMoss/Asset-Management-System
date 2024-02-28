@@ -88,4 +88,10 @@ public class UserController {
         List<User> compatibleUsers = userService.searchByLastName(searchString);
         return ResponseEntity.ok(compatibleUsers);
     }
+
+    @PostMapping("/search/role")
+    public ResponseEntity<List<User>> searchByRole(@RequestBody String searchString) {
+        List<User> compatibleUsers = userService.searchByRole(searchString);
+        return ResponseEntity.ok(compatibleUsers);
+    }
 }

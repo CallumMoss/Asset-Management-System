@@ -25,6 +25,8 @@ public interface UserService {
     List<User> searchByFirstName(String searchString);
 
     List<User> searchByLastName(String searchString);
+    
+    List<User> searchByRole(String searchString);
 
     void resetPassword(int userId, String newPassword);
 

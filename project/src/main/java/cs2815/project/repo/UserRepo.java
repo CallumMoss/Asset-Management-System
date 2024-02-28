@@ -60,6 +60,9 @@ public interface UserRepo extends JpaRepository<User, Integer> {
         @Query("SELECT u.user_last_name FROM User u")
         List<String> findAllLNames();
 
+        @Query("SELECT u.user_role FROM User u")
+        List<String> findAllRoles();
+
         @Query("SELECT u FROM User u WHERE u.user_name = :Username")
         User getUserByUsername(@Param("Username") String Username);
 
@@ -68,4 +71,8 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
         @Query("SELECT u FROM User u WHERE u.user_last_name = :LastName")
         User getUserByLastname(@Param("LastName") String LastName);
+
+        @Query("SELECT u FROM User u WHERE u.user_role = :Role")
+        User getUserByRole(@Param("Role") String Role);
+        
 }
