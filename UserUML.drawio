@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-02-29T19:51:40.357Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0" etag="_HaWfkyeHCYjODdjGOXv" version="24.0.0" type="device">
+<mxfile host="app.diagrams.net" modified="2024-02-29T19:57:26.668Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0" etag="XfQ1PkLNXJNa_b1AEDsl" version="24.0.0" type="device">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1343" dy="1166" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="400" pageHeight="370" background="#FF3333" math="0" shadow="0">
+    <mxGraphModel dx="1741" dy="948" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="400" pageHeight="370" background="#FF3333" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -51,6 +51,32 @@
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="615" y="60" as="sourcePoint" />
             <mxPoint x="285" y="555" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="20S1RBUbA5caUG9tnBE8-20" value="Controller" style="swimlane;whiteSpace=wrap;html=1;startSize=30;rounded=1;swimlaneFillColor=#99FFFF;fillColor=#99FFFF;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="100" y="840" width="680" height="460" as="geometry">
+            <mxRectangle x="360" y="170" width="200" height="40" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="20S1RBUbA5caUG9tnBE8-21" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Controller&amp;gt;&lt;/i&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;AssetController&lt;/i&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&lt;br&gt;&lt;/i&gt;&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- userService: UserService&amp;nbsp;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + registerUser(user: User): void |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + login(user: User): ResponseEntity&amp;lt;LoginResponse&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + getUserRole(username: String): ResponseEntity&amp;lt;String&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + editUser(user: User): ResponseEntity&amp;lt;String&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + deleteUser(user_id: int): ResponseEntity&amp;lt;String&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + resetPassword(passReset: ResetPasswordRequest): ResponseEntity&amp;lt;String&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + refreshUser(): ResponseEntity&amp;lt;List&amp;lt;User&amp;gt;&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + searchByUsername(searchString: String): ResponseEntity&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + searchByFirstName(searchString: String): ResponseEntity&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; |&lt;/p&gt;&lt;p style=&quot;margin: 4px 0px 0px;&quot;&gt;| + searchByLastName(searchString: String): ResponseEntity&amp;lt;List&amp;lt;String&amp;gt;&amp;gt; |&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;" vertex="1" parent="20S1RBUbA5caUG9tnBE8-20">
+          <mxGeometry x="110" y="80" width="470" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="20S1RBUbA5caUG9tnBE8-23" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=1;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;movable=1;resizable=1;deletable=1;editable=1;locked=0;connectable=1;" vertex="1" parent="20S1RBUbA5caUG9tnBE8-20">
+          <mxGeometry x="110" y="160" width="470" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="20S1RBUbA5caUG9tnBE8-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;curved=1;strokeWidth=2;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="20S1RBUbA5caUG9tnBE8-20" target="20S1RBUbA5caUG9tnBE8-3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="760" y="780" />
+              <mxPoint x="1010" y="780" />
+              <mxPoint x="1010" y="400" />
+              <mxPoint x="1120" y="400" />
+              <mxPoint x="1120" y="410" />
+              <mxPoint x="1440" y="410" />
+              <mxPoint x="1440" y="310" />
+            </Array>
+            <mxPoint x="-60" y="810" as="sourcePoint" />
+            <mxPoint x="1440" y="450" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
