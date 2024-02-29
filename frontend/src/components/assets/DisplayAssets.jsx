@@ -15,6 +15,9 @@ import {
   DialogActions,
 } from "@mui/material";
 
+
+function ViewLog({assetId}){}
+
 function DisplayAssets() {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);

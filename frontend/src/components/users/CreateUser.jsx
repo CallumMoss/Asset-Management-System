@@ -1,36 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Chip from "@mui/material/Chip";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
-
-const defaultTheme = createTheme(); // can be used to create a default theme
 
 function CreateUser() {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
   const [user_name, setUserName] = useState("");
-  const [password, setPassword] = useState(""); // for now determined by admin, they input whatever they want.
-  const [role, setRole] = useState(""); // one of 3 roles
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    // this adds to the database
     e.preventDefault();
     try {
       await axios.post("http://localhost:8080/users/createuser", {
-        user_first_name: first_name, // name of variable in table : name of local variable
+        user_first_name: first_name,
         user_last_name: last_name,
         user_name: user_name,
         user_password: password,
@@ -45,95 +30,58 @@ function CreateUser() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="sm">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}>
-          <Typography component="h1" variant="h5">
-            Create User
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="first_name"
-              label="First Name" // what the user sees in the box
-              name="first_name"
-              autoFocus
-              value={first_name}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="last_name"
-              label="Last Name"
-              name="last_name"
-              value={last_name}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="user_name"
-              label="Username"
-              name="user_name"
-              value={user_name}
-              onChange={(e) => setUserName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="password"
-              label="Password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Typography component="h1" variant="h5">
+    <div className="container mx-auto px-4">
+      <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <div className="w-full px-3">
+            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="first_name">
+              First Name
+            </label>
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="first_name" type="text" placeholder="Jane" value={first_name} onChange={(e) => setFirstName(e.target.value)} required />
+          </div>
+          <div className="w-full px-3">
+            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="last_name">
+              Last Name
+            </label>
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="last_name" type="text" placeholder="Doe" value={last_name} onChange={(e) => setLastName(e.target.value)} required />
+          </div>
+        </div>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <div className="w-full px-3">
+            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="user_name">
+              Username
+            </label>
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="user_name" type="text" placeholder="Username" value={user_name} onChange={(e) => setUserName(e.target.value)} required />
+          </div>
+          <div className="w-full px-3">
+            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="password">
+              Password
+            </label>
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="password" type="password" placeholder="******************" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
+        </div>
+        <div className="flex flex-wrap -mx-3 mb-6">
+          <div className="w-full px-3">
+            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="role">
               User Role
-            </Typography>
-            <Select
-              id="role"
-              name="role"
-              required
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              sx={{ marginTop: 2 }} // Add some spacing between the text field and the dropdown
-            >
-              <MenuItem value="" disabled>
-                Select a role
-              </MenuItem>
-              <MenuItem value="Viewer">Viewer</MenuItem>
-              <MenuItem value="User">User</MenuItem>
-              <MenuItem value="Admin">Admin</MenuItem>
-            </Select>
-
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}>
+            </label>
+            <select className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white" id="role" value={role} onChange={(e) => setRole(e.target.value)} required>
+              <option value="" disabled>Select a role</option>
+              <option value="Viewer">Viewer</option>
+              <option value="User">User</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex flex-wrap -mx-3 mb-2">
+          <div className="w-full px-3 text-center">
+            <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="submit">
               Submit
-            </Button>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }
 

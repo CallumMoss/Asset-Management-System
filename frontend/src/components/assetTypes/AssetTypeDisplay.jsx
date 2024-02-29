@@ -87,7 +87,7 @@ function AssetTypeDisplay() {
               <TableCell>{assetType.description}</TableCell>
 
               <TableCell>
-                <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
+                <Button onClick={() => handleEdit(assetType.user_name)}>Edit</Button>
                 <Button onClick={() => handleDelete(assetType.type_id)}>
                   Delete
                 </Button>
