@@ -7,20 +7,24 @@ import Navbar from "../navigation/Navbar";
 import LogDisplay from "./LogDisplay";
 import axios from "axios";
 
-function Log({ userRole }) {
+function Log({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedLogs, setSearchedLogs] = useState([]);
   const [filter, setFilter] = useState("");
-
 
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/logs/search", searchTerm); // searches by description
-      } else { // if user hasnt searched, show regular results
+      if (searchTerm !== "") {
+        // if user has searched something, show search results
+        response = await axios.post(
+          "http://localhost:8080/logs/search",
+          searchTerm
+        ); // searches by description
+      } else {
+        // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/logs/refresh");
       }
       setSearchedLogs(response.data);
@@ -37,7 +41,7 @@ function Log({ userRole }) {
 
   return (
     <div>
-      <Navbar userRole={userRole} />
+      <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
           <h1 className="text-3xl font-bold mb-4">Log Management</h1>
@@ -55,15 +59,13 @@ function Log({ userRole }) {
                 <button
                   id="logSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  onClick={handleSearch}
-                >
+                  onClick={handleSearch}>
                   Search
                 </button>
                 <select
                   value={filter}
                   onChange={handleFilterChange}
-                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                >
+                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
                   <option value="">Filter</option>
                   <option value="description">Description</option>
                   <option value="time">Time</option>
@@ -75,7 +77,7 @@ function Log({ userRole }) {
           <div className="assets-list"></div>
         </section>
         <section>
-          <LogDisplay logList = {searchedLogs}/>
+          <LogDisplay logList={searchedLogs} />
         </section>
       </main>
     </div>

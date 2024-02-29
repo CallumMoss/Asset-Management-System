@@ -4,7 +4,7 @@ import Navbar from "../navigation/Navbar";
 import UserManagementDisplay from "./UserManagementDisplay";
 // Ensure you import Tailwind CSS styles if not already done
 
-function UserManagement({ userRole }) {
+function UserManagement({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [filter, setFilter] = useState("");
@@ -29,7 +29,7 @@ function UserManagement({ userRole }) {
 
   return (
     <div>
-      <Navbar userRole={userRole} />
+      <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
           <h1 className="text-3xl font-bold mb-4">User Management</h1>
@@ -47,15 +47,13 @@ function UserManagement({ userRole }) {
                 <button
                   id="userSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  onClick={handleSearch}
-                >
+                  onClick={handleSearch}>
                   Search
                 </button>
                 <select
                   value={filter}
                   onChange={handleFilterChange}
-                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                >
+                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
                   <option value="">Filter</option>
                   <option value="username">Username</option>
                   <option value="firstname">First Name</option>

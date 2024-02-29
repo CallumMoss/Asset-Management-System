@@ -12,6 +12,7 @@ import UserManagement from "./components/users/UserManagement";
 import AssetType from "./components/assetTypes/AssetType";
 import CreateAssetType from "./components/assetTypes/CreateAssetType";
 import Log from "./components//logs/Log";
+import ChangePassword from "./components/navigation/ChangePassword";
 import { Switch } from "@mui/material";
 
 // AppRoutes component
@@ -141,6 +142,15 @@ function AppRoutes() {
               <AdminElement currentUserType={currentUserType}>
                 <CreateUser />
               </AdminElement>
+            }
+          />
+
+          <Route
+            path="/changepassword" // when navigating to this page (when navigate is used in UserManagement)
+            element={
+              <ViewerElement currentUserType={currentUserType}>
+                <ChangePassword username={currentUserName} />
+              </ViewerElement>
             }
           />
 

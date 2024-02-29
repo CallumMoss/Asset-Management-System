@@ -8,7 +8,7 @@ import AssetTypeDisplay from "./AssetTypeDisplay";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
 
-function AssetType({ userRole }) {
+function AssetType({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedTypes, setSearchedTypes] = useState([]);
   const [filter, setFilter] = useState("");
@@ -18,9 +18,14 @@ function AssetType({ userRole }) {
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
-      } else { // if user hasnt searched, show regular results
+      if (searchTerm !== "") {
+        // if user has searched something, show search results
+        response = await axios.post(
+          "http://localhost:8080/asset_types/search",
+          searchTerm
+        ); // searches by title
+      } else {
+        // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/asset_types/refresh");
       }
       setSearchedTypes(response.data);
@@ -52,7 +57,7 @@ function AssetType({ userRole }) {
 
   return (
     <div>
-      <Navbar userRole={userRole} />
+      <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
           <h1 className="text-3xl font-bold mb-4">Asset Type Management</h1>
@@ -70,15 +75,13 @@ function AssetType({ userRole }) {
                 <button
                   id="assetTypeSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  onClick={handleSearch}
-                >
+                  onClick={handleSearch}>
                   Search
                 </button>
                 <select
                   value={filter}
                   onChange={handleFilterChange}
-                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                >
+                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
                   <option value="">Filter</option>
                   <option value="name">Name</option>
                   <option value="category">Category</option>

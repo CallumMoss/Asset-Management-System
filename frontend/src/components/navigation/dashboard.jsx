@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from './Navbar'; // Make sure the path is correct
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
+import Navbar from "./Navbar"; // Make sure the path is correct
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
 
 import "../style.css";
 import "../Menustyle.css";
@@ -23,22 +23,22 @@ function Dashboard({ username, userRole }) {
     labels: [],
     datasets: [
       {
-        label: '# of Asset Types',
+        label: "# of Asset Types",
         data: [],
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
           // Add more colors as needed
         ],
         borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
           // Add more border colors as needed
         ],
         borderWidth: 1,
@@ -49,9 +49,11 @@ function Dashboard({ username, userRole }) {
   useEffect(() => {
     const fetchAssetTypes = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/assets/refresh");
+        const response = await axios.get(
+          "http://localhost:8080/assets/refresh"
+        );
         const assets = response.data;
-        
+
         const typeCounts = assets.reduce((acc, asset) => {
           const { type_name } = asset.asset_type || {};
           if (type_name) {
@@ -79,9 +81,11 @@ function Dashboard({ username, userRole }) {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <Navbar userRole={userRole} />
+      <Navbar userRole={userRole} username={username} />
       <main className="flex-grow p-8">
-        <h1 className="text-2xl font-semibold mb-4">IT Asset Management Dashboard</h1>
+        <h1 className="text-2xl font-semibold mb-4">
+          IT Asset Management Dashboard
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <FeatureCard
             title="Total Assets"

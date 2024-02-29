@@ -4,7 +4,6 @@ import DisplayAssets from "./DisplayAssets";
 import Navbar from "../navigation/Navbar";
 import axios from "axios";
 
-
 function Assets({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedAssets, setSearchedAssets] = useState([]);
@@ -17,25 +16,42 @@ function Assets({ username, userRole }) {
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        switch(filter) {
+      if (searchTerm !== "") {
+        // if user has searched something, show search results
+        switch (filter) {
           case "": // if they havent searched by using a filter, search by username as default.
-            response = await axios.post("http://localhost:8080/assets/search/title", searchTerm);
+            response = await axios.post(
+              "http://localhost:8080/assets/search/title",
+              searchTerm
+            );
             break;
           case "title":
-            response = await axios.post("http://localhost:8080/users/search/title", searchTerm);
+            response = await axios.post(
+              "http://localhost:8080/users/search/title",
+              searchTerm
+            );
             break;
           case "type":
-            response = await axios.post("http://localhost:8080/users/search/type", searchTerm);
+            response = await axios.post(
+              "http://localhost:8080/users/search/type",
+              searchTerm
+            );
             break;
           case "date":
-            response = await axios.post("http://localhost:8080/users/search/date", searchTerm);
+            response = await axios.post(
+              "http://localhost:8080/users/search/date",
+              searchTerm
+            );
             break;
           case "author":
-            response = await axios.post("http://localhost:8080/users/search/author", searchTerm);
+            response = await axios.post(
+              "http://localhost:8080/users/search/author",
+              searchTerm
+            );
             break;
         }
-      } else { // if user hasnt searched, show regular results
+      } else {
+        // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/assets/refresh");
       }
       setSearchedAssets(response.data);
@@ -65,7 +81,7 @@ function Assets({ username, userRole }) {
 
   return (
     <div>
-      <Navbar userRole={userRole} />
+      <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
           <h1 className="text-3xl font-bold mb-4">Asset Management</h1>
@@ -83,16 +99,14 @@ function Assets({ username, userRole }) {
                 <button
                   id="assetSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  onClick={handleSearch}
-                >
+                  onClick={handleSearch}>
                   Search
                 </button>
                 <div>
                   <select
                     value={filter}
                     onChange={handleFilterChange}
-                    className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                  >
+                    className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
                     <option value="">Filter</option>
                     <option value="type">Type</option>
                     <option value="date">Date</option>
@@ -106,8 +120,7 @@ function Assets({ username, userRole }) {
             <Link to="/create-asset">
               <button
                 id="createAssetBtn"
-                className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
-              >
+                className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200">
                 Create New Asset
               </button>
             </Link>
@@ -118,7 +131,7 @@ function Assets({ username, userRole }) {
           </div>
         </section>
         <section>
-          <DisplayAssets assetList = {searchedAssets}/>
+          <DisplayAssets assetList={searchedAssets} />
         </section>
       </main>
     </div>
