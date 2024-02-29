@@ -11,6 +11,8 @@ import {
   Paper,
   Container,
   TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 function UserManagementDisplay() {
@@ -98,10 +100,19 @@ function UserManagementDisplay() {
           label="Last Name" variant="outlined" value={editingUser.user_last_name}
           onChange={(e) => setEditingUser({ ...editingUser, user_last_name: e.target.value })}
           />
-          <TextField
-          label="Role" variant="outlined" value={editingUser.user_role}
-          onChange={(e) => setEditingUser({ ...editingUser, user_role: e.target.value })}
-          />
+          <Select
+            id="role"
+            name="role"
+            value={editingUser.user_role}
+            onChange={(e => setEditingUser({ ...editingUser, user_role: e.target.value }))}
+          >
+            <MenuItem value="" disabled>
+              Select a role
+            </MenuItem>
+            <MenuItem value="Viewer">Viewer</MenuItem>
+            <MenuItem value="User">User</MenuItem>
+            <MenuItem value="Admin">Admin</MenuItem>
+          </Select>
           <Button onClick={handleSave}>Save</Button>
         </form>
       ) : (
