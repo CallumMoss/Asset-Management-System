@@ -50,14 +50,22 @@ function UserManagementDisplay() {
 
   const handleSave = async () => {
     try {
-      await axios.post('http://localhost:8080/users/edit}', editingUser);
+      console.log(user.id, editingUser.user_first_name, editingUser.user_last_name);
+      await axios.post('http://localhost:8080/users/edit', {
+        user_name: editingUser.user_name,
+        user_first_name: editingUser.user_first_name,
+        user_last_name: editingUser.user_last_name,
+        user_role: editingUser.user_role,
+      });
       const response = await axios.get("http://localhost:8080/users/refresh");
       setUsers(response.data);
       setEditingUser(null);
+      
     } catch (error) {
       console.error("Failed to update user:", error);
       alert("An error occurred while updating the user.");
     }
+    setIsEditing(false);
   };
 
   const handleChange = (e, field) => {
@@ -107,6 +115,7 @@ function UserManagementDisplay() {
           label="Role" variant="outlined" value={editingUser.user_role}
           onChange={(e) => setEditingUser({ ...editingUser, user_role: e.target.value })}
           />
+          <Button onClick={handleSave}>Save</Button>
         </form>
       ) : (
       <Table>
