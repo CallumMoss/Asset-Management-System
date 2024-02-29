@@ -11,9 +11,12 @@ import {
   Paper,
   Container,
 } from "@mui/material";
+import AlertDialog from "./AlertDialog";
 
 function UserManagementDisplay({userList}) {
   const [users, setUsers] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState(null);
   const navigate = useNavigate();
   /*
     Give UserManagementDisplay arguments, use this to setUsers
@@ -28,6 +31,25 @@ function UserManagementDisplay({userList}) {
         console.log("Set users to the searched users.");
       
     }, [userList]); // only called if userList is updated.
+
+  const handleDeleteConfirmation = async () => {
+    if (deleteUserId !== null) {
+      try {
+        await axios.delete(`http://localhost:8080/users/${deleteUserId}`);
+        setOpenDialog(false); // Close dialog
+        fetchUsers(); // Refresh user list
+        console.log("User deleted successfully:", deleteUserId);
+      } catch (error) {
+        console.error("Axios Error:", error);
+        alert("An error occurred while deleting the user.");
+      }
+    }
+  };
+
+  const promptDeleteConfirmation = (userId) => {
+    setDeleteUserId(userId);
+    setOpenDialog(true);
+  };
 
   const fetchUsers = async () => {
     try {
@@ -90,6 +112,13 @@ function UserManagementDisplay({userList}) {
         </TableHead>
         <TableBody>
 
+          <AlertDialog
+              open={openDialog}
+              handleClose={() => setOpenDialog(false)}
+              title="Confirm Delete"
+              message="Are you sure you want to delete this user?"
+              onConfirm={handleDeleteConfirmation}
+          />
 
           {users.map((user) => (
             <TableRow key={user.id}>
@@ -99,13 +128,14 @@ function UserManagementDisplay({userList}) {
               <TableCell>{user.user_role}</TableCell>
               <TableCell>
                 <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
-                <Button onClick={() => handleDelete(user.id)}>Delete</Button>
+                <Button onClick={() => promptDeleteConfirmation(user.id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </Container>
+
   );
 }
 
