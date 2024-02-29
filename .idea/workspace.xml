@@ -4,15 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="711e790e-4af8-4948-98b2-e200bdc02f86" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/TeamProject02.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="711e790e-4af8-4948-98b2-e200bdc02f86" name="Changes" comment="Added a popup which is prompted when the user tries to delete a user or asset type">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/assetTypes/AssetTypeDisplay.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/assetTypes/AssetTypeDisplay.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/users/UserManagementDisplay.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/users/UserManagementDisplay.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/assets/DisplayAssets.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/assets/DisplayAssets.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +44,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ProjectApplication.executor": "Run",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/admin/Desktop/TeamProject02/frontend/src/components/assetTypes",
+    "last_opened_file_path": "/Users/admin/Desktop/TeamProject02/frontend/src/components/assets",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -64,6 +58,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/components/assets" />
       <recent name="$PROJECT_DIR$/frontend/src/components/assetTypes" />
     </key>
   </component>
@@ -92,11 +87,32 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1709223853872</updated>
-      <workItem from="1709223855027" duration="3082000" />
+      <workItem from="1709223855027" duration="4548000" />
     </task>
+    <task id="LOCAL-00001" summary="Added a popup which is prompted when the user tries to delete a user or asset type">
+      <option name="closed" value="true" />
+      <created>1709228219985</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1709228219985</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added a popup which is prompted when the user tries to delete a user or asset type">
+      <option name="closed" value="true" />
+      <created>1709228697120</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1709228697120</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added a popup which is prompted when the user tries to delete a user or asset type" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a popup which is prompted when the user tries to delete a user or asset type" />
   </component>
 </project>

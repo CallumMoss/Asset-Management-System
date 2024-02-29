@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
 import {
   Button,
   Table,
@@ -15,12 +14,16 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import AlertDialog from './AlertDialog';
+
 import ViewLog from "./ViewLogAsset"
 function DisplayAssets({assetList}) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [logs, setLogs] = useState([]);
+  const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const [deleteAssetId, setDeleteAssetId] = useState(null);
 
   useEffect(() => {
     if(assetList.length == 0) {
@@ -53,14 +56,22 @@ function DisplayAssets({assetList}) {
     // Implement your edit functionality here
   };
 
-  const handleDelete = async (assetId) => {
-    try {
-      await axios.delete(`http://localhost:8080/assets/${assetId}`);
-      getAssets();
-      console.log("Asset deleted successfully:", assetId);
-    } catch (error) {
-      console.error("Axios Error:", error);
-      alert("An error occurred while deleting the asset.");
+  const promptDelete = (assetId) => {
+    setDeleteAssetId(assetId);
+    setOpenAlertDialog(true);
+  };
+
+  const confirmDelete = async () => {
+    if (deleteAssetId !== null) {
+      try {
+        await axios.delete(`http://localhost:8080/assets/${deleteAssetId}`);
+        setOpenAlertDialog(false);
+        getAssets();
+        console.log("Asset deleted successfully:", deleteAssetId);
+      } catch (error) {
+        console.error("Axios Error:", error);
+        alert("An error occurred while deleting the asset.");
+      }
     }
   };
 
@@ -114,6 +125,15 @@ function DisplayAssets({assetList}) {
           </TableRow>
         </TableHead>
         <TableBody>
+
+          <AlertDialog
+              open={openAlertDialog}
+              handleClose={() => setOpenAlertDialog(false)}
+              title="Confirm Delete"
+              message="Are you sure you want to delete this asset?"
+              onConfirm={confirmDelete}
+          />
+
           {assets.map((asset) => (
             <TableRow key={asset.asset_id}>
               <TableCell onClick={() => handleTitleClick(asset)}>
@@ -136,9 +156,7 @@ function DisplayAssets({assetList}) {
               </TableCell>
               <TableCell>
                 <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
-                <Button onClick={() => handleDelete(asset.asset_id)}>
-                  Delete
-                </Button>
+                <Button onClick={() => promptDelete(asset.asset_id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
