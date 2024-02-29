@@ -50,18 +50,11 @@ function UserManagementDisplay() {
 
   const handleSave = async () => {
     try {
-      console.log(editingUser.user_first_name, editingUser.user_last_name);
-      await axios.post('http://localhost:8080/users/edit', {
-        user_name: editingUser.user_name,
-        user_first_name: editingUser.user_first_name,
-        user_last_name: editingUser.user_last_name,
-        user_role: editingUser.user_role,
-      });
-      const response = await axios.get("http://localhost:8080/users/refresh");
-      setUsers(response.data);
+      await axios.post('http://localhost:8080/users/edit', editingUser);
+      fetchUsers();
       setEditingUser(null);
     } catch (error) {
-      console.error("Failed to update user:", error);
+      console.error(error.response.data);
       alert("An error occurred while updating the user.");
     }
     setIsEditing(false);
