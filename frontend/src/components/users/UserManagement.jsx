@@ -1,14 +1,53 @@
 import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../navigation/Navbar"; // Make sure the path is correct
-import UserManagementDisplay from "./UserManagementDisplay"; // Make sure the path is correct
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
+import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import UserManagementDisplay from "./UserManagementDisplay";
+import axios from "axios";
 
 function UserManagement({ userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchedUsers, setSearchedUsers] = useState([]);
   const [filter, setFilter] = useState("");
   const menuRef = useRef();
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Searching for:", searchTerm);
+      let response = null;
+      if (searchTerm !== "") { // if user has searched something, show search results
+        switch(filter) {
+          case "": // if they havent searched by using a filter, search by username as default.
+            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+            break;
+          case "username":
+            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+            break;
+          case "firstname":
+            response = await axios.post("http://localhost:8080/users/search/firstname", searchTerm);
+            break;
+          case "lastname":
+            response = await axios.post("http://localhost:8080/users/search/lastname", searchTerm);
+            break;
+          case "role":
+            response = await axios.post("http://localhost:8080/users/search/role", searchTerm);
+            break;
+        }
+
+        // "http://localhost:8080/users/search/", filter, searchTerm)
+
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/users/refresh");
+      }
+      setSearchedUsers(response.data);
+    } catch (error) {
+      console.error("Error searching for the user:", error);
+      alert("An error occurred while searching for the user");
+    }
   };
 
   const handleFilterChange = (e) => {

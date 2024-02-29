@@ -8,6 +8,9 @@ public interface LogService {
 
     List<Log> refreshLogs();
 
-    public List<Log> getLogsAssId(int id);
+    List<Log> searchByDescription(String searchString);
 
+    List<Log> getUserLog();
+
+    List<Log> getAssetLog();
 }

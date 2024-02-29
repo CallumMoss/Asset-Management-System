@@ -1,13 +1,34 @@
-import React, { useState } from "react";
-import Navbar from "../navigation/Navbar"; // Import the shared Navbar component
-import LogDisplay from "./LogDisplay"; // Make sure the path is correct
+import React, { useState, useEffect, useRef } from "react";
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
+import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import LogDisplay from "./LogDisplay";
+import axios from "axios";
 
 function Log({ userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchedLogs, setSearchedLogs] = useState([]);
   const [filter, setFilter] = useState("");
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Searching for:", searchTerm);
+      let response = null;
+      if (searchTerm !== "") { // if user has searched something, show search results
+        response = await axios.post("http://localhost:8080/logs/search", searchTerm); // searches by description
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/logs/refresh");
+      }
+      setSearchedLogs(response.data);
+    } catch (error) {
+      console.error("Error searching for the log:", error);
+      alert("An error occurred while searching for the logs");
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -52,7 +73,10 @@ function Log({ userRole }) {
             </div>
           </div>
 
-          <LogDisplay />
+          <div className="assets-list"></div>
+        </section>
+        <section>
+          <LogDisplay logList = {searchedLogs}/>
         </section>
       </main>
     </div>

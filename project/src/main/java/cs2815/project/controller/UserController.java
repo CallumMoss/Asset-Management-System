@@ -72,20 +72,26 @@ public class UserController {
     }
 
     @PostMapping("/search/username")
-    public ResponseEntity<List<String>> searchByUsername(@RequestBody String searchString) {
-        List<String> compatibleUsernames = userService.searchByUsername(searchString);
-        return ResponseEntity.ok(compatibleUsernames);
+    public ResponseEntity<List<User>> searchByUsername(@RequestBody String searchString) {
+        List<User> compatibleUsers = userService.searchByUsername(searchString);
+        return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/firstname")
-    public ResponseEntity<List<String>> searchByFirstName(@RequestBody String searchString) {
-        List<String> compatibleUsernames = userService.searchByFirstName(searchString);
-        return ResponseEntity.ok(compatibleUsernames);
+    public ResponseEntity<List<User>> searchByFirstName(@RequestBody String searchString) {
+        List<User> compatibleUsers = userService.searchByFirstName(searchString);
+        return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/lastname")
-    public ResponseEntity<List<String>> searchByLastName(@RequestBody String searchString) {
-        List<String> compatibleUsernames = userService.searchByLastName(searchString);
-        return ResponseEntity.ok(compatibleUsernames);
+    public ResponseEntity<List<User>> searchByLastName(@RequestBody String searchString) {
+        List<User> compatibleUsers = userService.searchByLastName(searchString);
+        return ResponseEntity.ok(compatibleUsers);
+    }
+
+    @PostMapping("/search/role")
+    public ResponseEntity<List<User>> searchByRole(@RequestBody String searchString) {
+        List<User> compatibleUsers = userService.searchByRole(searchString);
+        return ResponseEntity.ok(compatibleUsers);
     }
 }

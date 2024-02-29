@@ -5,8 +5,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
@@ -72,7 +74,7 @@ public class UserServiceImpl implements UserService {
         boolean authenticated = existingUser != null
                 && key.matches(user.getUser_password(), existingUser.getUser_password());
         if (authenticated) {
-            loginLog.setUpdateDescription(user.getUser_name() + " succesfully logged in!");
+            loginLog.setUpdateDescription(user.getUser_name() + " successfully logged in!");
 
         } else {
             loginLog.setUpdateDescription(user.getUser_name() + " failed to log in!");
@@ -136,39 +138,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<String> searchByUsername(String searchString) {
+    public List<User> searchByUsername(String searchString) {
         List<String> usernameList = repo.findAllUserNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<User> compatibleUsers = new ArrayList<>();
         for (String username : usernameList) {
-            if (isSimilar(searchString, username)) {
-                compatibleList.add(username);
+            if (searchString.equals(username)) {
+                compatibleUsers.add(repo.getUserByUsername(username));
+            }
+            else if (isSimilar(searchString, username)) {
+                compatibleUsers.add(repo.getUserByUsername(username));
             }
         }
-        return compatibleList;
+        return compatibleUsers;
     }
 
     @Override
-    public List<String> searchByFirstName(String searchString) {
+    public List<User> searchByFirstName(String searchString) {
         List<String> FNameList = repo.findAllFNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<User> compatibleUsers = new ArrayList<>();
         for (String firstname : FNameList) {
-            if (isSimilar(searchString, firstname)) {
-                compatibleList.add(firstname);
+            if (searchString.equals(firstname) || isSimilar(searchString, firstname)) {
+                compatibleUsers.add(repo.getUserByName(firstname));
             }
         }
-        return compatibleList;
+        return compatibleUsers;
     }
 
     @Override
-    public List<String> searchByLastName(String searchString) {
+    public List<User> searchByLastName(String searchString) {
         List<String> LNameList = repo.findAllLNames();
-        List<String> compatibleList = new ArrayList<>();
+        List<User> compatibleUsers = new ArrayList<>();
         for (String lastname : LNameList) {
-            if (isSimilar(searchString, lastname)) {
-                compatibleList.add(lastname);
+            if (searchString.equals(lastname) || isSimilar(searchString, lastname)) {
+                compatibleUsers.add(repo.getUserByLastname(lastname));
             }
         }
-        return compatibleList;
+        return compatibleUsers;
+    }
+
+    @Override
+    public List<User> searchByRole(@RequestBody String searchString) {
+        List<String> roleList = repo.findAllRoles();
+        List<User> compatibleUsers = new ArrayList<>();
+        for (String role : roleList) {
+            if (searchString.equals(role) || isSimilar(searchString, role)) {
+                compatibleUsers.add(repo.getUserByRole(role));
+            }
+        }
+        return compatibleUsers;
     }
 
     public boolean isSimilar(String searchString, String compareString) {

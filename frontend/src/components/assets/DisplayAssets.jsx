@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
 import {
   Button,
   Table,
@@ -14,18 +15,21 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-
-
-function ViewLog({assetId}){}
-
-function DisplayAssets() {
+import ViewLog from "./ViewLogAsset"
+function DisplayAssets({assetList}) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    getAssets();
-  }, []);
+    if(assetList.length == 0) {
+      getAssets();
+    }
+      setAssets(assetList);
+      console.log("Set assets to the searched assets.");
+    
+  }, [assetList]); // only called if assetList is updated.
 
   const getAssets = async () => {
     try {
@@ -63,6 +67,30 @@ function DisplayAssets() {
   const handleTitleClick = (asset) => {
     setSelectedAsset(asset);
     setOpenDialog(true);
+  };
+
+  const handleViewLog = (asset_id) => {
+    const fetchLogs = async (assetId) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/logs/refresh/${assetId}`
+        );
+        console.log("API Response:", response.data);
+
+        if (Array.isArray(response.data)) {
+          const logsFromApi = response.data;
+          setLogs(logsFromApi);
+        } else {
+          console.error("Unexpected response structure:", response.data);
+          setLogs([]); // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error("Failed to fetch logs:", error);
+        alert("An error occurred while fetching logs.");
+      }
+    };
+    fetchLogs(asset_id);
+    console.log({ logs });
   };
 
   const handleCloseDialog = () => {
@@ -138,6 +166,7 @@ function DisplayAssets() {
                   .map((author) => author.user_name)
                   .join(", ")}
               </p>
+              <br></br>
               <p>
                 Dependant Assets:{" "}
                 {selectedAsset.dependent
@@ -150,12 +179,20 @@ function DisplayAssets() {
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
+              <br></br>
               <p>
-                Audit Trail:{" "}
-                <Button
-                  onClick={() => ViewLog({ asset_id: selectedAsset.asset_id })}>
-                  View
-                </Button>
+                <p>
+                  Audit Trail:
+                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                    View
+                  </Button>
+                </p>
+                <p>
+                  Discussion Board:
+                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                    Open
+                  </Button>
+                </p>
               </p>
             </div>
           )}

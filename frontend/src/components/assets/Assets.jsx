@@ -5,12 +5,42 @@ import Navbar from "../navigation/Navbar";
 
 function Assets({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchedAssets, setSearchedAssets] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Searching for:", searchTerm);
+      let response = null;
+      if (searchTerm !== "") { // if user has searched something, show search results
+        switch(filter) {
+          case "": // if they havent searched by using a filter, search by username as default.
+            response = await axios.post("http://localhost:8080/assets/search/title", searchTerm);
+            break;
+          case "title":
+            response = await axios.post("http://localhost:8080/users/search/title", searchTerm);
+            break;
+          case "type":
+            response = await axios.post("http://localhost:8080/users/search/type", searchTerm);
+            break;
+          case "date":
+            response = await axios.post("http://localhost:8080/users/search/date", searchTerm);
+            break;
+          case "author":
+            response = await axios.post("http://localhost:8080/users/search/author", searchTerm);
+            break;
+        }
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/assets/refresh");
+      }
+      setSearchedAssets(response.data);
+    } catch (error) {
+      console.error("Error searching for the asset:", error);
+      alert("An error occurred while searching for the assets");
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -86,7 +116,7 @@ function Assets({ username, userRole }) {
           </div>
         </section>
         <section>
-          <DisplayAssets />
+          <DisplayAssets assetList = {searchedAssets}/>
         </section>
       </main>
     </div>

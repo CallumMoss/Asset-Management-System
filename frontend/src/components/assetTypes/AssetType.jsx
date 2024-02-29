@@ -1,13 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
+<<<<<<< HEAD
 import Navbar from "../navigation/Navbar"; // Import the shared Navbar component
 import AssetTypeDisplay from "./AssetTypeDisplay"; // Make sure the path is correct
+=======
+import "../style.css"; // Importing component-specific styles
+import "../Menustyle.css";
+import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
+import user from "../user.png";
+import change_password from "../change_password.png"; // Import change_password image
+import logout from "../logout.png";
+import AssetTypeDisplay from "./AssetTypeDisplay";
+import axios from "axios";
+>>>>>>> testing
 
 function AssetType({ userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchedTypes, setSearchedTypes] = useState([]);
   const [filter, setFilter] = useState("");
 
-  const handleSearch = () => {
-    console.log("Searching for:", searchTerm);
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    try {
+      console.log("Searching for:", searchTerm);
+      let response = null;
+      if (searchTerm !== "") { // if user has searched something, show search results
+        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/asset_types/refresh");
+      }
+      setSearchedTypes(response.data);
+    } catch (error) {
+      console.error("Error searching for the asset type:", error);
+      alert("An error occurred while searching for the asset types");
+    }
   };
 
   const handleFilterChange = (e) => {
@@ -35,6 +60,7 @@ function AssetType({ userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
+<<<<<<< HEAD
           <h1 className="text-3xl font-bold mb-4">Asset Type Management</h1>
           <div className="flex flex-col items-center space-y-4 mb-4">
             <div className="flex items-center space-x-4 w-full max-w-lg">
@@ -69,6 +95,40 @@ function AssetType({ userRole }) {
           </div>
 
           <AssetTypeDisplay />
+=======
+          <h1>Asset Type Search</h1>
+          <div className="search-and-filter">
+            <input
+              type="text"
+              id="assetTypeSearchInput"
+              placeholder="Search asset types..."
+              className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              id="assetTypeSearchBtn"
+              className="search-btn"
+              onClick={handleSearch}>
+              Search
+            </button>
+            <select
+              value={filter}
+              onChange={handleFilterChange}
+              className="filter-dropdown">
+              <option value="">Filter</option>
+              <option value="type">Username</option>
+              <option value="date">First Name</option>
+              <option value="author">Last Name</option>
+              <option value="title">Role</option>
+            </select>
+          </div>
+
+          <div className="assets-list"></div>
+        </section>
+        <section>
+          <AssetTypeDisplay assetTypeList = {searchedTypes} />
+>>>>>>> testing
         </section>
       </main>
     </div>

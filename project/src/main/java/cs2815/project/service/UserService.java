@@ -20,11 +20,13 @@ public interface UserService {
 
     List<User> refreshUser();
 
-    List<String> searchByUsername(String searchString);
+    List<User> searchByUsername(String searchString);
 
-    List<String> searchByFirstName(String searchString);
+    List<User> searchByFirstName(String searchString);
 
-    List<String> searchByLastName(String searchString);
+    List<User> searchByLastName(String searchString);
+    
+    List<User> searchByRole(String searchString);
 
     void resetPassword(int userId, String newPassword);
 
