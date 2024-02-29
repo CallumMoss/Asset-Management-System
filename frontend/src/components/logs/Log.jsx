@@ -3,8 +3,7 @@ import "../style.css"; // Importing component-specific styles
 import "../Menustyle.css";
 import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
 import user from "../user.png";
-import change_password from "../change_password.png"; // Import change_password image
-import logout from "../logout.png";
+import Navbar from "../navigation/Navbar";
 import LogDisplay from "./LogDisplay";
 import axios from "axios";
 
