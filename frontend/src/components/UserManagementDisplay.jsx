@@ -60,11 +60,6 @@ function UserManagementDisplay() {
     setIsEditing(false);
   };
 
-  const handleChange = (e, field) => {
-    console.log("handleChange", editingUser);
-    setEditingUser({ ...editingUser, [field]: e.target.value });
-  }
-
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
