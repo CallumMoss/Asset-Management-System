@@ -5,6 +5,7 @@ VALUES
     ('Project', 'A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.'),
     ('Java File', 'A file that contains java code for a given project.');
 
+
 INSERT INTO languages(language_name)
 VALUES
     ('Java'), ('Python'), ('C'), ('C++'), ('JavaScript'), ('C#'), ('PHP'), ('Swift'), ('Objective-C'), ('TypeScript'),

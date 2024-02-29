@@ -43,8 +43,8 @@ public class AssetController {
     }
 
     @PostMapping("/search/language")
-    public ResponseEntity<List<String>> searchByLanguage(@RequestBody String searchString) {
-        List<String> compatibleLanguages = assetService.searchByLanguage(searchString);
+    public ResponseEntity<List<String>> searchLanguage(@RequestBody String searchString) {
+        List<String> compatibleLanguages = assetService.searchLanguage(searchString);
         return ResponseEntity.ok(compatibleLanguages);
     }
 
@@ -64,6 +64,22 @@ public class AssetController {
     public ResponseEntity<String> deleteAsset(@PathVariable int asset_id) {
         assetService.deleteAsset(asset_id);
         return ResponseEntity.ok("Asset deleted successfully");
+    }
+
+    //Finds what Assets are dependant on the given AssetID asset
+    //Way of testing if process works in postman (it does ;) )
+    @PostMapping("/isDependantOn")
+    public ResponseEntity<List<Integer>> isDependantOn(@RequestBody int assetId) {
+        List<Integer> dependantOn = assetService.isDependantOn(assetId);
+        return ResponseEntity.ok(dependantOn);
+    }
+
+    //Finds the Assets that the given AssetID depends On
+    //Way of testing if process works in postman (it does ;) )
+    @PostMapping("/isParentOf")
+    public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
+        List<Integer> dependencies = assetService.isParentOf(assetId);
+        return ResponseEntity.ok(dependencies);
     }
 
 }
