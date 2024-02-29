@@ -1,111 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../style.css"; // Importing component-specific styles
-import "../Menustyle.css";
-import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "../user.png";
-import change_password from "../change_password.png"; // Import change_password image
-import logout from "../logout.png";
+import { Link } from "react-router-dom";
 import DisplayAssets from "./DisplayAssets";
+import Navbar from "../navigation/Navbar";
 import axios from "axios";
 
-// DropdownItem component
-function DropdownItem(props) {
-  const handleNavigation = () => {
-    // Redirect to the specified destination page
-    window.location.href = props.destination;
-  };
-
-  return (
-    <li className="dropdownItem" onClick={handleNavigation}>
-      <img src={props.img} alt="Dropdown Icon" />
-      <a> {props.text}</a>
-    </li>
-  );
-}
-
-// Navbar component modified to accept userRole as a prop
-function Navbar({ userRole }) {
-  const navigate = useNavigate();
-  const [showAdminDropdown, setShowAdminDropdown] = useState(false);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [open, setOpen] = useState(false);
-  const menuRef = useRef(); // Define menuRef using the useRef hook
-
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
-
-  const toggleAdminDropdown = () => {
-    setShowAdminDropdown(!showAdminDropdown);
-  };
-
-  const toggleUserDropdown = () => {
-    setShowUserDropdown(!showUserDropdown);
-  };
-
-  return (
-    <header>
-      <nav className="navbar">
-        <button onClick={() => handleNavigate("/dashboard")}>Dashboard</button>
-        <button onClick={() => handleNavigate("/assets")}>Assets</button>
-
-        {/* Render the Admin dropdown only if the userRole is 'Admin' */}
-        {userRole === "Admin" && (
-          <div className="dropdown">
-            <button onClick={toggleAdminDropdown}>Admin</button>
-            {showAdminDropdown && (
-              <div className="dropdown-content">
-                <button
-                  onClick={() => handleNavigate("/admin/user-management")}>
-                  User Management
-                </button>
-                <button onClick={() => handleNavigate("/admin/asset-types")}>
-                  Asset Types
-                </button>
-                <button onClick={() => handleNavigate("/admin/logs")}>
-                  Logs
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Render the User dropdown */}
-        <div className="menu-container" ref={menuRef}>
-          {/* Menu trigger */}
-          <div
-            className="menu-trigger"
-            onClick={() => {
-              setOpen(!open);
-            }}>
-            <img src={user} alt="User Icon" />
-          </div>
-
-          {/* Dropdown menu */}
-          <div className={`dropdown-menu ${open ? "active" : "inactive"}`}>
-            <ul>
-              {/* Rendering DropdownItem components with different destinations */}
-              <DropdownItem
-                img={change_password}
-                text={"Change Password"}
-                destination="/change-password"
-              />
-              <DropdownItem img={logout} text={"Logout"} destination="/login" />
-            </ul>
-          </div>
-        </div>
-      </nav>
-      <div className="App">{/* Your other components */}</div>
-    </header>
-  );
-}
 
 function Assets({ username, userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedAssets, setSearchedAssets] = useState([]);
   const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
-  const menuRef = useRef(); // Define menuRef using the useRef hook
+  const menuRef = useRef();
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -163,38 +68,54 @@ function Assets({ username, userRole }) {
       <Navbar userRole={userRole} />
       <main>
         <section className="assets-container">
-          <h1>Asset Management</h1>
-          <div className="search-and-filter">
-            <input
-              type="text"
-              id="assetSearchInput"
-              placeholder="Search assets..."
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <button
-              id="assetSearchBtn"
-              className="search-btn"
-              onClick={handleSearch}>
-              Search
-            </button>
-            <select
-              value={filter}
-              onChange={handleFilterChange}
-              className="filter-dropdown">
-              <option value="">Filter</option>
-              <option value="type">Type</option>
-              <option value="date">Date</option>
-              <option value="author">Author</option>
-              <option value="title">Title</option>
-            </select>
+          <h1 className="text-3xl font-bold mb-4">Asset Management</h1>
+          <div className="flex flex-col items-center space-y-4 mb-4">
+            <div className="flex items-center space-x-4 w-full max-w-lg">
+              <input
+                type="text"
+                id="assetSearchInput"
+                placeholder="Search assets..."
+                className="flex-1 py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <div className="flex space-x-2">
+                <button
+                  id="assetSearchBtn"
+                  className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                  onClick={handleSearch}
+                >
+                  Search
+                </button>
+                <div>
+                  <select
+                    value={filter}
+                    onChange={handleFilterChange}
+                    className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                  >
+                    <option value="">Filter</option>
+                    <option value="type">Type</option>
+                    <option value="date">Date</option>
+                    <option value="author">Author</option>
+                    <option value="title">Title</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <Link to="/create-asset">
+              <button
+                id="createAssetBtn"
+                className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
+              >
+                Create New Asset
+              </button>
+            </Link>
           </div>
 
-          <Link to="/create-asset">
-            <button id="createAssetBtn">Create New Asset</button>
-          </Link>
-          <div className="assets-list"></div>
+          <div className="assets-list">
+            {/* Assets list will be displayed here */}
+          </div>
         </section>
         <section>
           <DisplayAssets assetList = {searchedAssets}/>

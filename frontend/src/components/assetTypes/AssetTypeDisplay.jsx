@@ -11,23 +11,24 @@ import {
   Paper,
   Container,
 } from "@mui/material";
+import AlertDialog from './AlertDialog';
 
-function AssetTypeDisplay({assetTypeList}) {
+
+function AssetTypeDisplay() {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
 
   useEffect(() => {
-    if(assetTypeList.length == 0) {
-      fetchAssetTypes();
-    }
-      setAssetTypes(assetTypeList);
-      console.log("Set assetTypes to the searched asset types.");
-    
-  }, [assetTypeList]); // only called if userList is updated.
+    fetchAssetTypes();
+  }, []);
 
   const fetchAssetTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/asset_types/refresh");
+      const response = await axios.get(
+        "http://localhost:8080/asset_types/refresh"
+      );
       console.log("API Response:", response.data);
 
       if (Array.isArray(response.data)) {
@@ -38,8 +39,8 @@ function AssetTypeDisplay({assetTypeList}) {
         setAssetTypes([]); // Fallback to an empty array
       }
     } catch (error) {
-      console.error("Failed to fetch asset types:", error);
-      alert("An error occurred while fetching asset types.");
+      console.error("Failed to fetch users:", error);
+      alert("An error occurred while fetching users.");
     }
   };
 
@@ -52,22 +53,25 @@ function AssetTypeDisplay({assetTypeList}) {
     navigate("/admin/create-asset-type");
   };
 
-  const handleDelete = async (asset_type_id) => {
-    if (typeof asset_type_id !== "number") {
-      console.error("Invalid Asset_Type_Id:", asset_type_id);
-      alert("Invalid asset_type_id. Unable to delete Asset Type.");
-      return;
-    }
+  const promptDeleteConfirmation = (asset_type_id) => {
+    setDeleteAssetTypeId(asset_type_id);
+    setOpenDialog(true);
+  };
 
-    try {
-      await axios.delete(`http://localhost:8080/asset_types/${asset_type_id}`);
-      fetchAssetTypes();
-      console.log("Asset Type deleted successfully:", asset_type_id);
-    } catch (error) {
-      console.error("Axios Error:", error);
-      alert("An error occurred while deleting the asset type.");
+  const handleDeleteConfirmation = async () => {
+    if (deleteAssetTypeId !== null) {
+      try {
+        await axios.delete(`http://localhost:8080/asset_types/${deleteAssetTypeId}`);
+        setOpenDialog(false);
+        fetchAssetTypes();
+        console.log("Asset Type deleted successfully:", deleteAssetTypeId);
+      } catch (error) {
+        console.error("Axios Error:", error);
+        alert("An error occurred while deleting the asset type.");
+      }
     }
   };
+
 
   return (
     <Container component={Paper}>
@@ -75,23 +79,32 @@ function AssetTypeDisplay({assetTypeList}) {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell style={{ fontWeight: "bold" }}>id</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <Button onClick={() => handleCreate()}>Create</Button>
             <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
           </TableRow>
         </TableHead>
         <TableBody>
+
+          <AlertDialog
+              open={openDialog}
+              handleClose={() => setOpenDialog(false)}
+              title="Confirm Delete"
+              message="Are you sure you want to delete this asset type?"
+              onConfirm={handleDeleteConfirmation}
+          />
+
           {assetTypes.map((assetType) => (
             <TableRow key={assetType.type_id}>
+              <TableCell>{assetType.type_id}</TableCell>
               <TableCell>{assetType.type_name}</TableCell>
               <TableCell>{assetType.description}</TableCell>
+
               <TableCell>
-                <Button onClick={() => handleEdit(assetType.type_name)}>Edit</Button>
-                <Button onClick={() => handleDelete(assetType.type_id)}>
-                  Delete
-                </Button>
+                <Button onClick={() => handleEdit(assetType.user_name)}>Edit</Button>
+                <Button onClick={() => promptDeleteConfirmation(assetType.type_id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
