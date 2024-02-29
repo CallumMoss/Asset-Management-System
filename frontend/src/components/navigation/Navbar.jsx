@@ -1,5 +1,6 @@
-import React from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import React, {useState} from 'react';
+import {useNavigate, Link } from "react-router-dom";
+import Popup from "../users/ChangePassword"
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -17,23 +18,29 @@ function Navbar({ username, userRole }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [adminAnchorEl, setAdminAnchorEl] = React.useState(null);
   const navigate = useNavigate();
+  const [showPopup, setShowPopup] = useState(false);
 
+  // Function to handle opening user menu
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
+  // Function to handle closing user menu
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
+  // Function to handle clicking on admin menu
   const handleAdminMenuClick = (event) => {
     setAdminAnchorEl(event.currentTarget);
   };
 
+  // Function to handle closing admin menu
   const handleAdminMenuClose = () => {
     setAdminAnchorEl(null);
   };
 
+  // User settings menu items
   const userSettings = [
     { text: `Username: ${username}`, action: handleCloseUserMenu }, // No navigation action needed
     { text: `Role: ${userRole}`, action: handleCloseUserMenu }, // No navigation action needed
@@ -46,12 +53,15 @@ function Navbar({ username, userRole }) {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: 'flex' }}>
+            {/* Dashboard Link */}
             <Button sx={{ my: 2, color: 'white', display: 'block' }} component={Link} to="/dashboard">
               Dashboard
             </Button>
+            {/* Assets Link */}
             <Button sx={{ my: 2, color: 'white', display: 'block' }} component={Link} to="/assets">
               Assets
             </Button>
+            {/* Admin menu */}
             {userRole === "Admin" && (
               <Button
                 sx={{ my: 2, color: 'white', display: 'block' }}
@@ -64,6 +74,7 @@ function Navbar({ username, userRole }) {
                 Admin
               </Button>
             )}
+            {/* Admin submenu */}
             <Menu
               id="admin-menu"
               anchorEl={adminAnchorEl}
@@ -79,12 +90,14 @@ function Navbar({ username, userRole }) {
             </Menu>
           </Box>
 
+          {/* User settings menu */}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="User Icon" src={userIcon} />
               </IconButton>
             </Tooltip>
+            {/* User settings submenu */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
