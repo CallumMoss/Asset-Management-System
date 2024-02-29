@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
-function UserManagementDisplay({userList}) {
+function UserManagementDisplay({ userList }) {
   const [users, setUsers] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
@@ -23,14 +23,13 @@ function UserManagementDisplay({userList}) {
     in useEffect, check if setUsers == null or empty, if it is, fetch
     otherwise, use ours to display.
   */
-    useEffect(() => {
-      if(userList.length == 0) {
-        fetchUsers();
-      }
-        setUsers(userList);
-        console.log("Set users to the searched users.");
-      
-    }, [userList]); // only called if userList is updated.
+  useEffect(() => {
+    if (userList.length == 0) {
+      fetchUsers();
+    }
+    setUsers(userList);
+    console.log("Set users to the searched users.");
+  }, [userList]); // only called if userList is updated.
 
   const handleDeleteConfirmation = async () => {
     if (deleteUserId !== null) {
@@ -77,6 +76,19 @@ function UserManagementDisplay({userList}) {
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
+  const resetPassword = async (userName) => {
+    try {
+      await axios.post("http://localhost:8080/users/reset-password", {
+        userName: userName,
+        newPassword: "default",
+      });
+
+      alert("Password succesfully reseted!");
+    } catch (error) {
+      console.error("Axios Error:", error);
+      alert("An error occurred while deleting the user.");
+    }
+  };
 
   const handleDelete = async (user_id) => {
     if (typeof user_id !== "number") {
@@ -111,13 +123,12 @@ function UserManagementDisplay({userList}) {
           </TableRow>
         </TableHead>
         <TableBody>
-
           <AlertDialog
-              open={openDialog}
-              handleClose={() => setOpenDialog(false)}
-              title="Confirm Delete"
-              message="Are you sure you want to delete this user?"
-              onConfirm={handleDeleteConfirmation}
+            open={openDialog}
+            handleClose={() => setOpenDialog(false)}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this user?"
+            onConfirm={handleDeleteConfirmation}
           />
 
           {users.map((user) => (
@@ -127,15 +138,19 @@ function UserManagementDisplay({userList}) {
               <TableCell>{user.user_last_name}</TableCell>
               <TableCell>{user.user_role}</TableCell>
               <TableCell>
+                <Button onClick={() => resetPassword(user.user_name)}>
+                  Reset Password
+                </Button>
                 <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
-                <Button onClick={() => promptDeleteConfirmation(user.id)}>Delete</Button>
+                <Button onClick={() => promptDeleteConfirmation(user.id)}>
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </Container>
-
   );
 }
 
