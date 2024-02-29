@@ -44,7 +44,7 @@ function Navbar({ username, userRole }) {
   const userSettings = [
     { text: `Username: ${username}`, action: handleCloseUserMenu }, // No navigation action needed
     { text: `Role: ${userRole}`, action: handleCloseUserMenu }, // No navigation action needed
-    { text: "Change Password", action: () => onClick(showPopup) },
+    { text: "Change Password", action: () => navigate("/change-password") },
     { text: "Logout", action: () => navigate("/logout") } // Changed from "/login" to "/logout"
   ];
 

@@ -1,47 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
-import "../style.css"; // Importing component-specific styles
-import "../Menustyle.css";
-import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "../user.png";
+import React, { useState, useRef } from "react";
+import axios from "axios";
 import Navbar from "../navigation/Navbar";
 import UserManagementDisplay from "./UserManagementDisplay";
-import axios from "axios";
+// Ensure you import Tailwind CSS styles if not already done
 
 function UserManagement({ userRole }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [filter, setFilter] = useState("");
-  const menuRef = useRef();
 
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
-      console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        switch(filter) {
-          case "": // if they havent searched by using a filter, search by username as default.
-            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
-            break;
-          case "username":
-            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
-            break;
-          case "firstname":
-            response = await axios.post("http://localhost:8080/users/search/firstname", searchTerm);
-            break;
-          case "lastname":
-            response = await axios.post("http://localhost:8080/users/search/lastname", searchTerm);
-            break;
-          case "role":
-            response = await axios.post("http://localhost:8080/users/search/role", searchTerm);
-            break;
-        }
-
-        // "http://localhost:8080/users/search/", filter, searchTerm)
-
-      } else { // if user hasnt searched, show regular results
-        response = await axios.get("http://localhost:8080/users/refresh");
-      }
+      const searchBy = filter || "username"; // Default to username search if no filter is selected
+      const url = `http://localhost:8080/users/search/${searchBy}`;
+      response = await axios.post(url, { searchTerm });
       setSearchedUsers(response.data);
     } catch (error) {
       console.error("Error searching for the user:", error);
@@ -51,25 +25,7 @@ function UserManagement({ userRole }) {
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
-    console.log("Filtering by:", e.target.value);
   };
-
-  // The useEffect is set up to detect clicks outside of a specified element (menuRef).
-  // If you are not using menuRef for such a feature, you may remove the useEffect hook.
-  useEffect(() => {
-    const handler = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        // Logic for click outside menuRef element goes here
-      }
-    };
-
-    // Bind the event listener
-    document.addEventListener("mousedown", handler);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handler);
-    };
-  }, []); // Dependency array is empty, meaning this effect will only run on mount and unmount
 
   return (
     <div>
@@ -102,15 +58,15 @@ function UserManagement({ userRole }) {
                 >
                   <option value="">Filter</option>
                   <option value="username">Username</option>
-                  <option value="firstName">First Name</option>
-                  <option value="lastName">Last Name</option>
+                  <option value="firstname">First Name</option>
+                  <option value="lastname">Last Name</option>
                   <option value="role">Role</option>
                 </select>
               </div>
             </div>
           </div>
 
-          <UserManagementDisplay />
+          <UserManagementDisplay userList={searchedUsers} />
         </section>
       </main>
     </div>
