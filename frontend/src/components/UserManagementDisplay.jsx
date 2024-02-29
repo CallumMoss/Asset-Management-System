@@ -10,11 +10,13 @@ import {
   TableRow,
   Paper,
   Container,
+  TextField,
 } from "@mui/material";
 
 function UserManagementDisplay() {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,6 +43,7 @@ function UserManagementDisplay() {
 
   const handleEdit = (userName) => {
     setEditingUser(userName)
+    setIsEditing(true); 
     // Implement your edit functionality here
     console.log("Edit user:", userName);
   };
@@ -86,6 +89,26 @@ function UserManagementDisplay() {
   return (
     <Container component={Paper}>
       <h1>User Management</h1>
+      {isEditing ? (
+        <form>
+          <TextField
+          label="Username" variant="outlined" value={editingUser.user_name}
+          onChange={(e) => setEditingUser({ ...editingUser, user_name: e.target.value })}
+          />
+          <TextField
+          label="First Name" variant="outlined" value={editingUser.user_first_name}
+          onChange={(e) => setEditingUser({ ...editingUser, user_first_name: e.target.value })}
+          />
+          <TextField
+          label="Last Name" variant="outlined" value={editingUser.user_last_name}
+          onChange={(e) => setEditingUser({ ...editingUser, user_last_name: e.target.value })}
+          />
+          <TextField
+          label="Role" variant="outlined" value={editingUser.user_role}
+          onChange={(e) => setEditingUser({ ...editingUser, user_role: e.target.value })}
+          />
+        </form>
+      ) : (
       <Table>
         <TableHead>
           <TableRow>
@@ -141,6 +164,7 @@ function UserManagementDisplay() {
           ))}
         </TableBody>
       </Table>
+    )}
     </Container>
   );
 }
