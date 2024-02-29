@@ -112,25 +112,25 @@ function UserManagement({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        console.log("Successfully searched by lastname");
-        console.log(filter);
         switch(filter) {
           case "": // if they havent searched by using a filter, search by username as default.
             response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
             break;
-          case "Username":
+          case "username":
             response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
             break;
-          case "FirstName":
+          case "firstname":
             response = await axios.post("http://localhost:8080/users/search/firstname", searchTerm);
             break;
-          case "LastName":
+          case "lastname":
             response = await axios.post("http://localhost:8080/users/search/lastname", searchTerm);
             break;
-          case "Role":
+          case "role":
             response = await axios.post("http://localhost:8080/users/search/role", searchTerm);
             break;
         }
+
+        // "http://localhost:8080/users/search/", filter, searchTerm)
 
       } else { // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/users/refresh");
@@ -186,10 +186,10 @@ function UserManagement({ username, userRole }) {
               onChange={handleFilterChange}
               className="filter-dropdown">
               <option value="">Filter</option>
-              <option value="Username">Username</option>
-              <option value="FirstName">First Name</option>
-              <option value="LastName">Last Name</option>
-              <option value="Role">Role</option>
+              <option value="username">Username</option>
+              <option value="firstname">First Name</option>
+              <option value="lastname">Last Name</option>
+              <option value="role">Role</option>
             </select>
           </div>
 

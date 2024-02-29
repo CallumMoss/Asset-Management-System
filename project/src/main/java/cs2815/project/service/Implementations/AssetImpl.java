@@ -87,11 +87,11 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-    public List<String> searchLanguage(String searchString) {
+    public List<String> searchByLanguage(String searchString) {
         List<String> LanguagesList = langRepo.getAllLanguageNames();
         List<String> compatibleList = new ArrayList<>();
         for (String language : LanguagesList) {
-            if (userService.isSimilar(searchString, language)) {
+            if (searchString.equals(language) || userService.isSimilar(searchString, language)) {
                 compatibleList.add(language);
             }
         }
@@ -103,15 +103,25 @@ public class AssetImpl implements AssetService {
         List<String> assetNames = repo.getAllNames();
         List<Asset> compatibleAssets = new ArrayList<>();
         for (String name : assetNames) {
-            if(searchString.equals(name)) {
-                compatibleAssets.add(repo.getAssetByName(name));
-            }
-            else if (userService.isSimilar(searchString, name)) {
+            if (searchString.equals(name) || userService.isSimilar(searchString, name)) {
                 compatibleAssets.add(repo.getAssetByName(name));
             }
         }
         return compatibleAssets;
     }
+
+    @Override
+    public List<Asset> searchByType(String searchString) {
+        List<String> assetTypes = repo.getAllTypes();
+        List<Asset> compatibleAssets = new ArrayList<>();
+        for (String type : assetTypes) {
+            if (searchString.equals(type) || userService.isSimilar(searchString, type)) {
+                compatibleAssets.add(repo.findAssetByType(type));
+            }
+        }
+        return compatibleAssets;
+    }
+
 
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();

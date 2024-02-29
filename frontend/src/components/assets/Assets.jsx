@@ -113,7 +113,23 @@ function Assets({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/assets/searchByName", searchTerm); // searches by title
+        switch(filter) {
+          case "": // if they havent searched by using a filter, search by username as default.
+            response = await axios.post("http://localhost:8080/assets/search/title", searchTerm);
+            break;
+          case "title":
+            response = await axios.post("http://localhost:8080/users/search/title", searchTerm);
+            break;
+          case "type":
+            response = await axios.post("http://localhost:8080/users/search/type", searchTerm);
+            break;
+          case "date":
+            response = await axios.post("http://localhost:8080/users/search/date", searchTerm);
+            break;
+          case "author":
+            response = await axios.post("http://localhost:8080/users/search/author", searchTerm);
+            break;
+        }
       } else { // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/assets/refresh");
       }

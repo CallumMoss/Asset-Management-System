@@ -157,10 +157,7 @@ public class UserServiceImpl implements UserService {
         List<String> FNameList = repo.findAllFNames();
         List<User> compatibleUsers = new ArrayList<>();
         for (String firstname : FNameList) {
-            if (searchString.equals(firstname)) {
-                compatibleUsers.add(repo.getUserByUsername(firstname));
-            }
-            else if (isSimilar(searchString, firstname)) {
+            if (searchString.equals(firstname) || isSimilar(searchString, firstname)) {
                 compatibleUsers.add(repo.getUserByName(firstname));
             }
         }
@@ -172,10 +169,7 @@ public class UserServiceImpl implements UserService {
         List<String> LNameList = repo.findAllLNames();
         List<User> compatibleUsers = new ArrayList<>();
         for (String lastname : LNameList) {
-            if (searchString.equals(lastname)) {
-                compatibleUsers.add(repo.getUserByLastname(lastname));
-            }
-            else if (isSimilar(searchString, lastname)) {
+            if (searchString.equals(lastname) || isSimilar(searchString, lastname)) {
                 compatibleUsers.add(repo.getUserByLastname(lastname));
             }
         }
@@ -187,10 +181,7 @@ public class UserServiceImpl implements UserService {
         List<String> roleList = repo.findAllRoles();
         List<User> compatibleUsers = new ArrayList<>();
         for (String role : roleList) {
-            if (searchString.equals(role)) {
-                compatibleUsers.add(repo.getUserByRole(role));
-            }
-            else if (isSimilar(searchString, role)) {
+            if (searchString.equals(role) || isSimilar(searchString, role)) {
                 compatibleUsers.add(repo.getUserByRole(role));
             }
         }

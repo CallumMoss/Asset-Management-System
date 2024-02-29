@@ -21,6 +21,9 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a.title FROM Asset a")
     List<String> getAllNames();
 
+    @Query("SELECT at.type_name FROM AssetType at")
+    List<String> getAllTypes();
+
     @Query("SELECT a FROM Asset a WHERE a.title = :assetName")
     Asset getAssetByName(@Param("assetName") String assetName);
 
@@ -29,6 +32,10 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Query("SELECT a FROM Asset a WHERE a.title = :title")
     Asset findAssetByTitle(@Param("title") String title);
+
+    //@Query("SELECT a FROM Asset a JOIN AssetType at ON a.Asset_Type = at.typeId WHERE at.typeName = :typeName")
+    @Query("SELECT a FROM Asset a WHERE a.title = :typeName") // incorrect implementation, must be changed
+    Asset findAssetByType(@Param("typeName") String typeName);
 
     @Modifying
     @Transactional

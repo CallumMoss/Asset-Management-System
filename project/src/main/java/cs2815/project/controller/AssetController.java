@@ -42,13 +42,19 @@ public class AssetController {
 
     }
 
-    @PostMapping("/searchLanguage")
-    public ResponseEntity<List<String>> searchLanguage(@RequestBody String searchString) {
-        List<String> compatibleLanguages = assetService.searchLanguage(searchString);
+    @PostMapping("/search/language")
+    public ResponseEntity<List<String>> searchByLanguage(@RequestBody String searchString) {
+        List<String> compatibleLanguages = assetService.searchByLanguage(searchString);
         return ResponseEntity.ok(compatibleLanguages);
     }
 
-    @PostMapping("/searchByName")
+    @PostMapping("/search/type")
+    public ResponseEntity<List<Asset>> searchByType(@RequestBody String searchString) {
+        List<Asset> compatibleLanguages = assetService.searchByType(searchString);
+        return ResponseEntity.ok(compatibleLanguages);
+    }
+
+    @PostMapping("/search/title")
     public ResponseEntity<List<Asset>> searchByName(@RequestBody String searchString) {
         List<Asset> compatibleAssets = assetService.searchByName(searchString);
         return ResponseEntity.ok(compatibleAssets);
