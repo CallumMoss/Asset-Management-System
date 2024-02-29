@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useNavigate, Link } from "react-router-dom";
-import Popup from "../users/ChangePassword"
+import ChangePassword from "./ChangePassword"
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,14 +11,12 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
-
 import userIcon from '../user.png'; // Update path if necessary
 
 function Navbar({ username, userRole }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [adminAnchorEl, setAdminAnchorEl] = React.useState(null);
   const navigate = useNavigate();
-  const [showPopup, setShowPopup] = useState(false);
 
   // Function to handle opening user menu
   const handleOpenUserMenu = (event) => {
@@ -44,8 +42,8 @@ function Navbar({ username, userRole }) {
   const userSettings = [
     { text: `Username: ${username}`, action: handleCloseUserMenu }, // No navigation action needed
     { text: `Role: ${userRole}`, action: handleCloseUserMenu }, // No navigation action needed
-    { text: "Change Password", action: () => navigate("/change-password") },
-    { text: "Logout", action: () => navigate("/logout") } // Changed from "/login" to "/logout"
+    { text: "Change Password", action: () => navigate("/ChangePassword") },
+    { text: "Logout", action: () => navigate("/login") }
   ];
 
   return (
