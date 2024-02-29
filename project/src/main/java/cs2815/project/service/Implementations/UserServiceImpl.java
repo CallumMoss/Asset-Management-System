@@ -120,16 +120,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(int userId, String newPassword) {
+    public void resetPassword(String userName, String newPassword) {
 
         Log log = new Log();
-        User tempUser = repo.findById(userId);
+        User tempUser = repo.findByUserName(userName);
         log.setUser(tempUser);
-        log.setUpdateDescription(tempUser.getUser_name() + " password succesfully reseted!");
+        log.setUpdateDescription(tempUser.getUser_name() + " password succesfully changed!");
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         logrepo.save(log);
 
-        repo.resetPassword(userId, key.encode(newPassword));
+        repo.resetPassword(userName, key.encode(newPassword));
     }
 
     @Override
@@ -144,8 +144,7 @@ public class UserServiceImpl implements UserService {
         for (String username : usernameList) {
             if (searchString.equals(username)) {
                 compatibleUsers.add(repo.getUserByUsername(username));
-            }
-            else if (isSimilar(searchString, username)) {
+            } else if (isSimilar(searchString, username)) {
                 compatibleUsers.add(repo.getUserByUsername(username));
             }
         }

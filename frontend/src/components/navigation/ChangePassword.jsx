@@ -29,18 +29,34 @@ function ChangePassword({ username }) {
     else if (name === "confirmNewPassword") setConfirmNewPassword(value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:8080/users/login", {
+        user_name: username,
+        user_password: oldPassword,
+      });
+
+      if (response.data.authenticated === true) {
+        await axios.post("http://localhost:8080/users/reset-password", {
+          userName: username,
+          newPassword: newPassword,
+        });
+      } else {
+        // Login failed
+        alert("Incorrect password!");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred during login");
+    }
 
     if (newPassword !== confirmNewPassword) {
       setError("New password and confirm password do not match.");
       return;
     }
 
-    // Handle password change logic here
-    console.log("Old Password:", oldPassword);
-    console.log("New Password:", newPassword);
-    console.log("Confirm New Password:", confirmNewPassword);
     // Reset form fields
     setOldPassword("");
     setNewPassword("");

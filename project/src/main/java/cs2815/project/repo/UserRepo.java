@@ -47,8 +47,8 @@ public interface UserRepo extends JpaRepository<User, Integer> {
         @Modifying
         @Transactional
         @Query("UPDATE User u SET u.user_password = :newPassword " +
-                        "WHERE u.id = :userId")
-        void resetPassword(@Param("userId") int userId,
+                        "WHERE u.user_name = :userName")
+        void resetPassword(@Param("userName") String userName,
                         @Param("newPassword") String newPassword);
 
         @Query("SELECT u.user_name FROM User u")
@@ -74,5 +74,5 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
         @Query("SELECT u FROM User u WHERE u.user_role = :Role")
         User getUserByRole(@Param("Role") String Role);
-        
+
 }
