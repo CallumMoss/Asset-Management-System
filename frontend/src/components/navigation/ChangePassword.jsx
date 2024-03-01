@@ -17,6 +17,7 @@ import ListItemText from "@mui/material/ListItemText";
 const defaultTheme = createTheme();
 
 function ChangePassword({ username }) {
+  const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -43,6 +44,10 @@ function ChangePassword({ username }) {
           userName: username,
           newPassword: newPassword,
         });
+
+        alert("Password succesfully changed!");
+
+        navigate("/dashboard");
       } else {
         // Login failed
         alert("Incorrect password!");

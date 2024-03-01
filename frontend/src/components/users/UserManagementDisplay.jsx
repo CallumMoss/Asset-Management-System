@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
-function UserManagementDisplay({userList}) {
+function UserManagementDisplay({ userList }) {
   const [users, setUsers] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
@@ -78,6 +78,19 @@ const handleDeleteConfirmation = async () => {
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
+  const resetPassword = async (userName) => {
+    try {
+      await axios.post("http://localhost:8080/users/reset-password", {
+        userName: userName,
+        newPassword: "default",
+      });
+
+      alert("Password succesfully reseted!");
+    } catch (error) {
+      console.error("Axios Error:", error);
+      alert("An error occurred while deleting the user.");
+    }
+  };
 
   const handleDelete = async (user_id) => {
     if (typeof user_id !== "number") {
@@ -114,13 +127,12 @@ const handleDeleteConfirmation = async () => {
           </TableRow>
         </TableHead>
         <TableBody>
-
           <AlertDialog
-              open={openDialog}
-              handleClose={() => setOpenDialog(false)}
-              title="Confirm Delete"
-              message="Are you sure you want to delete this user?"
-              onConfirm={handleDeleteConfirmation}
+            open={openDialog}
+            handleClose={() => setOpenDialog(false)}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this user?"
+            onConfirm={handleDeleteConfirmation}
           />
 
           {users.map((user) => (
@@ -130,15 +142,19 @@ const handleDeleteConfirmation = async () => {
               <TableCell>{user.user_last_name}</TableCell>
               <TableCell>{user.user_role}</TableCell>
               <TableCell>
+                <Button onClick={() => resetPassword(user.user_name)}>
+                  Reset Password
+                </Button>
                 <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
-                <Button onClick={() => promptDeleteConfirmation(user.id)}>Delete</Button>
+                <Button onClick={() => promptDeleteConfirmation(user.id)}>
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </Container>
-
   );
 }
 
