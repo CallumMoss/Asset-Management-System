@@ -13,10 +13,31 @@ function UserManagement({ userRole, username }) {
     e.preventDefault();
     try {
       let response = null;
-      const searchBy = filter || "username"; // Default to username search if no filter is selected
-      const url = `http://localhost:8080/users/search/${searchBy}`;
-      response = await axios.post(url, { searchTerm });
+      if (searchTerm !== "") { // if user has searched something, show search results
+        switch(filter) {
+          case "": // if they havent searched by using a filter, search by username as default.
+            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+            break;
+          case "username":
+            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+            break;
+          case "firstname":
+            response = await axios.post("http://localhost:8080/users/search/firstname", searchTerm);
+            break;
+          case "lastname":
+            response = await axios.post("http://localhost:8080/users/search/lastname", searchTerm);
+            break;
+          case "role":
+            response = await axios.post("http://localhost:8080/users/search/role", searchTerm);
+            break;
+        }
+          console.log(response);
+
+      } else { // if user hasnt searched, show regular results
+        response = await axios.get("http://localhost:8080/users/refresh");
+      }
       setSearchedUsers(response.data);
+
     } catch (error) {
       console.error("Error searching for the user:", error);
       alert("An error occurred while searching for the user");

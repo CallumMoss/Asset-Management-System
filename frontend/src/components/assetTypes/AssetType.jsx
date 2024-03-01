@@ -12,20 +12,17 @@ function AssetType({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedTypes, setSearchedTypes] = useState([]);
   const [filter, setFilter] = useState("");
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef(); // Define menuRef using the useRef hook
 
-  const handleSearch = async (e) => {
+   const handleSearch = async (e) => {
     e.preventDefault();
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") {
-        // if user has searched something, show search results
-        response = await axios.post(
-          "http://localhost:8080/asset_types/search",
-          searchTerm
-        ); // searches by title
-      } else {
-        // if user hasnt searched, show regular results
+      if (searchTerm !== "") { // if user has searched something, show search results
+        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
+      } else { // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/asset_types/refresh");
       }
       setSearchedTypes(response.data);
@@ -91,7 +88,7 @@ function AssetType({ userRole, username }) {
             </div>
           </div>
 
-          <AssetTypeDisplay />
+          <AssetTypeDisplay assetTypeList = {searchedTypes}/>
         </section>
       </main>
     </div>

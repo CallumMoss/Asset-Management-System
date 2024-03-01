@@ -5,8 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="711e790e-4af8-4948-98b2-e200bdc02f86" name="Changes" comment="Added a popup which is prompted when the user tries to delete a user or asset type">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/79b4d0ee-b6b7-47e4-9697-a0170d3b15b6.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/79b4d0ee-b6b7-47e4-9697-a0170d3b15b6.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/assets/DisplayAssets.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/assets/DisplayAssets.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/assetTypes/AssetType.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/assetTypes/AssetType.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/assetTypes/AssetTypeDisplay.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/assetTypes/AssetTypeDisplay.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/users/UserManagement.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/users/UserManagement.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/users/UserManagementDisplay.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/users/UserManagementDisplay.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/cs2815/project/repo/UserRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/cs2815/project/repo/UserRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/cs2815/project/service/Implementations/LogServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/cs2815/project/service/Implementations/LogServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project/src/main/java/cs2815/project/service/Implementations/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/project/src/main/java/cs2815/project/service/Implementations/UserServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +32,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2d35Jyi0k2oJpafecn8GfrcR1SS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -43,8 +51,9 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ProjectApplication.executor": "Run",
+    "git-widget-placeholder": "testing",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/Users/admin/Desktop/TeamProject02/frontend/src/components/assets",
+    "last_opened_file_path": "C:/Users/jaysk/CS2815/TeamProject02/project/src/main/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -53,11 +62,13 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\jaysk\CS2815\TeamProject02\project\src\main\resources" />
       <recent name="$PROJECT_DIR$/frontend/src/components/assets" />
       <recent name="$PROJECT_DIR$/frontend/src/components/assetTypes" />
     </key>
@@ -75,7 +86,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="jdk-19.0.2-corretto-19.0.2-4caba194b151-be841094" />
+        <option value="jdk-19.0.2-corretto-19.0.2-4caba194b151-48ba4555" />
       </set>
     </attachedChunks>
   </component>
@@ -88,6 +99,7 @@
       <option name="presentableId" value="Default" />
       <updated>1709223853872</updated>
       <workItem from="1709223855027" duration="4548000" />
+      <workItem from="1709247916400" duration="9543000" />
     </task>
     <task id="LOCAL-00001" summary="Added a popup which is prompted when the user tries to delete a user or asset type">
       <option name="closed" value="true" />

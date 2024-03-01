@@ -28,10 +28,11 @@ public class LogServiceImpl implements LogService {
         List<String> descriptionList = repo.findAllDescriptions();
         List<Log> compatibleLogs = new ArrayList<>();
         for (String desc : descriptionList) {
-           
             if (searchString.equals(desc) || userService.isSimilar(searchString, desc)) {
                 List<Log> logs = repo.getLogByDescription(desc);
-                compatibleLogs.addAll(logs);
+                if (!compatibleLogs.contains(logs.get(0))) {
+                    compatibleLogs.addAll(logs);
+                }
             }
         }
         return compatibleLogs;
