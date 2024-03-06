@@ -18,6 +18,7 @@ function AssetTypeDisplay({assetTypeList}) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
+  const [editedAssetType, setEditedAssetType] = useState(null);
 
   useEffect(() => {
     if(assetTypeList.length == 0) {
@@ -84,6 +85,7 @@ function AssetTypeDisplay({assetTypeList}) {
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <Button onClick={() => handleCreate()}>Create</Button>
             <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
           </TableRow>
