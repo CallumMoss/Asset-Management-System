@@ -24,6 +24,7 @@ function DisplayAssets({assetList}) {
   const [logs, setLogs] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
+  const [editingAsset, setEditingAsset] = useState(null);
 
   useEffect(() => {
     if(assetList.length == 0) {
@@ -54,6 +55,7 @@ function DisplayAssets({assetList}) {
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
     // Implement your edit functionality here
+    setEditingAsset({ ...assetId });
   };
 
   const promptDelete = (assetId) => {
