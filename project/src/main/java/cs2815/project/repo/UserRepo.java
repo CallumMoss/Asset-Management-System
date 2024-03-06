@@ -47,8 +47,8 @@ public interface UserRepo extends JpaRepository<User, Integer> {
         @Modifying
         @Transactional
         @Query("UPDATE User u SET u.user_password = :newPassword " +
-                        "WHERE u.id = :userId")
-        void resetPassword(@Param("userId") int userId,
+                        "WHERE u.user_name = :userName")
+        void resetPassword(@Param("userName") String userName,
                         @Param("newPassword") String newPassword);
 
         @Query("SELECT u.user_name FROM User u")
@@ -59,4 +59,20 @@ public interface UserRepo extends JpaRepository<User, Integer> {
 
         @Query("SELECT u.user_last_name FROM User u")
         List<String> findAllLNames();
+
+        @Query("SELECT u.user_role FROM User u")
+        List<String> findAllRoles();
+
+        @Query("SELECT u FROM User u WHERE u.user_name = :Username")
+        List<User> getUserByUsername(@Param("Username") String Username);
+
+        @Query("SELECT u FROM User u WHERE u.user_first_name = :FirstName")
+        List<User> getUserByName(@Param("FirstName") String FirstName);
+
+        @Query("SELECT u FROM User u WHERE u.user_last_name = :LastName")
+        List<User> getUserByLastname(@Param("LastName") String LastName);
+
+        @Query("SELECT u FROM User u WHERE u.user_role = :Role")
+        List<User> getUserByRole(@Param("Role") String Role);
+
 }

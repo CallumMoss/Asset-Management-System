@@ -68,7 +68,6 @@ public class AssetImpl implements AssetService {
                 dependents.add(tempAsset);
             }
         }
-
         asset.setDependent(dependents);
 
         List<Languages> languages = new ArrayList<>();
@@ -91,12 +90,49 @@ public class AssetImpl implements AssetService {
         List<String> LanguagesList = langRepo.getAllLanguageNames();
         List<String> compatibleList = new ArrayList<>();
         for (String language : LanguagesList) {
-            if (userService.isSimilar(searchString, language)) {
+            if (searchString.equals(language) || userService.isSimilar(searchString, language)) {
                 compatibleList.add(language);
             }
         }
         return compatibleList;
     }
+
+    //Finds what Assets are dependant on the given AssetID asset
+    @Override
+    public List<Integer> isDependantOn(int assetId) {
+        return repo.isDependantOn(assetId);
+    }
+
+    //Finds the Assets that the given AssetID depends On
+    @Override
+    public List<Integer> isParentOf(int assetId) {
+        return repo.isParentOf(assetId);
+    }
+
+    @Override
+    public List<Asset> searchByName(String searchString) {
+        List<String> assetNames = repo.getAllNames();
+        List<Asset> compatibleAssets = new ArrayList<>();
+        for (String name : assetNames) {
+            if (searchString.equals(name) || userService.isSimilar(searchString, name)) {
+                compatibleAssets.add(repo.getAssetByName(name));
+            }
+        }
+        return compatibleAssets;
+    }
+
+    @Override
+    public List<Asset> searchByType(String searchString) {
+        List<String> assetTypes = repo.getAllTypes();
+        List<Asset> compatibleAssets = new ArrayList<>();
+        for (String type : assetTypes) {
+            if (searchString.equals(type) || userService.isSimilar(searchString, type)) {
+                compatibleAssets.add(repo.findAssetByType(type));
+            }
+        }
+        return compatibleAssets;
+    }
+
 
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();

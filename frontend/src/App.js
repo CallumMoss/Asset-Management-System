@@ -1,18 +1,18 @@
 import "./App.css";
 import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import Register from "./components/Register";
-import Login from "./components/Login";
-import Home from "./components/Home";
-import Dashboard from "./components/dashboard";
-import Assets from "./components/Assets";
-import Admin from "./components/Admin";
-import CreateAsset from "./components/CreateAsset";
-import CreateUser from "./components/CreateUser";
-import UserManagement from "./components/UserManagement";
-import AssetType from "./components/AssetType";
-import CreateAssetType from "./components/CreateAssetType";
-import Log from "./components/Log";
+import Login from "./components/navigation/Login";
+import Home from "./components/homepage/Home";
+import Dashboard from "./components/navigation/dashboard";
+import Assets from "./components/assets/Assets";
+import Admin from "./components/navigation/Admin";
+import CreateAsset from "./components/assets/CreateAsset";
+import CreateUser from "./components/users/CreateUser";
+import UserManagement from "./components/users/UserManagement";
+import AssetType from "./components/assetTypes/AssetType";
+import CreateAssetType from "./components/assetTypes/CreateAssetType";
+import Log from "./components//logs/Log";
+import ChangePassword from "./components/navigation/ChangePassword";
 import { Switch } from "@mui/material";
 
 // AppRoutes component
@@ -33,7 +33,7 @@ function AppRoutes() {
         <Routes>
           {/* Define routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
+
           <Route
             path="/login"
             element={<Login updateCurrentUser={updateCurrentUser} />}
@@ -142,6 +142,15 @@ function AppRoutes() {
               <AdminElement currentUserType={currentUserType}>
                 <CreateUser />
               </AdminElement>
+            }
+          />
+
+          <Route
+            path="/changepassword" // when navigating to this page (when navigate is used in UserManagement)
+            element={
+              <ViewerElement currentUserType={currentUserType}>
+                <ChangePassword username={currentUserName} />
+              </ViewerElement>
             }
           />
 
