@@ -58,6 +58,11 @@ function DisplayAssets({assetList}) {
     setEditingAsset({ ...assetId });
   };
 
+  const handleSave = async => {
+    try {
+      await axios.
+    }
+  }
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
     setOpenAlertDialog(true);
