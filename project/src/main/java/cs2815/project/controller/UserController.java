@@ -3,6 +3,8 @@ package cs2815.project.controller;
 import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.LoginResponse;
 import cs2815.project.model.specialmodels.ResetPasswordRequest;
+import cs2815.project.service.AssetService;
+import cs2815.project.service.AssetTypeService;
 import cs2815.project.service.LanguageService;
 import cs2815.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,11 @@ public class UserController {
     // used for creating base database for an empty database
     @Autowired
     private LanguageService languageService;
+    @Autowired
+    private AssetTypeService assetTypeService;
+    @Autowired
+    private AssetService assetService;
+
 
     @PostMapping("/createuser")
     public void registerUser(@RequestBody User user) {
@@ -41,7 +48,8 @@ public class UserController {
         if (userService.refreshUser().size() == 0) {
             userService.createBaseUsers();
             languageService.createBaseLanguages();
-            
+            assetTypeService.createBaseTypes();
+            assetService.createBaseAssets();
         }
 
         boolean loginSuccessful = userService.logIn(user);

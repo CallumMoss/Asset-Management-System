@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -167,4 +168,50 @@ public class AssetImpl implements AssetService {
         repo.deleteAssetbyID(assetID);
     }
 
+    @Override
+    public void createBaseAssets() {
+        
+        List<String> authors = Arrays.asList("BaseAdmin");
+        List<String> dependencies = Arrays.asList();
+        List<String> languages = Arrays.asList("Java");
+        AssetWrapper wrapper = new AssetWrapper(
+            "Piece.py", // title
+            "A python program that contains a class which describes the attributes and functions of a chess piece.", // asset_description
+            "website.com/piece.py", // link
+            "Python File", // asset_type
+            authors, // authors
+            dependencies, // dependencies
+            languages // languages
+        );
+        createAsset(wrapper);
+        //
+        authors = Arrays.asList("BaseViewer");
+        dependencies = Arrays.asList();
+        languages = Arrays.asList("Python", "Java");
+        wrapper = new AssetWrapper(
+            "Heroes Rising", // title
+            "2D Game developed as part of the first year games module.", // asset_description
+            "some_link.com", // link
+            "Project", // asset_type
+            authors, // authors
+            dependencies, // dependencies
+            languages // languages
+        );
+        createAsset(wrapper);
+
+        authors = Arrays.asList("BaseUser", "BaseViewer");
+        dependencies = Arrays.asList("Heroes Rising");
+        languages = Arrays.asList();
+        wrapper = new AssetWrapper(
+            "README", // title
+            "Read me file for the project Heroes Rising.", // asset_description
+            "random/readme.md", // link
+            "Documentation", // asset_type
+            authors, // authors
+            dependencies, // dependencies
+            languages // languages
+        );
+        createAsset(wrapper);
+        
+    }
 }

@@ -25,4 +25,6 @@ public interface AssetService {
     List<Integer> isDependantOn(@RequestBody int assetId);
 
     List<Integer> isParentOf(int assetId);
+
+    void createBaseAssets();
 }

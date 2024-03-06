@@ -28,8 +28,7 @@ public class LanguagesImpl implements LanguageService {
         
         for(String language : languages) {
             if(repo.findLanguageByName(language) == null) {
-                Languages newLanguage = new Languages(language);
-                repo.save(newLanguage);
+                repo.save(new Languages(language));
             }
         }
     }
