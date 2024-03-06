@@ -47,9 +47,20 @@ function AssetTypeDisplay({assetTypeList}) {
     }
   };
 
-  const handleEdit = (userName) => {
+  const handleEdit = (assetType) => {
     // Implement your edit functionality here
-    console.log("Edit asset type:", userName);
+    console.log("Edit asset type:", assetType);
+    setEditingAssetType(assetType);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.post("http://localhost:8080/asset_types/edit", editedAssetType);
+      fetchAssetTypes();
+      console.log("Asset Type updated successfully");
+    } catch (error) {
+      console.error("Failed to update asset type:", error);
+    }
   };
 
   const handleCreate = () => {
