@@ -19,9 +19,10 @@ function AssetTypeDisplay({assetTypeList}) {
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
   const [editedAssetType, setEditedAssetType] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    if(assetTypeList.length == 0) {
+    if(assetTypeList.length === 0) {
       fetchAssetTypes();
     }
       setAssetTypes(assetTypeList);
@@ -50,7 +51,8 @@ function AssetTypeDisplay({assetTypeList}) {
   const handleEdit = (assetType) => {
     // Implement your edit functionality here
     console.log("Edit asset type:", assetType);
-    setEditingAssetType(assetType);
+    setIsEditing(true);
+    setEditedAssetType(assetType);
   };
 
   const handleUpdate = async () => {
@@ -61,6 +63,7 @@ function AssetTypeDisplay({assetTypeList}) {
     } catch (error) {
       console.error("Failed to update asset type:", error);
     }
+    setIsEditing(false);
   };
 
   const handleCreate = () => {
@@ -91,6 +94,7 @@ function AssetTypeDisplay({assetTypeList}) {
   return (
     <Container component={Paper}>
       <h1>Asset Type Management</h1>
+
       <Table>
         <TableHead>
           <TableRow>
