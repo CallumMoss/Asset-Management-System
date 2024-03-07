@@ -1,20 +1,18 @@
 package cs2815.project.service.Implementations;
 
-import java.util.List;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -130,6 +128,44 @@ public class UserServiceImpl implements UserService {
         logrepo.save(log);
 
         repo.resetPassword(userName, key.encode(newPassword));
+    }
+
+    @Override
+    public List<User> sortAlphabetically(List<User> unsortedUsers, String orderBy) {
+        List<String> sortByList = new ArrayList<String>();
+        List<User> sortedUsers = unsortedUsers;
+        switch (orderBy) {
+            case "FirstName":
+                for (User user : unsortedUsers) {
+                    sortByList.add(user.getUser_first_name());
+                }
+                break;
+            case "LastName":
+                for (User user : unsortedUsers) {
+                    sortByList.add(user.getUser_last_name());
+                }
+                break;
+            default:
+                for (User user : unsortedUsers) {
+                    sortByList.add(user.getUser_name());
+                }
+        }
+        String temp;
+        User tempBis;
+        int size = sortByList.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
+                    temp = sortByList.get(i);
+                    tempBis = sortedUsers.get(i);
+                    sortByList.set(i, sortByList.get(j));
+                    sortedUsers.set(i, sortedUsers.get(j));
+                    sortByList.set(j, temp);
+                    sortedUsers.set(j, tempBis);
+                }
+            }
+        }
+        return sortedUsers;
     }
 
     @Override
