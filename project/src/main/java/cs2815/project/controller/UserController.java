@@ -3,6 +3,9 @@ package cs2815.project.controller;
 import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.LoginResponse;
 import cs2815.project.model.specialmodels.ResetPasswordRequest;
+import cs2815.project.service.AssetService;
+import cs2815.project.service.AssetTypeService;
+import cs2815.project.service.LanguageService;
 import cs2815.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +27,15 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // used for creating base database for an empty database
+    @Autowired
+    private LanguageService languageService;
+    @Autowired
+    private AssetTypeService assetTypeService;
+    @Autowired
+    private AssetService assetService;
+
+
     @PostMapping("/createuser")
     public void registerUser(@RequestBody User user) {
         userService.registerUser(user);
@@ -31,7 +43,15 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
-        userService.createBaseUsers();
+
+    // if users table is empty, call all createBase for all tables
+        if (userService.refreshUser().size() == 0) {
+            userService.createBaseUsers();
+            languageService.createBaseLanguages();
+            assetTypeService.createBaseTypes();
+            assetService.createBaseAssets();
+        }
+
         boolean loginSuccessful = userService.logIn(user);
         String userRole = userService.getUserRole(user.getUser_name());
         return ResponseEntity.ok(new LoginResponse(loginSuccessful, userRole));

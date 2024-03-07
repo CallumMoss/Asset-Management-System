@@ -39,6 +39,13 @@ public class AssetTypeImpl implements AssetTypeService {
         logrepo.save(log);
 
     }
+    @Override
+    public void createBaseTypes() {
+        createAssetType(new AssetType("Python File", "A file that contains python code for a given project."));
+        createAssetType(new AssetType("Documentation", "A file that contains documentation to supply extra information about any given asset."));
+        createAssetType(new AssetType("Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."));
+        createAssetType(new AssetType("Java File", "A file that contains java code for a given project."));
+    }
 
     @Override
     public void editAssetType(AssetType assetType) {

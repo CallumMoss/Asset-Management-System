@@ -54,6 +54,12 @@ public class AssetController {
         return ResponseEntity.ok(compatibleLanguages);
     }
 
+    @PostMapping("/search/author")
+    public ResponseEntity<List<Asset>> searchByAuthor(@RequestBody String searchString) {
+        List<Asset> compatibleLanguages = assetService.searchByAuthor(searchString);
+        return ResponseEntity.ok(compatibleLanguages);
+    }
+
     @PostMapping("/search/title")
     public ResponseEntity<List<Asset>> searchByName(@RequestBody String searchString) {
         List<Asset> compatibleAssets = assetService.searchByName(searchString);

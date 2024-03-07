@@ -20,6 +20,10 @@ public class Languages {
 
     private String language_name;
 
+    public Languages(String language_name) {
+        this.language_name = language_name;
+    }
+
 }
 
 
