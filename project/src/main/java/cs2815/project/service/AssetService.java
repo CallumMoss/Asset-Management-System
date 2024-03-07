@@ -26,5 +26,7 @@ public interface AssetService {
 
     List<Integer> isParentOf(int assetId);
 
+    List<Asset> searchByAuthor(String searchString);
+
     void createBaseAssets();
 }

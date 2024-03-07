@@ -64,9 +64,9 @@ public class AssetImpl implements AssetService {
         List<Asset> dependents = new ArrayList<>();
 
         for (String title : assetdto.getDependencies()) {
-            Asset tempAsset = repo.findAssetByTitle(title);
-            if (tempAsset != null) {
-                dependents.add(tempAsset);
+            List<Asset> tempAsset = repo.findAssetByTitle(title);
+            if (tempAsset.get(0) != null) {
+                dependents.add(tempAsset.get(0));
             }
         }
         asset.setDependent(dependents);
@@ -111,12 +111,30 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
+    public List<Asset> searchByAuthor(String searchString) {
+        List<String> assetAuthors = userRepo.findAllUserNames();
+        List<Asset> compatibleAssets = new ArrayList<>();
+        for (String author : assetAuthors) {
+            if (searchString.equals(author) || userService.isSimilar(searchString, author)) {
+                List<Asset> assets = repo.findAssetByAuthor(userRepo.getUserByUsername(author).get(0));
+                if (!compatibleAssets.contains(assets.get(0))) {
+                    compatibleAssets.addAll(assets);
+                }
+            }
+        }
+        return compatibleAssets;
+    }
+
+    @Override
     public List<Asset> searchByName(String searchString) {
         List<String> assetNames = repo.getAllNames();
         List<Asset> compatibleAssets = new ArrayList<>();
         for (String name : assetNames) {
             if (searchString.equals(name) || userService.isSimilar(searchString, name)) {
-                compatibleAssets.add(repo.getAssetByName(name));
+                List<Asset> assets = repo.findAssetByTitle(name);
+                if (!compatibleAssets.contains(assets.get(0))) {
+                    compatibleAssets.addAll(assets);
+                }
             }
         }
         return compatibleAssets;
@@ -128,7 +146,8 @@ public class AssetImpl implements AssetService {
         List<Asset> compatibleAssets = new ArrayList<>();
         for (String type : assetTypes) {
             if (searchString.equals(type) || userService.isSimilar(searchString, type)) {
-                compatibleAssets.add(repo.findAssetByType(type));
+                List<Asset> assets = repo.findAssetByType(type);
+                compatibleAssets.addAll(assets);
             }
         }
         return compatibleAssets;
