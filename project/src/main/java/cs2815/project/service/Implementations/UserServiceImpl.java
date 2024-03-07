@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(String userName, String newPassword) {
+    public void resetPassword(String userName, String user_role, String newPassword) {
 
         Log log = new Log();
         User tempUser = repo.findByUserName(userName);

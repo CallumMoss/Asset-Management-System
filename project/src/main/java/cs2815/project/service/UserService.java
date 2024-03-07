@@ -28,6 +28,6 @@ public interface UserService {
 
     List<User> searchByRole(String searchString);
 
-    void resetPassword(String userName, String newPassword);
+    void resetPassword(String userName, String user_role, String newPassword);
 
 }
