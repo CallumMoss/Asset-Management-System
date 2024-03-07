@@ -27,25 +27,25 @@ function Assets({ username, userRole }) {
             break;
           case "title":
             response = await axios.post(
-              "http://localhost:8080/users/search/title",
+              "http://localhost:8080/assets/search/title",
               searchTerm
             );
             break;
           case "type":
             response = await axios.post(
-              "http://localhost:8080/users/search/type",
+              "http://localhost:8080/assets/search/type",
               searchTerm
             );
             break;
           case "date":
             response = await axios.post(
-              "http://localhost:8080/users/search/date",
+              "http://localhost:8080/assets/search/date",
               searchTerm
             );
             break;
           case "author":
             response = await axios.post(
-              "http://localhost:8080/users/search/author",
+              "http://localhost:8080/assets/search/author",
               searchTerm
             );
             break;

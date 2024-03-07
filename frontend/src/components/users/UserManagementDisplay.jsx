@@ -10,11 +10,17 @@ import {
   TableRow,
   Paper,
   Container,
+  TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
+
 import AlertDialog from "./AlertDialog";
 
 function UserManagementDisplay({ userList }) {
   const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
   const navigate = useNavigate();
@@ -70,8 +76,21 @@ function UserManagementDisplay({ userList }) {
   };
 
   const handleEdit = (userName) => {
-    // Implement your edit functionality here
+    setEditingUser(userName)
+    setIsEditing(true); 
     console.log("Edit user:", userName);
+  };
+
+  const handleSave = async () => {
+    try {
+      await axios.post('http://localhost:8080/users/edit', editingUser);
+      fetchUsers();
+      setEditingUser(null);
+    } catch (error) {
+      console.error(error.response.data);
+      alert("An error occurred while updating the user.");
+    }
+    setIsEditing(false);
   };
 
   const handleCreate = () => {
@@ -113,6 +132,36 @@ function UserManagementDisplay({ userList }) {
   return (
     <Container component={Paper}>
       <h1>User Management</h1>
+      {isEditing ? (
+        <form>
+          <TextField
+          label="Username" variant="outlined" value={editingUser.user_name}
+          onChange={(e) => setEditingUser({ ...editingUser, user_name: e.target.value })}
+          />
+          <TextField
+          label="First Name" variant="outlined" value={editingUser.user_first_name}
+          onChange={(e) => setEditingUser({ ...editingUser, user_first_name: e.target.value })}
+          />
+          <TextField
+          label="Last Name" variant="outlined" value={editingUser.user_last_name}
+          onChange={(e) => setEditingUser({ ...editingUser, user_last_name: e.target.value })}
+          />
+          <Select
+            id="role"
+            name="role"
+            value={editingUser.user_role}
+            onChange={(e => setEditingUser({ ...editingUser, user_role: e.target.value }))}
+          >
+            <MenuItem value="" disabled>
+              Select a role
+            </MenuItem>
+            <MenuItem value="Viewer">Viewer</MenuItem>
+            <MenuItem value="User">User</MenuItem>
+            <MenuItem value="Admin">Admin</MenuItem>
+          </Select>
+          <Button onClick={handleSave}>Save</Button>
+        </form>
+      ) : (
       <Table>
         <TableHead>
           <TableRow>
@@ -133,7 +182,6 @@ function UserManagementDisplay({ userList }) {
             message="Are you sure you want to delete this user?"
             onConfirm={handleDeleteConfirmation}
           />
-
           {users.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.user_name}</TableCell>
@@ -141,10 +189,14 @@ function UserManagementDisplay({ userList }) {
               <TableCell>{user.user_last_name}</TableCell>
               <TableCell>{user.user_role}</TableCell>
               <TableCell>
+                {isEditing ? (
+                  <Button onClick={handleSave}>Save</Button>
+                ) : (
+                  <Button onClick={() => handleEdit(user)}>Edit</Button>
+                )}
                 <Button onClick={() => resetPassword(user.user_name)}>
                   Reset Password
                 </Button>
-                <Button onClick={() => handleEdit(user.user_name)}>Edit</Button>
                 <Button onClick={() => promptDeleteConfirmation(user.id)}>
                   Delete
                 </Button>
@@ -153,6 +205,7 @@ function UserManagementDisplay({ userList }) {
           ))}
         </TableBody>
       </Table>
+      )}
     </Container>
   );
 }

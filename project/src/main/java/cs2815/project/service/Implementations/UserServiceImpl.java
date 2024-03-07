@@ -191,9 +191,7 @@ public class UserServiceImpl implements UserService {
             if (searchString.equals(role) || isSimilar(searchString, role)) {
                 List<User> users = repo.getUserByRole(role);
                 compatibleUsers.addAll(users);
-                if (!compatibleUsers.contains(users.get(0))) {
-                    compatibleUsers.addAll(users);
-                }
+                return compatibleUsers;
             }
         }
         return compatibleUsers;

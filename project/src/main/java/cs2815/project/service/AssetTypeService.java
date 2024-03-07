@@ -14,4 +14,6 @@ public interface AssetTypeService {
     List<AssetType> refreshAssetType();
 
     List<AssetType> searchTypes(String searchword);
+
+    void createBaseTypes();
 }
