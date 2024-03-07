@@ -1,6 +1,7 @@
 package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Log;
+import cs2815.project.model.User;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.service.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class LogServiceImpl implements LogService {
         for (String desc : descriptionList) {
             if (searchString.equals(desc) || userService.isSimilar(searchString, desc)) {
                 List<Log> logs = repo.getLogByDescription(desc);
+                compatibleLogs.addAll(logs);
                 if (!compatibleLogs.contains(logs.get(0))) {
                     compatibleLogs.addAll(logs);
                 }

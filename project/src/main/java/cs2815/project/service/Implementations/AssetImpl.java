@@ -116,9 +116,14 @@ public class AssetImpl implements AssetService {
         List<Asset> compatibleAssets = new ArrayList<>();
         for (String author : assetAuthors) {
             if (searchString.equals(author) || userService.isSimilar(searchString, author)) {
-                List<Asset> assets = repo.findAssetByAuthor(userRepo.getUserByUsername(author).get(0));
-                if (!compatibleAssets.contains(assets.get(0))) {
-                    compatibleAssets.addAll(assets);
+                List<User> compatibleAuthors = userRepo.getUserByUsername(author);
+                for (User compAuth : compatibleAuthors) {
+                    List<Asset> assets = repo.findAssetByAuthor(compAuth);
+                    for (Asset asset : assets) {
+                        if (!compatibleAssets.contains(asset)) {
+                            compatibleAssets.add(asset);
+                        }
+                    }
                 }
             }
         }
