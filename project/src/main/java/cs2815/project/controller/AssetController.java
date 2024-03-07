@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import cs2815.project.model.Asset;
-
+import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
 
 import cs2815.project.service.AssetService;
@@ -40,6 +40,13 @@ public class AssetController {
 
         return ResponseEntity.ok(assetService.refresh());
 
+    }
+
+
+      @PostMapping("/edit")
+    public ResponseEntity<String> editUser(@RequestBody Asset asset) {
+        assetService.editAsset(asset);
+        return ResponseEntity.ok("Asset edited successfully");
     }
 
     @PostMapping("/search/language")
