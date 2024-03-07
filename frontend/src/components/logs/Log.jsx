@@ -10,7 +10,6 @@ import axios from "axios";
 function Log({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedLogs, setSearchedLogs] = useState([]);
-  const [filter, setFilter] = useState("");
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -19,10 +18,7 @@ function Log({ userRole, username }) {
       let response = null;
       if (searchTerm !== "") {
         // if user has searched something, show search results
-        response = await axios.post(
-          "http://localhost:8080/logs/search",
-          searchTerm
-        ); // searches by description
+        response = await axios.post("http://localhost:8080/logs/search", searchTerm); // searches by description
       } else {
         // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/logs/refresh");
@@ -32,11 +28,6 @@ function Log({ userRole, username }) {
       console.error("Error searching for the log:", error);
       alert("An error occurred while searching for the logs");
     }
-  };
-
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-    console.log("Filtering by:", e.target.value);
   };
 
   return (
@@ -62,14 +53,6 @@ function Log({ userRole, username }) {
                   onClick={handleSearch}>
                   Search
                 </button>
-                <select
-                  value={filter}
-                  onChange={handleFilterChange}
-                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                  <option value="">Filter</option>
-                  <option value="description">Description</option>
-                  <option value="time">Time</option>
-                </select>
               </div>
             </div>
           </div>
