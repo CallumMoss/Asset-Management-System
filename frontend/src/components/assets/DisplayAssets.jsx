@@ -14,24 +14,44 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import AlertDialog from './AlertDialog';
+import AlertDialog from "./AlertDialog";
 
-import ViewLog from "./ViewLogAsset"
-function DisplayAssets({assetList}) {
+import ViewLog from "./ViewLogAsset";
+
+function LogsDialog({ logs, open, handleClose }) {
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Logs</DialogTitle>
+      <DialogContent>
+        {logs.map((log) => (
+          <TableRow key={log.id}>
+            <TableCell>{log.updateDescription}</TableCell>
+            <TableCell>{log.updateTimestamp}</TableCell>
+          </TableRow>
+        ))}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Close</Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
+function DisplayAssets({ assetList }) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [logs, setLogs] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
+  const [logsDialogOpen, setLogsDialogOpen] = useState(false);
 
   useEffect(() => {
-    if(assetList.length == 0) {
+    if (assetList.length == 0) {
       getAssets();
     }
-      setAssets(assetList);
-      console.log("Set assets to the searched assets.");
-    
+    setAssets(assetList);
+    console.log("Set assets to the searched assets.");
   }, [assetList]); // only called if assetList is updated.
 
   const getAssets = async () => {
@@ -82,15 +102,17 @@ function DisplayAssets({assetList}) {
 
   const handleViewLog = (asset_id) => {
     const fetchLogs = async (assetId) => {
+      console.log({ assetId });
       try {
         const response = await axios.get(
-          `http://localhost:8080/logs/refresh/${assetId}`
+          `http://localhost:8080/logs/${assetId}`
         );
         console.log("API Response:", response.data);
 
         if (Array.isArray(response.data)) {
           const logsFromApi = response.data;
           setLogs(logsFromApi);
+          setLogsDialogOpen(true);
         } else {
           console.error("Unexpected response structure:", response.data);
           setLogs([]); // Fallback to an empty array
@@ -106,6 +128,9 @@ function DisplayAssets({assetList}) {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+  const handleCloseLogsDialog = () => {
+    setLogsDialogOpen(false);
   };
 
   return (
@@ -125,13 +150,12 @@ function DisplayAssets({assetList}) {
           </TableRow>
         </TableHead>
         <TableBody>
-
           <AlertDialog
-              open={openAlertDialog}
-              handleClose={() => setOpenAlertDialog(false)}
-              title="Confirm Delete"
-              message="Are you sure you want to delete this asset?"
-              onConfirm={confirmDelete}
+            open={openAlertDialog}
+            handleClose={() => setOpenAlertDialog(false)}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this asset?"
+            onConfirm={confirmDelete}
           />
 
           {assets.map((asset) => (
@@ -156,7 +180,9 @@ function DisplayAssets({assetList}) {
               </TableCell>
               <TableCell>
                 <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
-                <Button onClick={() => promptDelete(asset.asset_id)}>Delete</Button>
+                <Button onClick={() => promptDelete(asset.asset_id)}>
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -219,6 +245,11 @@ function DisplayAssets({assetList}) {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
+      <LogsDialog
+        logs={logs}
+        open={logsDialogOpen}
+        handleClose={handleCloseLogsDialog}
+      />
     </Container>
   );
 }

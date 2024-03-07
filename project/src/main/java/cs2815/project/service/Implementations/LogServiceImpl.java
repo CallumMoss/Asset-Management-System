@@ -42,7 +42,7 @@ public class LogServiceImpl implements LogService {
     public List<Log> getUserLog() {
         List<Log> allLogs = repo.findAllOrderedByUpdateTimestampDesc();
         List<Log> compatibleLogs = new ArrayList<>();
-        for (Log log : allLogs ) {
+        for (Log log : allLogs) {
             if (log.getAsset() == null) {
                 compatibleLogs.add(log);
             }
@@ -54,12 +54,17 @@ public class LogServiceImpl implements LogService {
     public List<Log> getAssetLog() {
         List<Log> allLogs = repo.findAllOrderedByUpdateTimestampDesc();
         List<Log> compatibleLogs = new ArrayList<>();
-        for (Log log : allLogs ) {
+        for (Log log : allLogs) {
             if (log.getUser() == null) {
                 compatibleLogs.add(log);
             }
         }
         return compatibleLogs;
+    }
+
+    @Override
+    public List<Log> getLogsByAssetId(int assetId) {
+        return repo.getLogByAssetId(assetId);
     }
 
 }
