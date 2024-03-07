@@ -14,6 +14,8 @@ public interface AssetService {
 
     void deleteAsset(int assetID);
 
+    void editAsset(Asset asset);
+
     List<Asset> refresh();
 
     List<String> searchLanguage(String searchString);
