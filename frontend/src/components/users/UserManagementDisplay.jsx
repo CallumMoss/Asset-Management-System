@@ -141,10 +141,24 @@ function UserManagementDisplay({ userList }) {
 
   const handleSortBy = async (orderBy) => {
     try {
+      let orderByParam = ""; // Initialize orderByParam
+  
+      // Map orderBy to match backend expectations
+      switch (orderBy) {
+        case "firstName":
+          orderByParam = "FirstName";
+          break;
+        case "lastName":
+          orderByParam = "LastName";
+          break;
+        default:
+          orderByParam = "UserName";
+      }
+  
       const response = await axios.post(
         "http://localhost:8080/users/sort/alphabetically",
-        users, // Sending the list of users to be sorted
-        { params: { orderBy } } // Pass orderBy as a query parameter
+        users,
+        { params: { orderBy: orderByParam } }
       );
       if (Array.isArray(response.data)) {
         setUsers(response.data);
@@ -156,7 +170,8 @@ function UserManagementDisplay({ userList }) {
       console.error("Axios Error:", error);
       alert("Could not sort users. An error occurred.");
     }
-  };  
+  };
+  
 
   console.log("Users ------");
   console.log(users);
