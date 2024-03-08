@@ -210,4 +210,9 @@ public class UserServiceImpl implements UserService {
         return pointerSearch == searchString.length();
     }
 
+    @Override
+    public User findUser(String userName) {
+
+        return repo.findByUserName(userName);
+    }
 }

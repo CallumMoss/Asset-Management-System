@@ -30,8 +30,7 @@ function UserManagementDisplay({ userList }) {
     otherwise, use ours to display.
   */
 
-
- useEffect(() => {
+  useEffect(() => {
     if (userList.length === 0) {
       fetchUsers();
     } else {
@@ -39,7 +38,7 @@ function UserManagementDisplay({ userList }) {
     }
   }, [userList]);
 
-const handleDeleteConfirmation = async () => {
+  const handleDeleteConfirmation = async () => {
     if (deleteUserId !== null) {
       try {
         await axios.delete(`http://localhost:8080/users/${deleteUserId}`);
