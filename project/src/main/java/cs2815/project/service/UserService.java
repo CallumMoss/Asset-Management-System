@@ -32,4 +32,5 @@ public interface UserService {
 
     void resetPassword(String userName, String newPassword);
 
+    List<User> sortAlphabetically(List<User> unsortedUsers, String orderBy);
 }

@@ -10,13 +10,7 @@ import cs2815.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,8 +39,8 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
 
-        // if users table is empty, call all createBase for all tables
-        if (userService.refreshUser().size() == 0) {
+    // if users table is empty, call all createBase for all tables
+        if (userService.refreshUser().isEmpty()) {
             userService.createBaseUsers();
             languageService.createBaseLanguages();
             assetTypeService.createBaseTypes();
@@ -120,5 +114,11 @@ public class UserController {
     public ResponseEntity<List<User>> searchByRole(@RequestBody String searchString) {
         List<User> compatibleUsers = userService.searchByRole(searchString);
         return ResponseEntity.ok(compatibleUsers);
+    }
+
+    @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
+    public ResponseEntity<List<User>> sortAlphabetically(@RequestBody List<User> unsortedUsers, @RequestParam(required = false) String orderBy) {
+        List<User> sortedUsers = userService.sortAlphabetically(unsortedUsers, orderBy);
+        return ResponseEntity.ok(sortedUsers);
     }
 }
