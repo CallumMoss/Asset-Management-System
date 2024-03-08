@@ -1,6 +1,7 @@
 package cs2815.project.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,8 +48,8 @@ public class AssetTypeController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody String searchString) {
-        List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString);
+    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody Map<String,String> searchString) {
+        List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsernames);
     }
 }

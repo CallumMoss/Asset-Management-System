@@ -20,7 +20,7 @@ function AssetType({ userRole, username }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/asset_types/search", searchTerm); // searches by title
+        response = await axios.post("http://localhost:8080/asset_types/search", {searchTerm}); // searches by title
       } else { // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/asset_types/refresh");
       }

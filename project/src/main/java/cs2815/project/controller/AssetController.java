@@ -16,6 +16,7 @@ import cs2815.project.model.specialmodels.AssetWrapper;
 
 import cs2815.project.service.AssetService;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/assets")
@@ -43,26 +44,26 @@ public class AssetController {
     }
 
     @PostMapping("/search/language")
-    public ResponseEntity<List<String>> searchLanguage(@RequestBody String searchString) {
-        List<String> compatibleLanguages = assetService.searchLanguage(searchString);
+    public ResponseEntity<List<String>> searchLanguage(@RequestBody Map<String,String> searchString) {
+        List<String> compatibleLanguages = assetService.searchLanguage(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLanguages);
     }
 
     @PostMapping("/search/type")
-    public ResponseEntity<List<Asset>> searchByType(@RequestBody String searchString) {
-        List<Asset> compatibleLanguages = assetService.searchByType(searchString);
+    public ResponseEntity<List<Asset>> searchByType(@RequestBody Map<String,String> searchString) {
+        List<Asset> compatibleLanguages = assetService.searchByType(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLanguages);
     }
 
     @PostMapping("/search/author")
-    public ResponseEntity<List<Asset>> searchByAuthor(@RequestBody String searchString) {
-        List<Asset> compatibleLanguages = assetService.searchByAuthor(searchString);
+    public ResponseEntity<List<Asset>> searchByAuthor(@RequestBody Map<String,String> searchString) {
+        List<Asset> compatibleLanguages = assetService.searchByAuthor(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLanguages);
     }
 
     @PostMapping("/search/title")
-    public ResponseEntity<List<Asset>> searchByName(@RequestBody String searchString) {
-        List<Asset> compatibleAssets = assetService.searchByName(searchString);
+    public ResponseEntity<List<Asset>> searchByName(@RequestBody Map<String,String> searchString) {
+        List<Asset> compatibleAssets = assetService.searchByName(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleAssets);
     }
 
