@@ -142,15 +142,21 @@ function UserManagementDisplay({ userList }) {
   const handleSortBy = async (orderBy) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/users/sort/alphabetically", users, { params: { orderBy } }
+        "http://localhost:8080/users/sort/alphabetically",
+        users, // Sending the list of users to be sorted
+        { params: { orderBy } } // Pass orderBy as a query parameter
       );
-      console.log("Sort request successful:", response.data);
-      // Handle the sorted users in the response
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort users. Unexpected response structure.");
+      }
     } catch (error) {
       console.error("Axios Error:", error);
-      alert("Could not sort..");
+      alert("Could not sort users. An error occurred.");
     }
-  };
+  };  
 
   console.log("Users ------");
   console.log(users);
