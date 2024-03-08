@@ -137,17 +137,18 @@ public class UserServiceImpl implements UserService {
         switch (orderBy) {
             case "FirstName":
                 for (User user : unsortedUsers) {
-                    sortByList.add(user.getUser_first_name());
+                    sortByList.add(user.getUser_first_name().toLowerCase());
                 }
                 break;
             case "LastName":
                 for (User user : unsortedUsers) {
-                    sortByList.add(user.getUser_last_name());
+                    sortByList.add(user.getUser_last_name().toLowerCase());
                 }
                 break;
             default:
                 for (User user : unsortedUsers) {
-                    sortByList.add(user.getUser_name());
+                    //May need to add.LowerCase() to this in future, case sensitivity makes different usernames so not added for now.
+                    sortByList.add(user.getUser_name()); 
                 }
         }
         String temp;

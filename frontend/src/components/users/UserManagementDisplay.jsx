@@ -14,7 +14,6 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-
 import AlertDialog from "./AlertDialog";
 
 function UserManagementDisplay({ userList }) {
@@ -141,38 +140,31 @@ function UserManagementDisplay({ userList }) {
 
   const handleSortBy = async (orderBy) => {
     try {
-      let orderByParam = ""; // Initialize orderByParam
-  
-      // Map orderBy to match backend expectations
-      switch (orderBy) {
-        case "firstName":
-          orderByParam = "FirstName";
-          break;
-        case "lastName":
-          orderByParam = "LastName";
-          break;
-        default:
-          orderByParam = "UserName";
-      }
-  
-      const response = await axios.post(
-        "http://localhost:8080/users/sort/alphabetically",
-        users,
-        { params: { orderBy: orderByParam } }
-      );
-      if (Array.isArray(response.data)) {
-        setUsers(response.data);
-      } else {
-        console.error("Unexpected response structure:", response.data);
-        alert("Could not sort users. Unexpected response structure.");
-      }
-    } catch (error) {
-      console.error("Axios Error:", error);
-      alert("Could not sort users. An error occurred.");
-    }
-  };
-  
+        let orderByParam = ""; // Initialize the orderByParam
 
+        // Used to determine value of orderby to be sent as param
+        switch (orderBy) {
+            case "firstName":
+                orderByParam = "FirstName";
+                break;
+            case "lastName":
+                orderByParam = "LastName";
+                break;
+            default:
+                orderByParam = "UserName";
+        }
+        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", users, { params: { orderBy: orderByParam } } );
+        if (Array.isArray(response.data)) {
+            setUsers(response.data);
+        } else {
+            console.error("Unexpected response structure:", response.data);
+            alert("Could not sort users. Unexpected response structure.");
+        }
+    } catch (error) {
+        console.error("Axios Error:", error);
+        alert("Could not sort users. An error occurred.");
+    }
+};
   console.log("Users ------");
   console.log(users);
   return (
@@ -219,19 +211,18 @@ function UserManagementDisplay({ userList }) {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Button onClick={() => handleCreate()}>Create</Button>
                   <div>
-                    <Button
-                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
                       aria-controls="sort-menu"
                       aria-haspopup="true"
                     >
                       Sort
                     </Button>
-                    <Menu
-                      id="sort-menu"
+                    {/*menu for sortby options*/}
+                    <Menu id="sort-menu"
                       anchorEl={sortAnchorEl}
                       open={Boolean(sortAnchorEl)}
-                      onClose={() => setSortAnchorEl(null)}
-                    >
+                      onClose={() => setSortAnchorEl(null)}>
+
                       <MenuItem onClick={() => handleSortBy("username")}>Username</MenuItem>
                       <MenuItem onClick={() => handleSortBy("firstName")}>First Name</MenuItem>
                       <MenuItem onClick={() => handleSortBy("lastName")}>Last Name</MenuItem>
@@ -273,5 +264,4 @@ function UserManagementDisplay({ userList }) {
     </Container>
   );
 }
-
 export default UserManagementDisplay;
