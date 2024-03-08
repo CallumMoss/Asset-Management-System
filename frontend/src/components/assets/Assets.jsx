@@ -131,7 +131,7 @@ function Assets({ username, userRole }) {
           </div>
         </section>
         <section>
-          <DisplayAssets assetList={searchedAssets} />
+          <DisplayAssets assetList={searchedAssets} username={username} />
         </section>
       </main>
     </div>

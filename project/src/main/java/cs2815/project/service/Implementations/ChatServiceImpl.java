@@ -19,6 +19,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void sendMessage(ChatBoard message) {
 
+        System.out.println(message.getTextMessage() + message.getAsset() + message.getUser());
         message.setMessageSent(new Timestamp(System.currentTimeMillis()));
         chatRepo.save(message);
     }
@@ -30,8 +31,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<ChatBoard> refresh(int asset_id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'refresh'");
+        return chatRepo.getMessageByAssetId(asset_id);
     }
 
 }

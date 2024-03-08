@@ -18,6 +18,8 @@ public interface UserService {
 
     void deleteUser(int userId);
 
+    User findUser(String userName);
+
     List<User> refreshUser();
 
     List<User> searchByUsername(String searchString);
