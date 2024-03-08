@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,10 +11,9 @@ import {
   Paper,
   Container,
   TextField,
-  Select,
+  Menu,
   MenuItem,
 } from "@mui/material";
-
 import AlertDialog from "./AlertDialog";
 
 function UserManagementDisplay({ userList }) {
@@ -23,15 +22,12 @@ function UserManagementDisplay({ userList }) {
   const [isEditing, setIsEditing] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
+  const [sortBy, setSortBy] = useState(""); // Track the sorting criteria
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
   const navigate = useNavigate();
-  /*
-    Give UserManagementDisplay arguments, use this to setUsers
-    in useEffect, check if setUsers == null or empty, if it is, fetch
-    otherwise, use ours to display.
-  */
+  const sortOptionsRef = useRef(null); // Ref to the sorting options dropdown
 
-
- useEffect(() => {
+  useEffect(() => {
     if (userList.length === 0) {
       fetchUsers();
     } else {
@@ -39,7 +35,20 @@ function UserManagementDisplay({ userList }) {
     }
   }, [userList]);
 
-const handleDeleteConfirmation = async () => {
+  useEffect(() => {
+    // Add event listener to close sorting options dropdown when clicking outside of it
+    function handleClickOutside(event) {
+      if (sortOptionsRef.current && !sortOptionsRef.current.contains(event.target)) {
+        setSortAnchorEl(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleDeleteConfirmation = async () => {
     if (deleteUserId !== null) {
       try {
         await axios.delete(`http://localhost:8080/users/${deleteUserId}`);
@@ -77,14 +86,14 @@ const handleDeleteConfirmation = async () => {
   };
 
   const handleEdit = (userName) => {
-    setEditingUser(userName)
-    setIsEditing(true); 
+    setEditingUser(userName);
+    setIsEditing(true);
     console.log("Edit user:", userName);
   };
 
   const handleSave = async () => {
     try {
-      await axios.post('http://localhost:8080/users/edit', editingUser);
+      await axios.post("http://localhost:8080/users/edit", editingUser);
       fetchUsers();
       setEditingUser(null);
     } catch (error) {
@@ -97,6 +106,7 @@ const handleDeleteConfirmation = async () => {
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
+
   const resetPassword = async (userName) => {
     try {
       await axios.post("http://localhost:8080/users/reset-password", {
@@ -104,10 +114,10 @@ const handleDeleteConfirmation = async () => {
         newPassword: "default",
       });
 
-      alert("Password succesfully reseted!");
+      alert("Password successfully reset!");
     } catch (error) {
       console.error("Axios Error:", error);
-      alert("An error occurred while deleting the user.");
+      alert("An error occurred while resetting the password.");
     }
   };
 
@@ -128,6 +138,33 @@ const handleDeleteConfirmation = async () => {
     }
   };
 
+  const handleSortBy = async (orderBy) => {
+    try {
+        let orderByParam = ""; // Initialize the orderByParam
+
+        // Used to determine value of orderby to be sent as param
+        switch (orderBy) {
+            case "firstName":
+                orderByParam = "FirstName";
+                break;
+            case "lastName":
+                orderByParam = "LastName";
+                break;
+            default:
+                orderByParam = "UserName";
+        }
+        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", users, { params: { orderBy: orderByParam } } );
+        if (Array.isArray(response.data)) {
+            setUsers(response.data);
+        } else {
+            console.error("Unexpected response structure:", response.data);
+            alert("Could not sort users. Unexpected response structure.");
+        }
+    } catch (error) {
+        console.error("Axios Error:", error);
+        alert("Could not sort users. An error occurred.");
+    }
+};
   console.log("Users ------");
   console.log(users);
   return (
@@ -136,79 +173,95 @@ const handleDeleteConfirmation = async () => {
       {isEditing ? (
         <form>
           <TextField
-          label="Username" variant="outlined" value={editingUser.user_name}
-          onChange={(e) => setEditingUser({ ...editingUser, user_name: e.target.value })}
+            label="Username"
+            variant="outlined"
+            value={editingUser.user_name}
+            onChange={(e) =>
+              setEditingUser({ ...editingUser, user_name: e.target.value })
+            }
           />
           <TextField
-          label="First Name" variant="outlined" value={editingUser.user_first_name}
-          onChange={(e) => setEditingUser({ ...editingUser, user_first_name: e.target.value })}
+            label="First Name"
+            variant="outlined"
+            value={editingUser.user_first_name}
+            onChange={(e) =>
+              setEditingUser({ ...editingUser, user_first_name: e.target.value })
+            }
           />
           <TextField
-          label="Last Name" variant="outlined" value={editingUser.user_last_name}
-          onChange={(e) => setEditingUser({ ...editingUser, user_last_name: e.target.value })}
+            label="Last Name"
+            variant="outlined"
+            value={editingUser.user_last_name}
+            onChange={(e) =>
+              setEditingUser({ ...editingUser, user_last_name: e.target.value })
+            }
           />
-          <Select
-            id="role"
-            name="role"
-            value={editingUser.user_role}
-            onChange={(e => setEditingUser({ ...editingUser, user_role: e.target.value }))}
-          >
-            <MenuItem value="" disabled>
-              Select a role
-            </MenuItem>
-            <MenuItem value="Viewer">Viewer</MenuItem>
-            <MenuItem value="User">User</MenuItem>
-            <MenuItem value="Admin">Admin</MenuItem>
-          </Select>
           <Button onClick={handleSave}>Save</Button>
         </form>
       ) : (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>UserName</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <Button onClick={() => handleCreate()}>Create</Button>
-            <Button onClick={() => fetchUsers()}>Refresh</Button>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <AlertDialog
-            open={openDialog}
-            handleClose={() => setOpenDialog(false)}
-            title="Confirm Delete"
-            message="Are you sure you want to delete this user?"
-            onConfirm={handleDeleteConfirmation}
-          />
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.user_name}</TableCell>
-              <TableCell>{user.user_first_name}</TableCell>
-              <TableCell>{user.user_last_name}</TableCell>
-              <TableCell>{user.user_role}</TableCell>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ fontWeight: "bold" }}>UserName</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
+              <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
               <TableCell>
-                {isEditing ? (
-                  <Button onClick={handleSave}>Save</Button>
-                ) : (
-                  <Button onClick={() => handleEdit(user)}>Edit</Button>
-                )}
-                <Button onClick={() => resetPassword(user.user_name)}>
-                  Reset Password
-                </Button>
-                <Button onClick={() => promptDeleteConfirmation(user.id)}>
-                  Delete
-                </Button>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Button onClick={() => handleCreate()}>Create</Button>
+                  <div>
+                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                      aria-controls="sort-menu"
+                      aria-haspopup="true"
+                    >
+                      Sort
+                    </Button>
+                    {/*menu for sortby options*/}
+                    <Menu id="sort-menu"
+                      anchorEl={sortAnchorEl}
+                      open={Boolean(sortAnchorEl)}
+                      onClose={() => setSortAnchorEl(null)}>
+
+                      <MenuItem onClick={() => handleSortBy("username")}>Username</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("firstName")}>First Name</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("lastName")}>Last Name</MenuItem>
+                    </Menu>
+                  </div>
+                  <Button onClick={() => fetchUsers()}>Refresh</Button>
+                </div>
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            <AlertDialog
+              open={openDialog}
+              handleClose={() => setOpenDialog(false)}
+              title="Confirm Delete"
+              message="Are you sure you want to delete this user?"
+              onConfirm={handleDeleteConfirmation}
+            />
+            {users.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.user_name}</TableCell>
+                <TableCell>{user.user_first_name}</TableCell>
+                <TableCell>{user.user_last_name}</TableCell>
+                <TableCell>{user.user_role}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handleEdit(user)}>Edit</Button>
+                  <Button onClick={() => resetPassword(user.user_name)}>
+                    Reset Password
+                  </Button>
+                  <Button onClick={() => promptDeleteConfirmation(user.id)}>
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
     </Container>
   );
 }
-
 export default UserManagementDisplay;
