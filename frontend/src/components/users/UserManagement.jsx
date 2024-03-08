@@ -13,27 +13,16 @@ function UserManagement({ userRole, username }) {
     e.preventDefault();
     try {
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        switch(filter) {
-          case "": // if they havent searched by using a filter, search by username as default.
-            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
-            break;
-          case "username":
-            response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
-            break;
-          case "firstname":
-            response = await axios.post("http://localhost:8080/users/search/firstname", searchTerm);
-            break;
-          case "lastname":
-            response = await axios.post("http://localhost:8080/users/search/lastname", searchTerm);
-            break;
-          case "role":
-            response = await axios.post("http://localhost:8080/users/search/role", searchTerm);
-            break;
+      if (searchTerm != "") {
+        if(filter == "") { // default to username search
+          response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
         }
-          console.log(response);
-
-      } else { // if user hasnt searched, show regular results
+        else {
+        response = await axios.post("http://localhost:8080/users/search/" + filter, searchTerm);
+        }
+        console.log(response);
+      }  
+       else { // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/users/refresh");
       }
       setSearchedUsers(response.data);
@@ -75,7 +64,7 @@ function UserManagement({ userRole, username }) {
                   value={filter}
                   onChange={handleFilterChange}
                   className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                  <option value="">Filter</option>
+                  <option value="" disabled>Filter</option>
                   <option value="username">Username</option>
                   <option value="firstname">First Name</option>
                   <option value="lastname">Last Name</option>

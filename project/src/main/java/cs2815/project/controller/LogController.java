@@ -24,6 +24,13 @@ public class LogController {
 
     }
 
+    @GetMapping("/{asset_id}")
+    public ResponseEntity<List<Log>> getLogsByAssetId(@PathVariable int asset_id) {
+        List<Log> logs = logService.getLogsByAssetId(asset_id);
+        return ResponseEntity.ok(logs);
+
+    }
+
     @PostMapping("/search")
     public ResponseEntity<List<Log>> searchLog(@RequestBody String searchString) {
         List<Log> compatibleLogs = logService.searchByDescription(searchString);

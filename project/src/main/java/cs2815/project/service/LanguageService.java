@@ -7,4 +7,5 @@ public interface LanguageService {
     
     List<Languages> refreshLanguages();
 
+    void createBaseLanguages();
 }

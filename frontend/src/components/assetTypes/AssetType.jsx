@@ -11,7 +11,6 @@ import Navbar from "../navigation/Navbar";
 function AssetType({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedTypes, setSearchedTypes] = useState([]);
-  const [filter, setFilter] = useState("");
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
@@ -30,11 +29,6 @@ function AssetType({ userRole, username }) {
       console.error("Error searching for the asset type:", error);
       alert("An error occurred while searching for the asset types");
     }
-  };
-
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-    console.log("Filtering by:", e.target.value);
   };
 
   // If you are not using menuRef for outside click detection, you can remove this useEffect hook.
@@ -75,15 +69,6 @@ function AssetType({ userRole, username }) {
                   onClick={handleSearch}>
                   Search
                 </button>
-                <select
-                  value={filter}
-                  onChange={handleFilterChange}
-                  className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                  <option value="">Filter</option>
-                  <option value="name">Name</option>
-                  <option value="category">Category</option>
-                  <option value="status">Status</option>
-                </select>
               </div>
             </div>
           </div>

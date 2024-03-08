@@ -17,39 +17,14 @@ function Assets({ username, userRole }) {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") {
-        // if user has searched something, show search results
-        switch (filter) {
-          case "": // if they havent searched by using a filter, search by username as default.
-            response = await axios.post(
-              "http://localhost:8080/assets/search/title",
-              searchTerm
-            );
-            break;
-          case "title":
-            response = await axios.post(
-              "http://localhost:8080/assets/search/title",
-              searchTerm
-            );
-            break;
-          case "type":
-            response = await axios.post(
-              "http://localhost:8080/assets/search/type",
-              searchTerm
-            );
-            break;
-          case "date":
-            response = await axios.post(
-              "http://localhost:8080/assets/search/date",
-              searchTerm
-            );
-            break;
-          case "author":
-            response = await axios.post(
-              "http://localhost:8080/assets/search/author",
-              searchTerm
-            );
-            break;
+       
+        if(filter == "") { // default to asset title search
+          response = await axios.post("http://localhost:8080/assets/search/title", searchTerm);
         }
+        else {
+          response = await axios.post("http://localhost:8080/assets/search/" + filter, searchTerm);
+          }
+        console.log(response);
       } else {
         // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/assets/refresh");
@@ -107,11 +82,10 @@ function Assets({ username, userRole }) {
                     value={filter}
                     onChange={handleFilterChange}
                     className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                    <option value="">Filter</option>
-                    <option value="type">Type</option>
-                    <option value="date">Date</option>
-                    <option value="author">Author</option>
+                    <option value="" disabled>Filter</option>
                     <option value="title">Title</option>
+                    <option value="type">Type</option>
+                    <option value="author">Author</option>
                   </select>
                 </div>
               </div>
@@ -131,7 +105,7 @@ function Assets({ username, userRole }) {
           </div>
         </section>
         <section>
-          <DisplayAssets assetList={searchedAssets} />
+          <DisplayAssets assetList={searchedAssets} username={username} />
         </section>
       </main>
     </div>

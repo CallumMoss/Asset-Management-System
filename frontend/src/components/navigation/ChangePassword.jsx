@@ -114,6 +114,7 @@ function ChangePassword({ username, userRole }) {
               id="oldPassword"
               label="Old Password"
               name="oldPassword"
+              type="password"
               autoFocus
               value={oldPassword}
               onChange={handleChange}
@@ -125,6 +126,7 @@ function ChangePassword({ username, userRole }) {
               id="newPassword"
               label="New Password"
               name="newPassword"
+              type="password"
               autoFocus
               value={newPassword}
               onChange={handleChange}
@@ -136,6 +138,7 @@ function ChangePassword({ username, userRole }) {
               id="confirmNewPassword"
               label="Confirm New Password"
               name="confirmNewPassword"
+              type="password"
               autoFocus
               value={confirmNewPassword}
               onChange={handleChange}

@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 public class ChatBoard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int boardId;
+    private int messageId;
 
     @ManyToOne
     @JoinColumn(name = "asset_id")
@@ -30,7 +30,9 @@ public class ChatBoard {
 
     private String textMessage;
 
-    // private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private Timestamp messageSent;
 

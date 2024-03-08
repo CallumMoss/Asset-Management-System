@@ -18,6 +18,8 @@ public interface UserService {
 
     void deleteUser(int userId);
 
+    User findUser(String userName);
+
     List<User> refreshUser();
 
     List<User> searchByUsername(String searchString);
@@ -30,4 +32,5 @@ public interface UserService {
 
     void resetPassword(String userName, String user_role, String newPassword);
 
+    List<User> sortAlphabetically(List<User> unsortedUsers, String orderBy);
 }
