@@ -1,65 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from "../navigation/Navbar"; // Ensure this path matches your project structure
 
-function CreateAsset() {
+function CreateAsset({ userRole, username }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
-  const [authors, setAuthors] = useState([]);
-  const [dependencies, setDependencies] = useState([]);
+  const [author, setAuthor] = useState(""); 
+  const [dependency, setDependency] = useState(""); 
+  const [language, setLanguage] = useState(""); 
   const [assetTypes, setAssetTypes] = useState([]);
   const [link, setLink] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [dependenciesList, setDependenciesList] = useState([]);
-  const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
 
   useEffect(() => {
-    const fetchAssetTypes = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/asset_types/refresh");
-        setAssetTypes(response.data);
-        console.log("Fetched asset types:", response.data);
+        const [assetTypesRes, authorsRes, dependenciesRes, languagesRes] = await Promise.all([
+          axios.get("http://localhost:8080/asset_types/refresh"),
+          axios.get("http://localhost:8080/users/refresh"),
+          axios.get("http://localhost:8080/assets/refresh"),
+          axios.get("http://localhost:8080/languages/refresh"),
+        ]);
+        setAssetTypes(assetTypesRes.data);
+        setAuthorsList(authorsRes.data.map(a => ({ id: a.id, name: a.user_name }))); // Assuming API returns an id and a user_name
+        setDependenciesList(dependenciesRes.data.map(d => ({ id: d.id, title: d.title }))); // Assuming API returns an id and a title
+        setLangList(languagesRes.data.map(l => ({ id: l.id, name: l.language_name }))); // Assuming API returns an id and a language_name
       } catch (error) {
-        console.error("Error fetching asset types:", error);
+        console.error("Error fetching data", error);
       }
     };
-
-    const fetchAuthors = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/users/refresh");
-        setAuthorsList(response.data);
-        console.log("Fetched authors:", response.data);
-      } catch (error) {
-        console.error("Error fetching authors:", error);
-      }
-    };
-
-    const fetchDependencies = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/assets/refresh");
-        setDependenciesList(response.data);
-        console.log("Fetched dependencies:", response.data);
-      } catch (error) {
-        console.error("Error fetching dependencies:", error);
-      }
-    };
-
-    const fetchLanguages = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/languages/refresh");
-        setLangList(response.data);
-        console.log("Fetched languages:", response.data);
-      } catch (error) {
-        console.error("Error fetching languages:", error);
-      }
-    };
-
-    fetchAssetTypes();
-    fetchAuthors();
-    fetchDependencies();
-    fetchLanguages();
+    fetchData();
   }, []);
 
   const navigate = useNavigate();
@@ -71,12 +45,11 @@ function CreateAsset() {
         title,
         asset_description: description,
         link,
-        languages,
         asset_type: type,
-        authors,
-        dependencies,
+        authors: author ? [author] : [], // Adjusted for single selection
+        dependencies: dependency ? [dependency] : [], // Adjusted for single selection
+        languages: language ? [language] : [], // Adjusted for single selection
       });
-      console.log("Asset created successfully");
       navigate("/assets");
     } catch (error) {
       console.error("Error creating asset:", error);
@@ -85,53 +58,79 @@ function CreateAsset() {
   };
 
   return (
+    <>
+      <Navbar userRole={userRole} username={username} />
       <div className="container mx-auto px-4">
         <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
+          {/* Title */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="title">
-                Title
-              </label>
-              <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+              <label htmlFor="title" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Title</label>
+              <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" required />
             </div>
           </div>
 
+          {/* Description */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="description">
-                Description
-              </label>
-              <textarea className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="description" rows="4" value={description} onChange={(e) => setDescription(e.target.value)} required />
+              <label htmlFor="description" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Description</label>
+              <textarea id="description" rows="3" value={description} onChange={(e) => setDescription(e.target.value)} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" required></textarea>
             </div>
           </div>
 
+          {/* Asset Type */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="type">
-                Asset Type
-              </label>
-              <select className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="type" value={type} onChange={(e) => setType(e.target.value)} required>
-                <option value="" disabled>Select an asset type</option>
-                {assetTypes.map((assetType) => (
-                    <option key={assetType.type_id} value={assetType.type_name}>
-                      {assetType.type_name}
-                    </option>
-                ))}
+              <label htmlFor="type" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Asset Type</label>
+              <select id="type" value={type} onChange={(e) => setType(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" required>
+                <option value="">Select an asset type</option>
+                {assetTypes.map((type) => <option key={type.type_id} value={type.type_name}>{type.type_name}</option>)}
               </select>
             </div>
           </div>
 
-          {/* Similar structure for Authors, Dependencies, and Languages with appropriate adjustments for multi-select */}
-
+          {/* Author */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="link">
-                Link
-              </label>
-              <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" id="link" type="text" value={link} onChange={(e) => setLink(e.target.value)} required />
+              <label htmlFor="author" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Author</label>
+              <select id="author" value={author} onChange={(e) => setAuthor(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
+                <option value="">Select an author</option>
+                {authorsList.map((author) => <option key={author.id} value={author.id}>{author.name}</option>)}
+              </select>
             </div>
           </div>
 
+          {/* Dependency */}
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full px-3">
+              <label htmlFor="dependency" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Dependency</label>
+              <select id="dependency" value={dependency} onChange={(e) => setDependency(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
+                <option value="">Select a dependency</option>
+                {dependenciesList.map((dependency) => <option key={dependency.id} value={dependency.id}>{dependency.title}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Language */}
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full px-3">
+              <label htmlFor="language" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Language</label>
+              <select id="language" value={language} onChange={(e) => setLanguage(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
+                <option value="">Select a language</option>
+                {langList.map((language) => <option key={language.id} value={language.id}>{language.name}</option>)}
+              </select>
+            </div>
+          </div>
+
+          {/* Link */}
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full px-3">
+              <label htmlFor="link" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Link</label>
+              <input type="text" id="link" value={link} onChange={(e) => setLink(e.target.value)} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" required />
+            </div>
+          </div>
+
+          {/* Submit Button */}
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full px-3 text-center">
               <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="submit">
@@ -141,6 +140,7 @@ function CreateAsset() {
           </div>
         </form>
       </div>
+    </>
   );
 }
 
