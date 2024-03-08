@@ -4,17 +4,21 @@ import Navbar from './Navbar';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 
-import '../style.css';
+import '../style.css'; 
 import '../Menustyle.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function FeatureCard({ title, description, subTitle }) {
+function FeatureCard({ title, description, number }) {
+  const isTotalAssetsCard = title === "Total Assets";
+  
   return (
-    <div className="bg-white p-4 shadow-md rounded-lg m-2 transition-transform duration-300 hover:scale-105">
-      <h2 className="text-lg font-bold mb-2">{title}</h2>
-      <p>{description}</p>
-      {subTitle && <h3 className="text-xl font-bold mt-2">{subTitle}</h3>}
+    <div className={`bg-white p-4 shadow rounded-lg m-2 transition-transform duration-300 hover:scale-105 ${isTotalAssetsCard ? "flex flex-col items-center justify-start" : ""}`}>
+      <h2 className={`text-lg font-bold ${isTotalAssetsCard ? "mt-2" : "mb-2"}`}>{title}</h2>
+      <p className={`${isTotalAssetsCard ? "my-2" : "mb-2"}`}>{description}</p>
+      {isTotalAssetsCard && (
+        <div className="text-6xl font-bold self-center mt-4">{number}</div>
+      )}
     </div>
   );
 }
@@ -89,17 +93,20 @@ function Dashboard({ username, userRole }) {
           <FeatureCard
             title="Total Assets"
             description="Overview of all assets in the system."
-            subTitle={`Total: ${totalAssets}`}
+            number={totalAssets}
           />
+        {/* Latest Asset */}
+        <FeatureCard
+            title="Latest Asset"
+            description="Check the most recently added Asset."
+          />
+          {/* Authors Allocation */}
           <FeatureCard
-            title="Issues Reported"
-            description="Track reported issues and maintenance."
+            title="Authors Allocation"
+            description="Overview of asset authors allocation."
           />
-          <FeatureCard
-            title="Asset Allocation"
-            description="View how assets are distributed across departments."
-          />
-          <div className="bg-white p-4 shadow-md rounded-lg m-2 transition-transform duration-300 hover:scale-105">
+          {/* Asset Distribution */}
+          <div className="bg-white p-4 shadow rounded-lg m-2 transition-transform duration-300 hover:scale-105">
             <h2 className="text-lg font-bold mb-2">Asset Distribution</h2>
             <Doughnut data={chartData} />
           </div>

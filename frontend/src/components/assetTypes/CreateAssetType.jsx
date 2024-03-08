@@ -1,33 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Chip from "@mui/material/Chip";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
+import Navbar from "../navigation/Navbar"; 
 
-const defaultTheme = createTheme(); // can be used to create a default theme
-
-function CreateAssetType() {
+function CreateAssetType({ userRole, username }) {
   const [typeName, setTypeName] = useState("");
   const [description, setDescription] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    // this adds to the database
     e.preventDefault();
     try {
       await axios.post("http://localhost:8080/asset_types/create", {
-        type_name: typeName, // name of variable in table : name of local variable
+        type_name: typeName,
         description: description,
       });
       console.log("Asset Type created successfully");
@@ -39,59 +25,50 @@ function CreateAssetType() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="sm">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}>
-          <Typography component="h1" variant="h5">
-            Create Asset Type
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="typeName"
-              label="Type Name"
-              name="typeName"
-              autoFocus
-              value={typeName}
-              onChange={(e) => setTypeName(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="description"
-              label="Description"
-              name="description"
-              multiline
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-
-            <Button
+    <>
+      <Navbar userRole={userRole} username={username} />
+      <div className="container mx-auto px-4 pt-8">
+        <div className="flex flex-col items-center">
+          <h1 className="text-xl font-bold mb-4">Create Asset Type</h1>
+          <form className="w-full max-w-md" onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="typeName" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Type Name
+              </label>
+              <input
+                type="text"
+                id="typeName"
+                name="typeName"
+                required
+                autoFocus
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+                value={typeName}
+                onChange={(e) => setTypeName(e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="description" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                required
+                rows="4"
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+            </div>
+            <button
               type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}>
+              className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
               Submit
-            </Button>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+            </button>
+          </form>
+        </div>
+      </div>
+    </>
   );
 }
 

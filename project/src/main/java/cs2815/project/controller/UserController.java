@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import javax.swing.plaf.synth.SynthEditorPaneUI;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -28,7 +30,6 @@ public class UserController {
     private AssetTypeService assetTypeService;
     @Autowired
     private AssetService assetService;
-
 
     @PostMapping("/createuser")
     public void registerUser(@RequestBody User user) {
@@ -83,6 +84,12 @@ public class UserController {
     public ResponseEntity<List<User>> refreshUser() {
         List<User> users = userService.refreshUser();
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/finduser/{username}")
+    public ResponseEntity<User> findUser(@PathVariable String username) {
+        User user = userService.findUser(username);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/search/username")
