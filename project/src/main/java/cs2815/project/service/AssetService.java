@@ -20,10 +20,6 @@ public interface AssetService {
 
     List<Asset> searchByName(String searchString);
 
-    List<Integer> isDependantOn(@RequestBody int assetId);
-
-    List<Integer> isParentOf(int assetId);
-
     List<Asset> searchByAuthor(String searchString);
 
     void createBaseAssets();

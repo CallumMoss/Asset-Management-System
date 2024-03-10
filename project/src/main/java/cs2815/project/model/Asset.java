@@ -3,7 +3,10 @@ package cs2815.project.model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +34,7 @@ public class Asset {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int asset_id;
 
+        @Column(unique = true)
         private String title;
         private String asset_description;
         private String link;
@@ -44,10 +49,9 @@ public class Asset {
         @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
         private List<User> authors;
 
-        @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-                        CascadeType.REFRESH, CascadeType.REMOVE })
-        @JoinTable(name = "dependency", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "belonging_id"))
-        private List<Asset> dependent;
+        @JsonIgnore
+        @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+        private List<AssetDependency> dependencies;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
                         CascadeType.REFRESH })

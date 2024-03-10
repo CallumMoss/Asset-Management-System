@@ -43,7 +43,7 @@ function MessagesDialog({ messages, open, handleClose, username, asset }) {
   const [user, setUser] = useState("");
 
   const handleSend = async () => {
-    await getUser();
+    await getUser(username);
     if (newMessage.trim() !== "") {
       const response = await axios.post("http://localhost:8080/messages/send", {
         textMessage: newMessage,
@@ -55,15 +55,15 @@ function MessagesDialog({ messages, open, handleClose, username, asset }) {
     }
   };
 
-  const getUser = async () => {
+  const getUser = async (userName) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/users/finduser/${username}`
+        `http://localhost:8080/users/finduser/${userName}`
       );
 
       console.log("API Response:", response.data);
 
-      if (response.data && typeof response.data === "object") {
+      if (response.data) {
         // Assuming the response is an object, not an array
         setUser(response.data);
       } else {

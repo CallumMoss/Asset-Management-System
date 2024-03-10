@@ -13,24 +13,25 @@ import {
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
-function AssetTypeDisplay({assetTypeList}) {
+function AssetTypeDisplay({ assetTypeList }) {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
 
   useEffect(() => {
-    if(assetTypeList.length == 0) {
+    if (assetTypeList.length == 0) {
       fetchAssetTypes();
     }
-      setAssetTypes(assetTypeList);
-      console.log("Set assetTypes to the searched asset types.");
-    
+    setAssetTypes(assetTypeList);
+    console.log("Set assetTypes to the searched asset types.");
   }, [assetTypeList]); // only called if userList is updated.
 
   const fetchAssetTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/asset_types/refresh");
+      const response = await axios.get(
+        "http://localhost:8080/asset_types/refresh"
+      );
       console.log("API Response:", response.data);
 
       if (Array.isArray(response.data)) {
@@ -84,6 +85,7 @@ function AssetTypeDisplay({assetTypeList}) {
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <Button onClick={() => handleCreate()}>Create</Button>
             <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
           </TableRow>
