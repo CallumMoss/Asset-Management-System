@@ -26,6 +26,10 @@ public class AssetType {
 
     private String description;
 
+    private String typeAttribute1;
+    private String typeAttribute2;
+    private String typeAttribute3;
+
     public AssetType(String type_name, String description) {
         this.type_name = type_name;
         this.description = description;

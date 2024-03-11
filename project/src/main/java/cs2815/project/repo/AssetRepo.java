@@ -25,9 +25,6 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT at.type_name FROM AssetType at")
     List<String> getAllTypes();
 
-    @Query("SELECT a FROM Asset a WHERE a.title = :assetName")
-    Asset getAssetByName(@Param("assetName") String assetName);
-
     @Query("SELECT a FROM Asset a WHERE a.asset_id = :assetId")
     Asset findAssetById(@Param("assetId") int assetId);
 
@@ -37,6 +34,9 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a FROM Asset a WHERE a.Asset_type.type_name = :typeName")
     List<Asset> findAssetByType(@Param("typeName") String typeName);
 
+    @Query("SELECT at.typeAttributeValue1, at.typeAttributeValue2, at.typeAttributeValue3 FROM Asset at WHERE at.asset_id = :assetId")
+    List<String> getAssetAttributes(@Param("assetId") int assetId);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Asset at WHERE at.asset_id = :assetID")
@@ -44,7 +44,7 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Modifying
     @Transactional
-    @Query("UPDATE Asset a SET a.Asset_type = null WHERE a.Asset_type.id = :AssetTypeId")
+    @Query("UPDATE Asset a SET a.Asset_type = null WHERE a.Asset_type.type_id = :AssetTypeId")
     void eraseTypeIdFromAsset(@Param("AssetTypeId") int AssetTypeId);
 
     @Modifying
@@ -60,4 +60,5 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Query("SELECT a FROM Asset a WHERE :author MEMBER OF a.authors")
     List<Asset> findAssetByAuthor(@Param("author") User author);
+
 }

@@ -1,5 +1,6 @@
 package cs2815.project.service;
 
+import java.util.AbstractMap;
 import java.util.List;
 import cs2815.project.model.AssetType;
 
@@ -16,4 +17,6 @@ public interface AssetTypeService {
     List<AssetType> searchTypes(String searchword);
 
     void createBaseTypes();
+
+    List<AbstractMap.SimpleEntry<String, List<String>>> getTypesAndAttributes();
 }

@@ -34,6 +34,10 @@ public class Asset {
         private String asset_description;
         private String link;
 
+        private String typeAttributeValue1;
+        private String typeAttributeValue2;
+        private String typeAttributeValue3;
+
         private Timestamp updateTimestamp;
 
         @ManyToOne

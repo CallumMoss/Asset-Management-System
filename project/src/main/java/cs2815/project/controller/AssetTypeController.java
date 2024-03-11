@@ -1,5 +1,6 @@
 package cs2815.project.controller;
 
+import java.util.AbstractMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,11 @@ public class AssetTypeController {
     public ResponseEntity<List<AssetType>> searchTypes(@RequestBody String searchString) {
         List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString);
         return ResponseEntity.ok(compatibleUsernames);
+    }
+
+    @PostMapping("/attributes")
+    public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<String>>>> getTypesAndAttributes() {
+        List<AbstractMap.SimpleEntry<String, List<String>>> attributeTitles = assetTypeService.getTypesAndAttributes();
+        return ResponseEntity.ok(attributeTitles);
     }
 }

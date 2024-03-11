@@ -15,6 +15,8 @@ import cs2815.project.model.Asset;
 import cs2815.project.model.specialmodels.AssetWrapper;
 
 import cs2815.project.service.AssetService;
+
+import java.util.AbstractMap;
 import java.util.List;
 
 @RestController
@@ -86,6 +88,12 @@ public class AssetController {
     public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
         List<Integer> dependencies = assetService.isParentOf(assetId);
         return ResponseEntity.ok(dependencies);
+    }
+
+    @PostMapping("/attributes")
+    public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>>> getAssetsAndAttributes() {
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService.getAssetsAndAttributes();
+        return ResponseEntity.ok(assetsAndAttributes);
     }
 
 }
