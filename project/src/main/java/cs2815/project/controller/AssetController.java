@@ -43,6 +43,13 @@ public class AssetController {
 
     }
 
+    @GetMapping("/getnewest")
+    public ResponseEntity<Asset> getNewest() {
+
+        return ResponseEntity.ok(assetService.getNewestAsset());
+
+    }
+
     @PostMapping("/search/language")
     public ResponseEntity<List<String>> searchLanguage(@RequestBody Map<String, String> searchString) {
         List<String> compatibleLanguages = assetService.searchLanguage(searchString.get("searchTerm"));

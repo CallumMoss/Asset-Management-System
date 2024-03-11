@@ -21,4 +21,9 @@ public interface ChatBoardRepo extends JpaRepository<ChatBoard, Integer> {
     @Transactional
     @Query("DELETE FROM ChatBoard l WHERE l.asset.asset_id = :assetID")
     void deleteMessagebyAssetID(@Param("assetID") int assetID);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE ChatBoard l SET l.user = null WHERE l.user.id = :userID")
+    void eraseUserIdfromChatBoard(@Param("userID") int userID);
 }

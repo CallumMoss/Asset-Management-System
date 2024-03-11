@@ -19,6 +19,9 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
 
+    @Query("SELECT a FROM Asset a WHERE a.asset_id = (SELECT MAX(a2.asset_id) FROM Asset a2)")
+    Asset findNewestAsset();
+
     @Query("SELECT a.title FROM Asset a")
     List<String> getAllNames();
 

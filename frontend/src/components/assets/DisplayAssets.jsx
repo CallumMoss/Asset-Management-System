@@ -84,7 +84,9 @@ function MessagesDialog({ messages, open, handleClose, username, asset }) {
           <TableRow key={message.messageId}>
             <TableCell>{message.textMessage}</TableCell>
             <TableCell>{message.messageSent}</TableCell>
-            <TableCell>{message.user.user_name}</TableCell>
+            <TableCell>
+              {message.user ? message.user.user_name : "Deleted User"}
+            </TableCell>
           </TableRow>
         ))}
       </DialogContent>

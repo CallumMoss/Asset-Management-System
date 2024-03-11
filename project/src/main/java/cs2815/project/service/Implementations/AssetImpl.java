@@ -186,6 +186,11 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
+    public Asset getNewestAsset() {
+        return repo.findNewestAsset();
+    }
+
+    @Override
     public void deleteAsset(int assetID) {
 
         Log log = new Log();
