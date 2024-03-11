@@ -318,16 +318,23 @@ function DisplayAssets({ username, assetList }) {
               </p>
               <br></br>
               <p>
-                Dependant Assets:{" "}
-                {selectedAsset.dependent
+                Assets that the CURRENT asset is depending on:{" "}
+                {selectedAsset.dependencies
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
               <p>
-                Assets depending on current asset:{" "}
-                {selectedAsset.dependent
-                  .map((dependency) => dependency.title)
-                  .join(", ")}
+                Assets depending on CURRENT asset:{" "}
+                {selectedAsset.dependencies
+                  .filter(
+                    (dependency) =>
+                      dependency.dependent && dependency.dependent.title
+                  )
+                  .map(
+                    (dependency) =>
+                      `${dependency.dependent.title} (${dependency.relationType})`
+                  )
+                  .join(", ") || "None"}
               </p>
               <br></br>
               <p>
