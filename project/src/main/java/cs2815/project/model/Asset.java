@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -49,8 +50,8 @@ public class Asset {
         @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
         private List<User> authors;
 
-        @JsonIgnore
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+        @JsonManagedReference
         private List<AssetDependency> dependencies;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,

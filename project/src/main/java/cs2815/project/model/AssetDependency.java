@@ -1,5 +1,7 @@
 package cs2815.project.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +29,7 @@ public class AssetDependency {
 
     @ManyToOne
     @JoinColumn(name = "asset_id")
+    @JsonBackReference
     private Asset asset;
 
     @ManyToOne
