@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
   Container,
+  TextField,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -51,8 +52,8 @@ function AssetTypeDisplay({assetTypeList}) {
   const handleEdit = (assetType) => {
     // Implement your edit functionality here
     console.log("Edit asset type:", assetType);
-    setIsEditing(true);
     setEditedAssetType(assetType);
+    setIsEditing(true);
   };
 
   const handleUpdate = async () => {
@@ -94,7 +95,19 @@ function AssetTypeDisplay({assetTypeList}) {
   return (
     <Container component={Paper}>
       <h1>Asset Type Management</h1>
-
+      {isEditing ? (
+        <form>
+          <TextField
+          label="Type Name" variant="outlined" value={editedAssetType.type_name}
+          onChange{ ...(e) => setEditedAssetType({ ...editedAssetType, type_name: e.target.value })}
+          />
+          <TextField
+          label="Description" variant="outlined" value={editedAssetType.description}
+          onChange{ ...(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
+          />
+          <Button onClick={handleUpdate}>Save</Button>
+        </form>
+      ) : (
       <Table>
         <TableHead>
           <TableRow>
@@ -120,7 +133,7 @@ function AssetTypeDisplay({assetTypeList}) {
               <TableCell>{assetType.description}</TableCell>
 
               <TableCell>
-                <Button onClick={() => handleEdit(assetType.user_name)}>
+                <Button onClick={() => handleEdit(assetType)}>
                   Edit
                 </Button>
                 <Button
@@ -132,6 +145,7 @@ function AssetTypeDisplay({assetTypeList}) {
           ))}
         </TableBody>
       </Table>
+      )}
     </Container>
   );
 }
