@@ -47,8 +47,8 @@ public class AssetTypeController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<String>> searchTypes(@RequestBody String searchString) {
-        List<String> compatibleUsernames = assetTypeService.searchTypes(searchString);
+    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody String searchString) {
+        List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString);
         return ResponseEntity.ok(compatibleUsernames);
     }
 }
