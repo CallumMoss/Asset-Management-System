@@ -167,4 +167,9 @@ public class AssetImpl implements AssetService {
         repo.deleteAssetbyID(assetID);
     }
 
+    @Override
+    public void editAsset(Asset asset) {    
+        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description());
+    }
+
 }
