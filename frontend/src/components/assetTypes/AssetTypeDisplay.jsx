@@ -79,7 +79,6 @@ function AssetTypeDisplay({ assetTypeList }) {
 
   return (
     <Container component={Paper}>
-      <h1>Asset Type Management</h1>
       <Table>
         <TableHead>
           <TableRow>

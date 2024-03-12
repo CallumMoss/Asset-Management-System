@@ -243,7 +243,6 @@ function DisplayAssets({ username, assetList }) {
 
   return (
     <Container component={Paper}>
-      <h1>Assets</h1>
       <Table>
         <TableHead>
           <TableRow>
