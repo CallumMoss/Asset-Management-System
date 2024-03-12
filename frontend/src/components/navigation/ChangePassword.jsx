@@ -19,6 +19,7 @@ function ChangePassword({ username, userRole }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [error, setError] = useState("");
+  const [role, setRole] = useState("");
 
   // Function to handle changes in form fields
   const handleChange = (e) => {
@@ -76,7 +77,7 @@ function ChangePassword({ username, userRole }) {
   // Render the component
   return (
     <>
-      <Navbar userRole={userRole} username={username} />
+      <Navbar userRole={role} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
         <Box
