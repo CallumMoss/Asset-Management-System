@@ -122,6 +122,8 @@ function DisplayAssets({ username, assetList }) {
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
 
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+
   useEffect(() => {
     if (assetList.length == 0) {
       getAssets();
@@ -239,6 +241,21 @@ function DisplayAssets({ username, assetList }) {
     setLogsDialogOpen(false);
   };
 
+  const handleSortBy = async (orderBy) => {
+    try {
+        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", assets, { params: { orderBy: orderBy } } );
+        if (Array.isArray(response.data)) {
+          setAssets(response.data);
+        } else {
+            console.error("Unexpected response structure:", response.data);
+            alert("Could not sort users. Unexpected response structure.");
+        }
+    } catch (error) {
+        console.error("Axios Error:", error);
+        alert("Could not sort users. An error occurred.");
+    }
+};
+
   return (
     <Container component={Paper}>
       <h1>Assets</h1>
@@ -252,7 +269,17 @@ function DisplayAssets({ username, assetList }) {
             <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <Button onClick={() => getAssets()}>Refresh</Button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+            <div>
+                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                      aria-controls="sort-menu"
+                      aria-haspopup="true"
+                    >
+                      Sort
+                    </Button>
+                  </div>
+                  <Button onClick={() => getAssets()}>Refresh</Button>
+            </div>
           </TableRow>
         </TableHead>
         <TableBody>

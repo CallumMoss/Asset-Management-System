@@ -10,9 +10,6 @@ import {
   TableRow,
   Paper,
   Container,
-  TextField,
-  Menu,
-  MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -115,7 +112,7 @@ function AssetTypeDisplay({assetTypeList}) {
                     </Button>
                   </div>
                   <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-                </div>
+            </div>
           </TableRow>
         </TableHead>
         <TableBody>
