@@ -98,12 +98,16 @@ function AssetTypeDisplay({assetTypeList}) {
       {isEditing ? (
         <form>
           <TextField
-          label="Type Name" variant="outlined" value={editedAssetType.type_name}
-          onChange{ ...(e) => setEditedAssetType({ ...editedAssetType, type_name: e.target.value })}
+          label="Type Name" 
+          variant="outlined"
+          value={editedAssetType.type_name}
+          onChange={(e) => setEditedAssetType({ ...editedAssetType, type_name: e.target.value })}
           />
           <TextField
-          label="Description" variant="outlined" value={editedAssetType.description}
-          onChange{ ...(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
+          label="Description" 
+          variant="outlined" 
+          value={editedAssetType.description}
+          onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
           />
           <Button onClick={handleUpdate}>Save</Button>
         </form>
