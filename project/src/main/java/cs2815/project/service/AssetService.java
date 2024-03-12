@@ -25,4 +25,6 @@ public interface AssetService {
     List<Asset> searchByAuthor(String searchString);
 
     void createBaseAssets();
+
+    List<Asset> sortAlphabetically(List<Asset> unsortedAssets, String orderBy);
 }
