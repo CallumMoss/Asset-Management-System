@@ -15,10 +15,10 @@ function UserManagement({ userRole, username }) {
       let response = null;
       if (searchTerm != "") {
         if(filter == "") { // default to username search
-          response = await axios.post("http://localhost:8080/users/search/username", searchTerm);
+          response = await axios.post("http://localhost:8080/users/search/username", {searchTerm});
         }
         else {
-        response = await axios.post("http://localhost:8080/users/search/" + filter, searchTerm);
+        response = await axios.post("http://localhost:8080/users/search/" + filter, {searchTerm});
         }
         console.log(response);
       }  

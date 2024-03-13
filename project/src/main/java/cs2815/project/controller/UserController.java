@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.plaf.synth.SynthEditorPaneUI;
 
@@ -93,26 +94,26 @@ public class UserController {
     }
 
     @PostMapping("/search/username")
-    public ResponseEntity<List<User>> searchByUsername(@RequestBody String searchString) {
-        List<User> compatibleUsers = userService.searchByUsername(searchString);
+    public ResponseEntity<List<User>> searchByUsername(@RequestBody Map<String,String> searchString) {
+        List<User> compatibleUsers = userService.searchByUsername(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/firstname")
-    public ResponseEntity<List<User>> searchByFirstName(@RequestBody String searchString) {
-        List<User> compatibleUsers = userService.searchByFirstName(searchString);
+    public ResponseEntity<List<User>> searchByFirstName(@RequestBody Map<String,String> searchString) {
+        List<User> compatibleUsers = userService.searchByFirstName(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/lastname")
-    public ResponseEntity<List<User>> searchByLastName(@RequestBody String searchString) {
-        List<User> compatibleUsers = userService.searchByLastName(searchString);
+    public ResponseEntity<List<User>> searchByLastName(@RequestBody Map<String,String> searchString) {
+        List<User> compatibleUsers = userService.searchByLastName(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/role")
-    public ResponseEntity<List<User>> searchByRole(@RequestBody String searchString) {
-        List<User> compatibleUsers = userService.searchByRole(searchString);
+    public ResponseEntity<List<User>> searchByRole(@RequestBody Map<String,String> searchString) {
+        List<User> compatibleUsers = userService.searchByRole(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 

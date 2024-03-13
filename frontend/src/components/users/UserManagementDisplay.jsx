@@ -169,7 +169,6 @@ function UserManagementDisplay({ userList }) {
   console.log(users);
   return (
     <Container component={Paper}>
-      <h1>User Management</h1>
       {isEditing ? (
         <form>
           <TextField

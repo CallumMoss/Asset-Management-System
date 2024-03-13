@@ -18,7 +18,7 @@ function Log({ userRole, username }) {
       let response = null;
       if (searchTerm !== "") {
         // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/logs/search", searchTerm); // searches by description
+        response = await axios.post("http://localhost:8080/logs/search", {searchTerm}); // searches by description
       } else {
         // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/logs/refresh");

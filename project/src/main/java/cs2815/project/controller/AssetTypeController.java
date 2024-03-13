@@ -1,17 +1,13 @@
 package cs2815.project.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import cs2815.project.model.Asset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import cs2815.project.model.AssetType;
 import cs2815.project.service.AssetTypeService;
 
@@ -47,8 +43,14 @@ public class AssetTypeController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody String searchString) {
-        List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString);
+    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody Map<String,String> searchString) {
+        List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsernames);
+    }
+
+    @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
+    public ResponseEntity<List<AssetType>> sortAlphabetically(@RequestBody List<AssetType> unsortedAssetTypes) {
+        List<AssetType> sortedAssetTypes = assetTypeService.sortAlphabetically(unsortedAssetTypes);
+        return ResponseEntity.ok(sortedAssetTypes);
     }
 }

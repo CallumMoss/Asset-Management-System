@@ -1,6 +1,8 @@
 package cs2815.project.service;
 
 import java.util.List;
+
+import cs2815.project.model.Asset;
 import cs2815.project.model.AssetType;
 
 public interface AssetTypeService {
@@ -16,4 +18,6 @@ public interface AssetTypeService {
     List<AssetType> searchTypes(String searchword);
 
     void createBaseTypes();
+
+    List<AssetType> sortAlphabetically(List<AssetType> unsortedAssetTypes);
 }

@@ -12,6 +12,8 @@ public interface AssetService {
 
     void deleteAsset(int assetID);
 
+    Asset getNewestAsset();
+
     List<Asset> refresh();
 
     List<String> searchLanguage(String searchString);
@@ -20,11 +22,9 @@ public interface AssetService {
 
     List<Asset> searchByName(String searchString);
 
-    List<Integer> isDependantOn(@RequestBody int assetId);
-
-    List<Integer> isParentOf(int assetId);
-
     List<Asset> searchByAuthor(String searchString);
 
     void createBaseAssets();
+
+    List<Asset> sortAlphabetically(List<Asset> unsortedAssets, String orderBy);
 }

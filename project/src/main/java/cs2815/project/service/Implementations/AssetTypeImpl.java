@@ -1,17 +1,17 @@
 package cs2815.project.service.Implementations;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import cs2815.project.model.AssetType;
 import cs2815.project.model.Log;
 import cs2815.project.repo.AssetRepo;
 import cs2815.project.repo.AssetTypeRepo;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.service.AssetTypeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AssetTypeImpl implements AssetTypeService {
@@ -45,6 +45,31 @@ public class AssetTypeImpl implements AssetTypeService {
         createAssetType(new AssetType("Documentation", "A file that contains documentation to supply extra information about any given asset."));
         createAssetType(new AssetType("Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."));
         createAssetType(new AssetType("Java File", "A file that contains java code for a given project."));
+    }
+
+    @Override
+    public List<AssetType> sortAlphabetically(List<AssetType> unsortedAssetTypes) {
+        List<String> sortByList = new ArrayList<>();
+        List<AssetType> sortedAssetTypes = unsortedAssetTypes;
+        for (AssetType assetType : unsortedAssetTypes) {
+            sortByList.add(assetType.getType_name());
+        }
+        String temp;
+        AssetType tempBis;
+        int size = sortByList.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
+                    temp = sortByList.get(i);
+                    tempBis = sortedAssetTypes.get(i);
+                    sortByList.set(i, sortByList.get(j));
+                    sortedAssetTypes.set(i, sortedAssetTypes.get(j));
+                    sortByList.set(j, temp);
+                    sortedAssetTypes.set(j, tempBis);
+                }
+            }
+        }
+        return sortedAssetTypes;
     }
 
     @Override

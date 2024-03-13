@@ -43,7 +43,7 @@ function MessagesDialog({ messages, open, handleClose, username, asset }) {
   const [user, setUser] = useState("");
 
   const handleSend = async () => {
-    await getUser();
+    await getUser(username);
     if (newMessage.trim() !== "") {
       const response = await axios.post("http://localhost:8080/messages/send", {
         textMessage: newMessage,
@@ -55,15 +55,15 @@ function MessagesDialog({ messages, open, handleClose, username, asset }) {
     }
   };
 
-  const getUser = async () => {
+  const getUser = async (userName) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/users/finduser/${username}`
+        `http://localhost:8080/users/finduser/${userName}`
       );
 
       console.log("API Response:", response.data);
 
-      if (response.data && typeof response.data === "object") {
+      if (response.data) {
         // Assuming the response is an object, not an array
         setUser(response.data);
       } else {
@@ -84,7 +84,9 @@ function MessagesDialog({ messages, open, handleClose, username, asset }) {
           <TableRow key={message.messageId}>
             <TableCell>{message.textMessage}</TableCell>
             <TableCell>{message.messageSent}</TableCell>
-            <TableCell>{message.user.user_name}</TableCell>
+            <TableCell>
+              {message.user ? message.user.user_name : "Deleted User"}
+            </TableCell>
           </TableRow>
         ))}
       </DialogContent>
@@ -258,7 +260,6 @@ function DisplayAssets({ username, assetList }) {
 
   return (
     <Container component={Paper}>
-      <h1>Assets</h1>
       <Table>
         <TableHead>
           <TableRow>
@@ -345,16 +346,23 @@ function DisplayAssets({ username, assetList }) {
               </p>
               <br></br>
               <p>
-                Dependant Assets:{" "}
-                {selectedAsset.dependent
+                Assets that the CURRENT asset is depending on:{" "}
+                {selectedAsset.dependencies
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
               <p>
-                Assets depending on current asset:{" "}
-                {selectedAsset.dependent
-                  .map((dependency) => dependency.title)
-                  .join(", ")}
+                Assets depending on CURRENT asset:{" "}
+                {selectedAsset.dependencies
+                  .filter(
+                    (dependency) =>
+                      dependency.dependent && dependency.dependent.title
+                  )
+                  .map(
+                    (dependency) =>
+                      `${dependency.dependent.title} (${dependency.relationType})`
+                  )
+                  .join(", ") || "None"}
               </p>
               <br></br>
               <p>
