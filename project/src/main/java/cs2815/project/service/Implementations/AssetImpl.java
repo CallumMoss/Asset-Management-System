@@ -168,14 +168,9 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-<<<<<<< HEAD
     public void editAsset(Asset asset) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'editAsset'");
-=======
-    public void editAsset(Asset asset) {    
-        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description());
->>>>>>> 23b5ca8cf5c3f422a370d927e8e5b1c16c27bec1
     }
 
 }
