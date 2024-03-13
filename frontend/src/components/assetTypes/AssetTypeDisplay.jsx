@@ -19,6 +19,8 @@ function AssetTypeDisplay({ assetTypeList }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
 
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+
   useEffect(() => {
     if (assetTypeList.length == 0) {
       fetchAssetTypes();
@@ -77,6 +79,21 @@ function AssetTypeDisplay({ assetTypeList }) {
     }
   };
 
+  const handleSortBy = async (orderBy) => {
+    try {
+        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", assetTypes, { params: { orderBy: orderBy } } );
+        if (Array.isArray(response.data)) {
+          setAssetTypes(response.data);
+        } else {
+            console.error("Unexpected response structure:", response.data);
+            alert("Could not sort users. Unexpected response structure.");
+        }
+    } catch (error) {
+        console.error("Axios Error:", error);
+        alert("Could not sort users. An error occurred.");
+    }
+};
+
   return (
     <Container component={Paper}>
       <Table>
@@ -84,9 +101,18 @@ function AssetTypeDisplay({ assetTypeList }) {
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <Button onClick={() => handleCreate()}>Create</Button>
-            <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                  <Button onClick={() => handleCreate()}>Create</Button>
+                  <div>
+                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                      aria-controls="sort-menu"
+                      aria-haspopup="true"
+                    >
+                      Sort
+                    </Button>
+                  </div>
+                  <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+            </div>
           </TableRow>
         </TableHead>
         <TableBody>
