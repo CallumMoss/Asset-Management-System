@@ -29,16 +29,27 @@ function DisplayAssets({assetList}) {
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [editingAsset, setEditingAsset] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  
+  const [assetTypes, setAssetTypes] = useState([]);
 
   useEffect(() => {
     if(assetList.length == 0) {
       getAssets();
+      fetchAssetTypes();
     }
       setAssets(assetList);
       console.log("Set assets to the searched assets.");
     
   }, [assetList]); // only called if assetList is updated.
+
+  const fetchAssetTypes = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/asset_types/refresh');
+      setAssetTypes(response.data);
+      console.log("Fetched asset types:", response.data);
+    } catch (error) {
+      console.error("Error fetching asset types:", error);
+    }
+  }
 
   const getAssets = async () => {
     try {
