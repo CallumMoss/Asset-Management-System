@@ -3,9 +3,8 @@ package cs2815.project.service;
 import cs2815.project.model.Asset;
 import cs2815.project.model.specialmodels.AssetWrapper;
 
+import java.util.AbstractMap;
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface AssetService {
@@ -14,7 +13,11 @@ public interface AssetService {
 
     void deleteAsset(int assetID);
 
+<<<<<<< HEAD
     void editAsset(Asset asset);
+=======
+    Asset getNewestAsset();
+>>>>>>> a6f76271e352a5480504c6a6bb8a91a829cf8099
 
     List<Asset> refresh();
 
@@ -23,8 +26,12 @@ public interface AssetService {
     List<Asset> searchByType(String searchString);
 
     List<Asset> searchByName(String searchString);
-    
-    List<Integer> isDependantOn(@RequestBody int assetId);
 
-    List<Integer> isParentOf(int assetId);
+    List<Asset> searchByAuthor(String searchString);
+
+    void createBaseAssets();
+
+    List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes();
+
+    List<Asset> sortAlphabetically(List<Asset> unsortedAssets);
 }

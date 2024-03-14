@@ -9,6 +9,7 @@ import cs2815.project.model.Log;
 import cs2815.project.service.LogService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/logs")
@@ -24,9 +25,16 @@ public class LogController {
 
     }
 
+    @GetMapping("/{asset_id}")
+    public ResponseEntity<List<Log>> getLogsByAssetId(@PathVariable int asset_id) {
+        List<Log> logs = logService.getLogsByAssetId(asset_id);
+        return ResponseEntity.ok(logs);
+
+    }
+
     @PostMapping("/search")
-    public ResponseEntity<List<Log>> searchLog(@RequestBody String searchString) {
-        List<Log> compatibleLogs = logService.searchByDescription(searchString);
+    public ResponseEntity<List<Log>> searchLog(@RequestBody Map<String,String> searchString) {
+        List<Log> compatibleLogs = logService.searchByDescription(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLogs);
     }
 

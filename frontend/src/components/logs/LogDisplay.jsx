@@ -22,11 +22,12 @@ function LogDisplay({logList}) {
     if(logList.length == 0) {
       fetchLogs();
     }
+    else {
       setLogs(logList);
       console.log("Set logs to the searched logs.");
-    
+    }
   }, [logList]); // only called if logList is updated.
-
+  
   const fetchLogs = async () => {
     try {
       const response = await axios.get("http://localhost:8080/logs/refresh");
@@ -45,9 +46,21 @@ function LogDisplay({logList}) {
     }
   }
   
+  const formatLogTime = (timestamp) => {
+    try {
+      console.log(logs);
+      const date = new Date(timestamp);
+      const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
+      const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+      return `Date: ${formattedDate} | Time: ${formattedTime}`;
+    } catch (error) {
+      console.error("Failed to format log time:", error);
+      alert("An error occurred while formatting log time.");
+    }
+  };
+  
   return (
     <Container component={Paper}>
-      <h1>Logs</h1>
       <Table>
         <TableHead>
           <TableRow>
@@ -59,7 +72,7 @@ function LogDisplay({logList}) {
           {logs.map((log) => (
             <TableRow key={log.id}>
               <TableCell>{log.updateDescription}</TableCell>
-              <TableCell>{log.updateTimestamp}</TableCell>
+              <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

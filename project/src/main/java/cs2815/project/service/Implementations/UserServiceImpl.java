@@ -1,26 +1,28 @@
 package cs2815.project.service.Implementations;
 
-import java.util.List;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-
+import cs2815.project.model.Log;
+import cs2815.project.model.User;
+import cs2815.project.repo.ChatBoardRepo;
+import cs2815.project.repo.LogRepo;
+import cs2815.project.repo.UserRepo;
+import cs2815.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import cs2815.project.model.Log;
-import cs2815.project.model.User;
-import cs2815.project.repo.LogRepo;
-import cs2815.project.repo.UserRepo;
-import cs2815.project.service.UserService;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepo repo;
+
+    @Autowired
+    private ChatBoardRepo chatrepo;
 
     @Autowired
     private LogRepo logrepo;
@@ -101,7 +103,7 @@ public class UserServiceImpl implements UserService {
         logrepo.save(log);
 
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
-                user.getUser_last_name(), user.getUser_role());
+        user.getUser_last_name(), user.getUser_role());
     }
 
     @Override
@@ -115,6 +117,7 @@ public class UserServiceImpl implements UserService {
 
         repo.eraseUserIdFromAssetUser(userId);
         logrepo.eraseUserIdFromLogs(userId);
+        chatrepo.eraseUserIdfromChatBoard(userId);
 
         repo.deleteById(userId);
     }
@@ -130,6 +133,46 @@ public class UserServiceImpl implements UserService {
         logrepo.save(log);
 
         repo.resetPassword(userName, key.encode(newPassword));
+    }
+
+    @Override
+    public List<User> sortAlphabetically(List<User> unsortedUsers, String orderBy) {
+        List<String> sortByList = new ArrayList<String>();
+        List<User> sortedUsers = unsortedUsers;
+        switch (orderBy) {
+            case "FirstName":
+                for (User user : unsortedUsers) {
+                    sortByList.add(user.getUser_first_name().toLowerCase());
+                }
+                break;
+            case "LastName":
+                for (User user : unsortedUsers) {
+                    sortByList.add(user.getUser_last_name().toLowerCase());
+                }
+                break;
+            default:
+                for (User user : unsortedUsers) {
+                    // May need to add.LowerCase() to this in future, case sensitivity makes
+                    // different usernames so not added for now.
+                    sortByList.add(user.getUser_name());
+                }
+        }
+        String temp;
+        User tempBis;
+        int size = sortByList.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
+                    temp = sortByList.get(i);
+                    tempBis = sortedUsers.get(i);
+                    sortByList.set(i, sortByList.get(j));
+                    sortedUsers.set(i, sortedUsers.get(j));
+                    sortByList.set(j, temp);
+                    sortedUsers.set(j, tempBis);
+                }
+            }
+        }
+        return sortedUsers;
     }
 
     @Override
@@ -184,14 +227,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchByRole(@RequestBody String searchString) {
+    public List<User> searchByRole(String searchString) {
         List<String> roleList = repo.findAllRoles();
         List<User> compatibleUsers = new ArrayList<>();
         for (String role : roleList) {
             if (searchString.equals(role) || isSimilar(searchString, role)) {
                 List<User> users = repo.getUserByRole(role);
-                compatibleUsers.addAll(users);
-                return compatibleUsers;
+                if (!compatibleUsers.contains(users.get(0))) {
+                    compatibleUsers.addAll(users);
+                }
             }
         }
         return compatibleUsers;
@@ -210,4 +254,9 @@ public class UserServiceImpl implements UserService {
         return pointerSearch == searchString.length();
     }
 
+    @Override
+    public User findUser(String userName) {
+
+        return repo.findByUserName(userName);
+    }
 }
