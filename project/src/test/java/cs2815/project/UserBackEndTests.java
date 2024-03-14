@@ -220,10 +220,36 @@ class UserBackEndTests {
         expected_users.clear();
     }
 
-    // @Test
-    // void test10() {
-    //     // Testing editing of users
-    // }
+    @Test
+    void tes10() { 
+        // Testing reset password
+        User u = new User(4, "TempUser", "Temp", "User", "randomEncodedPassword123", "Viewer");
+        usi.registerUser(u);
+        String firstPassword = u.getUser_password();
+        usi.resetPassword("TempUser", "password");
+        u = usi.findUser("TempUser");
+        assert(!u.getUser_password().equals(firstPassword));
+        usi.deleteUser(u.getId());
+    }
+
+    @Test
+    void test11() {
+        // Testing editing of users
+        User u = new User(4, "TempUser", "Temp", "User", "randomEncodedPassword123", "Viewer");
+        usi.registerUser(u);
+        assert(usi.searchByUsername("TempUser").get(0).equals(u));
+        User newU = u;
+        newU.setUser_name("TempUser2");
+        newU.setUser_first_name("Temp2");
+        newU.setUser_last_name("User2");
+        usi.editUser(newU); // checks edits by the same ID
+        for (int i = 0; i < usi.searchByUsername("TempUser").size(); i++) {
+            // if old tempUser exists, this would fail. If it doesnt and is replaced by new, it passes.
+            assert(usi.searchByUsername("TempUser").get(i).equals(newU));
+        }
+        assert(usi.searchByUsername("TempUser").get(0).equals(newU));
+        usi.deleteUser(newU.getId());
+    }
 
     // Testing incorrect cases (such as creating a user that already exists)
 }
