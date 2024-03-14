@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import cs2815.project.controller.UserController;
 import cs2815.project.model.User;
@@ -29,9 +31,7 @@ class UserBackEndTests {
     @Autowired
     private UserServiceImpl usi;
 
-    /**
-     * Testing getAllUsers().
-     */
+    // Testing working cases
     @Test
     void test1() {
         // Testing if we can get all users from the database.
@@ -47,8 +47,6 @@ class UserBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(users.get(i).equals(expected_users.get(i)));
         }
-
-        // Testing from axios
     }
 
     @Test
@@ -161,18 +159,71 @@ class UserBackEndTests {
     }
 
 
+     @Test
+     void test6() {
+         // Testing creation and deletion of users
+         // Testing creation
+        User u = new User(4, "TempUser", "Temp", "User", "randomEncodedPassword123", "Viewer");
+        usi.registerUser(u);
+        assert(usi.findUser("TempUser").equals(u));
+
+        // Testing deletion
+        usi.deleteUser(u.getId());
+        assert(usi.findUser("TempUser") == null);
+     }
+
     @Test
-    void test6() {
-        // Testing creation and deletion of users
+    void test7() {
+        // Testing sorting alphabetically by username
+        List<User> sorted_users = usi.sortAlphabetically(usi.refreshUser(), "UserName");
+        List<User> expected_users = new ArrayList<User>();
+
+        expected_users.add(new User(3, "BaseAdmin", "Admin", "Johnson", "$2a$10$0UFTgHWL7qpm2h45eQPer.UFmUQO7wbJFVbfU9PhSXrbWAaEqJbzm", "Admin"));
+        expected_users.add(new User(2, "BaseUser", "User", "Martinez", "$2a$10$DZ.h7Vu.D2CHp2XB/XpkkeD4ovhT7PEcAX9K3P4MpoM0lhGBMYR7q", "User"));
+        expected_users.add(new User(1, "BaseViewer", "Viewer", "Smith", "$2a$10$RvqfkX9AO8DNjqC0X76QruhNh4Ydo/Hd5jSGXrIDHtSTE9QuyLzOi", "Viewer"));
+
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_users.get(i).equals(expected_users.get(i)));
+        }
+        expected_users.clear();
+    }
+
+    @Test
+    void test8() {
+        // Testing sorting alphabetically by first name
+        List<User> sorted_users = usi.sortAlphabetically(usi.refreshUser(), "FirstName");
+        List<User> expected_users = new ArrayList<User>();
+
+        expected_users.add(new User(3, "BaseAdmin", "Admin", "Johnson", "$2a$10$0UFTgHWL7qpm2h45eQPer.UFmUQO7wbJFVbfU9PhSXrbWAaEqJbzm", "Admin"));
+        expected_users.add(new User(2, "BaseUser", "User", "Martinez", "$2a$10$DZ.h7Vu.D2CHp2XB/XpkkeD4ovhT7PEcAX9K3P4MpoM0lhGBMYR7q", "User"));
+        expected_users.add(new User(1, "BaseViewer", "Viewer", "Smith", "$2a$10$RvqfkX9AO8DNjqC0X76QruhNh4Ydo/Hd5jSGXrIDHtSTE9QuyLzOi", "Viewer"));
+
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_users.get(i).equals(expected_users.get(i)));
+        }
+        expected_users.clear();
+    }
+
+    @Test
+    void test9() {
+        // Testing sorting alphabetically by last name
+        List<User> sorted_users = usi.sortAlphabetically(usi.refreshUser(), "FirstName");
+        List<User> expected_users = new ArrayList<User>();
+
+        expected_users.add(new User(3, "BaseAdmin", "Admin", "Johnson", "$2a$10$0UFTgHWL7qpm2h45eQPer.UFmUQO7wbJFVbfU9PhSXrbWAaEqJbzm", "Admin"));
+        expected_users.add(new User(2, "BaseUser", "User", "Martinez", "$2a$10$DZ.h7Vu.D2CHp2XB/XpkkeD4ovhT7PEcAX9K3P4MpoM0lhGBMYR7q", "User"));
+        expected_users.add(new User(1, "BaseViewer", "Viewer", "Smith", "$2a$10$RvqfkX9AO8DNjqC0X76QruhNh4Ydo/Hd5jSGXrIDHtSTE9QuyLzOi", "Viewer"));
+
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_users.get(i).equals(expected_users.get(i)));
+        }
+        expected_users.clear();
     }
 
     // @Test
-    // void test5() {
-    //     // Testing sorting alphabetically
-    // }
-
-    // @Test
-    // void test6() {
+    // void test10() {
     //     // Testing editing of users
     // }
+
+    // Testing incorrect cases (such as creating a user that already exists)
 }

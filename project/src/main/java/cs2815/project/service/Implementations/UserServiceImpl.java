@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         logrepo.save(log);
 
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
-                user.getUser_last_name(), user.getUser_role());
+        user.getUser_last_name(), user.getUser_role());
     }
 
     @Override
