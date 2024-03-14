@@ -1,9 +1,11 @@
+//Imports:
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../navigation/Navbar"; // Ensure this path matches your project structure
 
 function CreateAsset({ userRole, username }) {
+  // State variables for the asset creation form
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
@@ -16,6 +18,7 @@ function CreateAsset({ userRole, username }) {
   const [dependenciesList, setDependenciesList] = useState([]);
   const [langList, setLangList] = useState([]);
 
+  // Fetchs data from server on the component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,16 +29,17 @@ function CreateAsset({ userRole, username }) {
             axios.get("http://localhost:8080/assets/refresh"),
             axios.get("http://localhost:8080/languages/refresh"),
           ]);
+        // Sets the state with the fetched data
         setAssetTypes(assetTypesRes.data);
         setAuthorsList(
           authorsRes.data.map((a) => ({ id: a.id, name: a.user_name }))
-        ); // Assuming API returns an id and a user_name
+        );
         setDependenciesList(
           dependenciesRes.data.map((d) => ({ id: d.id, title: d.title }))
-        ); // Assuming API returns an id and a title
+        );
         setLangList(
           languagesRes.data.map((l) => ({ id: l.id, name: l.language_name }))
-        ); // Assuming API returns an id and a language_name
+        );
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -43,8 +47,9 @@ function CreateAsset({ userRole, username }) {
     fetchData();
   }, []);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Navigation hook
 
+  // Function to handle the form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -53,11 +58,13 @@ function CreateAsset({ userRole, username }) {
         asset_description: description,
         link,
         asset_type: type,
-        authors: author ? [author] : [], // Adjusted for single selection
-        dependencies: dependency ? [dependency] : [], // Adjusted for single selection
-        languages: language ? [language] : [], // Adjusted for single selection
+
+        //Adjusted these for single selection.
+        authors: author ? [author] : [],
+        dependencies: dependency ? [dependency] : [], 
+        languages: language ? [language] : [], 
       });
-      navigate("/assets");
+      navigate("/assets"); // Redirects to assets page after successful submission.
     } catch (error) {
       console.error("Error creating asset:", error);
       alert("An error occurred while creating the asset");
@@ -66,9 +73,13 @@ function CreateAsset({ userRole, username }) {
 
   return (
     <>
+      {/* Navbar */}
       <Navbar userRole={userRole} username={username} />
+
+      {/* Asset creation form */}
       <div className="container mx-auto px-4">
         <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
+
           {/* Title */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
@@ -233,5 +244,4 @@ function CreateAsset({ userRole, username }) {
     </>
   );
 }
-
 export default CreateAsset;
