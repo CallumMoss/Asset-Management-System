@@ -13,6 +13,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import AlertDialog from './AlertDialog';
 
@@ -25,15 +28,28 @@ function DisplayAssets({assetList}) {
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [editingAsset, setEditingAsset] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [assetTypes, setAssetTypes] = useState([]);
 
   useEffect(() => {
     if(assetList.length == 0) {
       getAssets();
+      fetchAssetTypes();
     }
       setAssets(assetList);
       console.log("Set assets to the searched assets.");
     
   }, [assetList]); // only called if assetList is updated.
+
+  const fetchAssetTypes = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/asset_types/refresh');
+      setAssetTypes(response.data);
+      console.log("Fetched asset types:", response.data);
+    } catch (error) {
+      console.error("Error fetching asset types:", error);
+    }
+  }
 
   const getAssets = async () => {
     try {
@@ -54,15 +70,22 @@ function DisplayAssets({assetList}) {
 
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
+    setIsEditing(true);
     // Implement your edit functionality here
     setEditingAsset({ ...assetId });
   };
 
-  // const handleSave = async => {
-  //   try {
-  //     await axios.
-  //   }
-  // }
+  const handleSave = async () => {
+    try {
+      await axios.post('http://localhost:8080/asset/edit', editingAsset);
+      setEditingAsset(null);
+    } catch (error) {
+      console.error(error.response.data);
+      alert("An error occured while updating the asset.");
+    }
+    setIsEditing(false);
+  }
+
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
     setOpenAlertDialog(true);
@@ -118,6 +141,58 @@ function DisplayAssets({assetList}) {
   return (
     <Container component={Paper}>
       <h1>Assets</h1>
+      {isEditing ? (
+        <form>
+          <TextField
+          label="Asset Title"
+          variant="outlined"
+          value={editingAsset.title}
+          onChange={(e) => setEditingAsset({ ...editingAsset, title: e.target.value})}
+          />
+          <TextField
+          label="Description"
+          variant="outlined"
+          value={editingAsset.asset_description}
+          onChange={(e) => setEditingAsset({ ...editingAsset, asset_description: e.target.value})}
+          />
+          <TextField
+          label="Link"
+          variant="outlined"
+          value={editingAsset.link}
+          onChange={(e) => setEditingAsset({ ...editingAsset, link: e.target.value})}
+          />
+          <Select
+            id="Asset Type"
+            name="Asset Type"
+            value={editingAsset.asset_type}
+            onChange={(e) => setEditingAsset({ ...editingAsset, asset_type: e.target.value})}
+          >
+            <MenuItem value="" disabled>
+              Select an asset type
+            </MenuItem>
+            {assetTypes.map((assetType) => (
+              <MenuItem key={assetType.type_id} value={assetType.type_name}>
+                {assetType.type_name}
+              </MenuItem>
+            ))}
+            
+          </Select>
+
+          <TextField
+          label="Languages"
+          variant="outlined"
+          value={editingAsset.language}
+          onChange={(e) => setEditingAsset({ ...editingAsset, language: e.target.value})}
+          />
+          <TextField
+          label="Authors"
+          variant="outlined"
+          value={editingAsset.authors}
+          onChange={(e) => setEditingAsset({ ...editingAsset, authors: e.target.value})}
+          />
+          <Button onClick={handleSave}>Save</Button>
+        </form>
+      ) : (
       <Table>
         <TableHead>
           <TableRow>
@@ -162,14 +237,14 @@ function DisplayAssets({assetList}) {
                 ))}
               </TableCell>
               <TableCell>
-                <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
+                <Button onClick={() => handleEdit(asset)}>Edit</Button>
                 <Button onClick={() => promptDelete(asset.asset_id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
+      )}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
         <DialogContent>
@@ -226,6 +301,7 @@ function DisplayAssets({assetList}) {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
+      
     </Container>
   );
 }
