@@ -1,6 +1,7 @@
 package cs2815.project.repo;
 
 import cs2815.project.model.Asset;
+import cs2815.project.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +19,9 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
 
+    @Query("SELECT a FROM Asset a WHERE a.asset_id = (SELECT MAX(a2.asset_id) FROM Asset a2)")
+    Asset findNewestAsset();
+
     @Query("SELECT a.title FROM Asset a")
     List<String> getAllNames();
 
@@ -31,11 +35,14 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     Asset findAssetById(@Param("assetId") int assetId);
 
     @Query("SELECT a FROM Asset a WHERE a.title = :title")
-    Asset findAssetByTitle(@Param("title") String title);
+    List<Asset> findAssetByTitle(@Param("title") String title);
 
-    //@Query("SELECT a FROM Asset a JOIN AssetType at ON a.Asset_Type = at.typeId WHERE at.typeName = :typeName")
-    @Query("SELECT a FROM Asset a WHERE a.title = :typeName") // incorrect implementation, must be changed
-    Asset findAssetByType(@Param("typeName") String typeName);
+    @Query("SELECT a FROM Asset a WHERE a.Asset_type.type_name = :typeName")
+    List<Asset> findAssetByType(@Param("typeName") String typeName);
+
+    @Query("SELECT at.typeAttributeValue1, at.typeAttributeValue2, at.typeAttributeValue3 FROM Asset at WHERE at.asset_id = :assetId")
+    List<String> getAssetAttributes(@Param("assetId") int assetId);
+
 
     @Modifying
     @Transactional
@@ -65,4 +72,7 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Query(nativeQuery = true, value = "SELECT belonging_id FROM dependency WHERE asset_id = :assetId")
     List<Integer> isParentOf(@Param("assetId") int assetId);
+
+    @Query("SELECT a FROM Asset a WHERE :author MEMBER OF a.authors")
+    List<Asset> findAssetByAuthor(@Param("author") User author);
 }

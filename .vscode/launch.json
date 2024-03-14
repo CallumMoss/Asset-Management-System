@@ -2,6 +2,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "UserBackEndTests",
+      "request": "launch",
+      "mainClass": "cs2815.project.UserBackEndTests",
+      "projectName": "project"
+    },
+    {
+      "type": "java",
       "name": "ProjectApplication",
       "request": "launch",
       "mainClass": "cs2815.project.service.ProjectApplication",

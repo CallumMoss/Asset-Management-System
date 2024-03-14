@@ -95,6 +95,7 @@ function ChangePassword({ username }) {
               id="oldPassword"
               label="Old Password"
               name="oldPassword"
+              type="password"
               autoFocus
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
@@ -106,6 +107,7 @@ function ChangePassword({ username }) {
               id="newPassword"
               label="New Password"
               name="newPassword"
+              type="password"
               autoFocus
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
@@ -117,6 +119,7 @@ function ChangePassword({ username }) {
               id="confirmNewPassword"
               label="Confirm New Password"
               name="confirmNewPassword"
+              type="password"
               autoFocus
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
