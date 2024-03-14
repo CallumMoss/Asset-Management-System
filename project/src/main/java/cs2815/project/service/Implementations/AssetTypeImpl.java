@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,21 @@ public class AssetTypeImpl implements AssetTypeService {
         createAssetType(new AssetType("Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."));
         createAssetType(new AssetType("Java File", "A file that contains java code for a given project."));
     }
+
+    @Override
+    public List<AbstractMap.SimpleEntry<String, List<String>>> getTypesAndAttributes() {
+
+        List<AssetType> assetTypeList = repo.getAllAssetTypes();
+        List<AbstractMap.SimpleEntry<String, List<String>>> typeAndAttributes = new ArrayList<>();
+
+        for( AssetType assetType : assetTypeList ) {
+            List<String> typeAttributes = repo.getAttributesById(assetType.getType_id());
+            typeAndAttributes.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), typeAttributes));
+        }
+
+        return typeAndAttributes;
+    }
+
 
     @Override
     public List<AssetType> sortAlphabetically(List<AssetType> unsortedAssetTypes) {

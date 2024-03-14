@@ -40,6 +40,10 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a FROM Asset a WHERE a.Asset_type.type_name = :typeName")
     List<Asset> findAssetByType(@Param("typeName") String typeName);
 
+    @Query("SELECT at.typeAttributeValue1, at.typeAttributeValue2, at.typeAttributeValue3 FROM Asset at WHERE at.asset_id = :assetId")
+    List<String> getAssetAttributes(@Param("assetId") int assetId);
+
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Asset at WHERE at.asset_id = :assetID")

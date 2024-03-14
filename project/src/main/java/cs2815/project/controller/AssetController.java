@@ -74,6 +74,9 @@ public class AssetController {
         assetService.deleteAsset(asset_id);
         return ResponseEntity.ok("Asset deleted successfully");
     }
+
+    
+
     /*
      * //Finds what Assets are dependant on the given AssetID asset
      * //Way of testing if process works in postman (it does ;) )
@@ -92,6 +95,13 @@ public class AssetController {
      * public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
      * List<Integer> dependencies = assetService.isParentOf(assetId);
      * return ResponseEntity.ok(dependencies);
+     * 
+     *   @PostMapping("/attributes")
+    public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>>> getAssetsAndAttributes() {
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService.getAssetsAndAttributes();
+        return ResponseEntity.ok(assetsAndAttributes);
+    }
+
      * }
      */
 

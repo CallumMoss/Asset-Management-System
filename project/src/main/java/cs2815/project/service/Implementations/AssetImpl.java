@@ -2,6 +2,7 @@ package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Asset;
 import cs2815.project.model.AssetDependency;
+import cs2815.project.model.AssetType;
 import cs2815.project.model.Languages;
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -284,4 +286,28 @@ public class AssetImpl implements AssetService {
         }
         return sortedAssets;
     }
+
+       @Override
+    public List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes() {
+        List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributesByType = new ArrayList<>();
+
+        for( AssetType assetType : assetTypeList ) {
+            List<Asset> typeAssets = repo.findAssetByType(assetType.getType_name());
+            List<AbstractMap.SimpleEntry<String, List<String>>> assetsAndAttributes = new ArrayList<>();
+
+            for( Asset asset : typeAssets) {
+
+                List<String> assetAttributes = repo.getAssetAttributes(asset.getAsset_id());
+                assetsAndAttributes.add(new AbstractMap.SimpleEntry<>(asset.getTitle(), assetAttributes));
+
+            }
+
+            assetsAndAttributesByType.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), assetsAndAttributes));
+        }
+
+        return assetsAndAttributesByType;
+    }
 }
+
+
