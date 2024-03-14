@@ -19,10 +19,10 @@ function Assets({ username, userRole }) {
       if (searchTerm !== "") {
        
         if(filter == "") { // default to asset title search
-          response = await axios.post("http://localhost:8080/assets/search/title", searchTerm);
+          response = await axios.post("http://localhost:8080/assets/search/title", {searchTerm});
         }
         else {
-          response = await axios.post("http://localhost:8080/assets/search/" + filter, searchTerm);
+          response = await axios.post("http://localhost:8080/assets/search/" + filter, {searchTerm});
           }
         console.log(response);
       } else {

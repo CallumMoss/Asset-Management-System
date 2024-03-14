@@ -24,6 +24,9 @@ public interface AssetTypeRepo extends JpaRepository<AssetType, Integer> {
         @Query("SELECT at.type_name FROM AssetType at")
         List<String> getAllAssetTypeNames();
 
+        @Query("SELECT at.typeAttribute1, at.typeAttribute2, at.typeAttribute3 FROM AssetType at WHERE at.type_id = :typeId")
+        List<String> getAttributesById(@Param("typeId") int typeId);
+
         @Modifying
         @Transactional
         @Query("DELETE FROM AssetType at WHERE at.type_id = :assetTypeId")

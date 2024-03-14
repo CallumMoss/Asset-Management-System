@@ -2,6 +2,7 @@ package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
+import cs2815.project.repo.ChatBoardRepo;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepo repo;
+
+    @Autowired
+    private ChatBoardRepo chatrepo;
 
     @Autowired
     private LogRepo logrepo;
@@ -113,6 +117,7 @@ public class UserServiceImpl implements UserService {
 
         repo.eraseUserIdFromAssetUser(userId);
         logrepo.eraseUserIdFromLogs(userId);
+        chatrepo.eraseUserIdfromChatBoard(userId);
 
         repo.deleteById(userId);
     }
@@ -147,8 +152,9 @@ public class UserServiceImpl implements UserService {
                 break;
             default:
                 for (User user : unsortedUsers) {
-                    //May need to add.LowerCase() to this in future, case sensitivity makes different usernames so not added for now.
-                    sortByList.add(user.getUser_name()); 
+                    // May need to add.LowerCase() to this in future, case sensitivity makes
+                    // different usernames so not added for now.
+                    sortByList.add(user.getUser_name());
                 }
         }
         String temp;
@@ -221,14 +227,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchByRole(@RequestBody String searchString) {
+    public List<User> searchByRole(String searchString) {
         List<String> roleList = repo.findAllRoles();
         List<User> compatibleUsers = new ArrayList<>();
         for (String role : roleList) {
             if (searchString.equals(role) || isSimilar(searchString, role)) {
                 List<User> users = repo.getUserByRole(role);
-                compatibleUsers.addAll(users);
-                return compatibleUsers;
+                if (!compatibleUsers.contains(users.get(0))) {
+                    compatibleUsers.addAll(users);
+                }
             }
         }
         return compatibleUsers;

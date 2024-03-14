@@ -1,16 +1,20 @@
 package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Asset;
+import cs2815.project.model.AssetDependency;
+import cs2815.project.model.AssetType;
 import cs2815.project.model.Languages;
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
+import cs2815.project.model.specialmodels.DependencyWrapper;
 import cs2815.project.repo.*;
 import cs2815.project.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +26,13 @@ public class AssetImpl implements AssetService {
     private AssetRepo repo;
 
     @Autowired
+    private AssetDependencyRepo assetDependencyRepo;
+
+    @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private ChatBoardRepo chatRepo;
 
     @Autowired
     private AssetTypeRepo assetTypeRepo;
@@ -61,15 +71,27 @@ public class AssetImpl implements AssetService {
 
         asset.setAuthors(authors);
 
-        List<Asset> dependents = new ArrayList<>();
+        List<AssetDependency> dependencies = new ArrayList<>();
 
-        for (String title : assetdto.getDependencies()) {
-            List<Asset> tempAsset = repo.findAssetByTitle(title);
-            if (tempAsset.get(0) != null) {
-                dependents.add(tempAsset.get(0));
+        for (DependencyWrapper dependencyWrapper : assetdto.getDependencies()) {
+
+            asset.getAsset_id(); // current asset_idS
+
+            Asset dependendingAsset = repo.getAssetByName(dependencyWrapper.getName()); // dependent asset_id
+            String relation = dependencyWrapper.getRelationType();
+
+            if (dependendingAsset != null) {
+
+                AssetDependency dependency = new AssetDependency();
+                dependency.setAsset(asset);
+                dependency.setDependent(dependendingAsset);
+                dependency.setRelationType(relation);
+
+                dependencies.add(dependency);
             }
         }
-        asset.setDependent(dependents);
+
+        asset.setDependencies(dependencies);
 
         List<Languages> languages = new ArrayList<>();
 
@@ -98,18 +120,7 @@ public class AssetImpl implements AssetService {
         return compatibleList;
     }
 
-    //Finds what Assets are dependant on the given AssetID asset
-    @Override
-    public List<Integer> isDependantOn(int assetId) {
-        return repo.isDependantOn(assetId);
-    }
-
-    //Finds the Assets that the given AssetID depends On
-    @Override
-    public List<Integer> isParentOf(int assetId) {
-        return repo.isParentOf(assetId);
-    }
-
+    // Finds what Assets are dependant on the given AssetID asse
     @Override
     public List<Asset> searchByAuthor(String searchString) {
         List<String> assetAuthors = userRepo.findAllUserNames();
@@ -158,7 +169,6 @@ public class AssetImpl implements AssetService {
         return compatibleAssets;
     }
 
-
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();
         asset.setTitle(assetDto.getTitle());
@@ -178,6 +188,11 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
+    public Asset getNewestAsset() {
+        return repo.findNewestAsset();
+    }
+
+    @Override
     public void deleteAsset(int assetID) {
 
         Log log = new Log();
@@ -187,55 +202,109 @@ public class AssetImpl implements AssetService {
         logRepo.save(log);
 
         logRepo.eraseAssetIdFromLogs(assetID);
-        repo.eraseUserIdFromDependency(assetID);
+
+        assetDependencyRepo.deleteAssetbyID(assetID);
+
+        chatRepo.deleteMessagebyAssetID(assetID);
 
         repo.deleteAssetbyID(assetID);
     }
 
     @Override
     public void createBaseAssets() {
-        
-        List<String> authors = Arrays.asList("BaseAdmin");
-        List<String> dependencies = Arrays.asList();
-        List<String> languages = Arrays.asList("Java");
-        AssetWrapper wrapper = new AssetWrapper(
-            "Piece.py", // title
-            "A python program that contains a class which describes the attributes and functions of a chess piece.", // asset_description
-            "website.com/piece.py", // link
-            "Python File", // asset_type
-            authors, // authors
-            dependencies, // dependencies
-            languages // languages
-        );
-        createAsset(wrapper);
-        //
-        authors = Arrays.asList("BaseViewer");
-        dependencies = Arrays.asList();
-        languages = Arrays.asList("Python", "Java");
-        wrapper = new AssetWrapper(
-            "Heroes Rising", // title
-            "2D Game developed as part of the first year games module.", // asset_description
-            "some_link.com", // link
-            "Project", // asset_type
-            authors, // authors
-            dependencies, // dependencies
-            languages // languages
-        );
-        createAsset(wrapper);
+        /*
+         * List<String> authors = Arrays.asList("BaseAdmin");
+         * List<String> dependencies = Arrays.asList();
+         * List<String> languages = Arrays.asList("Java");
+         * AssetWrapper wrapper = new AssetWrapper(
+         * "Piece.py", // title
+         * "A python program that contains a class which describes the attributes and functions of a chess piece."
+         * , // asset_description
+         * "website.com/piece.py", // link
+         * "Python File", // asset_type
+         * authors, // authors
+         * dependencies, // dependencies
+         * languages // languages
+         * );
+         * createAsset(wrapper);
+         * //
+         * authors = Arrays.asList("BaseViewer");
+         * dependencies = Arrays.asList();
+         * languages = Arrays.asList("Python", "Java");
+         * wrapper = new AssetWrapper(
+         * "Heroes Rising", // title
+         * "2D Game developed as part of the first year games module.", //
+         * asset_description
+         * "some_link.com", // link
+         * "Project", // asset_type
+         * authors, // authors
+         * dependencies, // dependencies
+         * languages // languages
+         * );
+         * createAsset(wrapper);
+         * 
+         * authors = Arrays.asList("BaseUser", "BaseViewer");
+         * dependencies = Arrays.asList("Heroes Rising");
+         * languages = Arrays.asList();
+         * wrapper = new AssetWrapper(
+         * "README", // title
+         * "Read me file for the project Heroes Rising.", // asset_description
+         * "random/readme.md", // link
+         * "Documentation", // asset_type
+         * authors, // authors
+         * dependencies, // dependencies
+         * languages // languages
+         * );
+         * createAsset(wrapper);
+         */
+    }
 
-        authors = Arrays.asList("BaseUser", "BaseViewer");
-        dependencies = Arrays.asList("Heroes Rising");
-        languages = Arrays.asList();
-        wrapper = new AssetWrapper(
-            "README", // title
-            "Read me file for the project Heroes Rising.", // asset_description
-            "random/readme.md", // link
-            "Documentation", // asset_type
-            authors, // authors
-            dependencies, // dependencies
-            languages // languages
-        );
-        createAsset(wrapper);
-        
+    @Override
+    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets) {
+        List<String> sortByList = new ArrayList<String>();
+        List<Asset> sortedAssets = unsortedAssets;
+        for (Asset asset : unsortedAssets) {
+            sortByList.add(asset.getTitle());
+        }
+        String temp;
+        Asset tempBis;
+        int size = sortByList.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
+                    temp = sortByList.get(i);
+                    tempBis = sortedAssets.get(i);
+                    sortByList.set(i, sortByList.get(j));
+                    sortedAssets.set(i, sortedAssets.get(j));
+                    sortByList.set(j, temp);
+                    sortedAssets.set(j, tempBis);
+                }
+            }
+        }
+        return sortedAssets;
+    }
+
+       @Override
+    public List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes() {
+        List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributesByType = new ArrayList<>();
+
+        for( AssetType assetType : assetTypeList ) {
+            List<Asset> typeAssets = repo.findAssetByType(assetType.getType_name());
+            List<AbstractMap.SimpleEntry<String, List<String>>> assetsAndAttributes = new ArrayList<>();
+
+            for( Asset asset : typeAssets) {
+
+                List<String> assetAttributes = repo.getAssetAttributes(asset.getAsset_id());
+                assetsAndAttributes.add(new AbstractMap.SimpleEntry<>(asset.getTitle(), assetAttributes));
+
+            }
+
+            assetsAndAttributesByType.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), assetsAndAttributes));
+        }
+
+        return assetsAndAttributesByType;
     }
 }
+
+

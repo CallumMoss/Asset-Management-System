@@ -7,9 +7,9 @@ function CreateAsset({ userRole, username }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
-  const [author, setAuthor] = useState(""); 
-  const [dependency, setDependency] = useState(""); 
-  const [language, setLanguage] = useState(""); 
+  const [author, setAuthor] = useState("");
+  const [dependency, setDependency] = useState("");
+  const [language, setLanguage] = useState("");
   const [assetTypes, setAssetTypes] = useState([]);
   const [link, setLink] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
@@ -19,16 +19,23 @@ function CreateAsset({ userRole, username }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [assetTypesRes, authorsRes, dependenciesRes, languagesRes] = await Promise.all([
-          axios.get("http://localhost:8080/asset_types/refresh"),
-          axios.get("http://localhost:8080/users/refresh"),
-          axios.get("http://localhost:8080/assets/refresh"),
-          axios.get("http://localhost:8080/languages/refresh"),
-        ]);
+        const [assetTypesRes, authorsRes, dependenciesRes, languagesRes] =
+          await Promise.all([
+            axios.get("http://localhost:8080/asset_types/refresh"),
+            axios.get("http://localhost:8080/users/refresh"),
+            axios.get("http://localhost:8080/assets/refresh"),
+            axios.get("http://localhost:8080/languages/refresh"),
+          ]);
         setAssetTypes(assetTypesRes.data);
-        setAuthorsList(authorsRes.data.map(a => ({ id: a.id, name: a.user_name }))); // Assuming API returns an id and a user_name
-        setDependenciesList(dependenciesRes.data.map(d => ({ id: d.id, title: d.title }))); // Assuming API returns an id and a title
-        setLangList(languagesRes.data.map(l => ({ id: l.id, name: l.language_name }))); // Assuming API returns an id and a language_name
+        setAuthorsList(
+          authorsRes.data.map((a) => ({ id: a.id, name: a.user_name }))
+        ); // Assuming API returns an id and a user_name
+        setDependenciesList(
+          dependenciesRes.data.map((d) => ({ id: d.id, title: d.title }))
+        ); // Assuming API returns an id and a title
+        setLangList(
+          languagesRes.data.map((l) => ({ id: l.id, name: l.language_name }))
+        ); // Assuming API returns an id and a language_name
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -65,26 +72,60 @@ function CreateAsset({ userRole, username }) {
           {/* Title */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="title" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Title</label>
-              <input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" required />
+              <label
+                htmlFor="title"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Title
+              </label>
+              <input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+                required
+              />
             </div>
           </div>
 
           {/* Description */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="description" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Description</label>
-              <textarea id="description" rows="3" value={description} onChange={(e) => setDescription(e.target.value)} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" required></textarea>
+              <label
+                htmlFor="description"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Description
+              </label>
+              <textarea
+                id="description"
+                rows="3"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                required></textarea>
             </div>
           </div>
 
           {/* Asset Type */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="type" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Asset Type</label>
-              <select id="type" value={type} onChange={(e) => setType(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" required>
+              <label
+                htmlFor="type"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Asset Type
+              </label>
+              <select
+                id="type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+                required>
                 <option value="">Select an asset type</option>
-                {assetTypes.map((type) => <option key={type.type_id} value={type.type_name}>{type.type_name}</option>)}
+                {assetTypes.map((type) => (
+                  <option key={type.type_id} value={type.type_name}>
+                    {type.type_name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -92,10 +133,22 @@ function CreateAsset({ userRole, username }) {
           {/* Author */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="author" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Author</label>
-              <select id="author" value={author} onChange={(e) => setAuthor(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
+              <label
+                htmlFor="author"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Author
+              </label>
+              <select
+                id="author"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
                 <option value="">Select an author</option>
-                {authorsList.map((author) => <option key={author.id} value={author.id}>{author.name}</option>)}
+                {authorsList.map((author) => (
+                  <option key={author.id} value={author.id}>
+                    {author.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -103,10 +156,22 @@ function CreateAsset({ userRole, username }) {
           {/* Dependency */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="dependency" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Dependency</label>
-              <select id="dependency" value={dependency} onChange={(e) => setDependency(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
+              <label
+                htmlFor="dependency"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Dependency
+              </label>
+              <select
+                id="dependency"
+                value={dependency}
+                onChange={(e) => setDependency(e.target.value)}
+                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
                 <option value="">Select a dependency</option>
-                {dependenciesList.map((dependency) => <option key={dependency.id} value={dependency.id}>{dependency.title}</option>)}
+                {dependenciesList.map((dependency) => (
+                  <option key={dependency.id} value={dependency.id}>
+                    {dependency.title}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -114,10 +179,22 @@ function CreateAsset({ userRole, username }) {
           {/* Language */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="language" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Language</label>
-              <select id="language" value={language} onChange={(e) => setLanguage(e.target.value)} className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
+              <label
+                htmlFor="language"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Language
+              </label>
+              <select
+                id="language"
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
                 <option value="">Select a language</option>
-                {langList.map((language) => <option key={language.id} value={language.id}>{language.name}</option>)}
+                {langList.map((language) => (
+                  <option key={language.id} value={language.id}>
+                    {language.name}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -125,15 +202,28 @@ function CreateAsset({ userRole, username }) {
           {/* Link */}
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label htmlFor="link" className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Link</label>
-              <input type="text" id="link" value={link} onChange={(e) => setLink(e.target.value)} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white" required />
+              <label
+                htmlFor="link"
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                Link
+              </label>
+              <input
+                type="text"
+                id="link"
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+                required
+              />
             </div>
           </div>
 
           {/* Submit Button */}
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full px-3 text-center">
-              <button className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" type="submit">
+              <button
+                className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                type="submit">
                 Submit
               </button>
             </div>

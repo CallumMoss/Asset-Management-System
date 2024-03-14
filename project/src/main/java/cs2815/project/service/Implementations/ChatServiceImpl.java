@@ -19,7 +19,6 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public void sendMessage(ChatBoard message) {
 
-        System.out.println(message.getTextMessage() + message.getAsset() + message.getUser());
         message.setMessageSent(new Timestamp(System.currentTimeMillis()));
         chatRepo.save(message);
     }

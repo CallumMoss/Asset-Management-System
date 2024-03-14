@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,15 +27,15 @@ public class LogServiceImpl implements LogService {
 
     @Override
     public List<Log> searchByDescription(String searchString) {
-        List<String> descriptionList = repo.findAllDescriptions();
+        List<Log> descriptionList = repo.findAllOrderedByUpdateTimestampDesc();
         List<Log> compatibleLogs = new ArrayList<>();
-        for (String desc : descriptionList) {
+        for (Log log : descriptionList) {
+            String desc = log.getUpdateDescription();
             if (searchString.equals(desc) || userService.isSimilar(searchString, desc)) {
                 List<Log> logs = repo.getLogByDescription(desc);
                 compatibleLogs.addAll(logs);
-                if (!compatibleLogs.contains(logs.get(0))) {
-                    compatibleLogs.addAll(logs);
-                }
+                Collections.reverse(compatibleLogs); // help display it in order.
+                break;
             }
         }
         return compatibleLogs;

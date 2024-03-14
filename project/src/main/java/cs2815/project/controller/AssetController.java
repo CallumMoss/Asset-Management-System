@@ -1,21 +1,17 @@
 package cs2815.project.controller;
 
+import cs2815.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import cs2815.project.model.Asset;
 
 import cs2815.project.model.specialmodels.AssetWrapper;
 
 import cs2815.project.service.AssetService;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/assets")
@@ -42,27 +38,34 @@ public class AssetController {
 
     }
 
+    @GetMapping("/getnewest")
+    public ResponseEntity<Asset> getNewest() {
+
+        return ResponseEntity.ok(assetService.getNewestAsset());
+
+    }
+
     @PostMapping("/search/language")
-    public ResponseEntity<List<String>> searchLanguage(@RequestBody String searchString) {
-        List<String> compatibleLanguages = assetService.searchLanguage(searchString);
+    public ResponseEntity<List<String>> searchLanguage(@RequestBody Map<String, String> searchString) {
+        List<String> compatibleLanguages = assetService.searchLanguage(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLanguages);
     }
 
     @PostMapping("/search/type")
-    public ResponseEntity<List<Asset>> searchByType(@RequestBody String searchString) {
-        List<Asset> compatibleLanguages = assetService.searchByType(searchString);
+    public ResponseEntity<List<Asset>> searchByType(@RequestBody Map<String, String> searchString) {
+        List<Asset> compatibleLanguages = assetService.searchByType(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLanguages);
     }
 
     @PostMapping("/search/author")
-    public ResponseEntity<List<Asset>> searchByAuthor(@RequestBody String searchString) {
-        List<Asset> compatibleLanguages = assetService.searchByAuthor(searchString);
+    public ResponseEntity<List<Asset>> searchByAuthor(@RequestBody Map<String, String> searchString) {
+        List<Asset> compatibleLanguages = assetService.searchByAuthor(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleLanguages);
     }
 
     @PostMapping("/search/title")
-    public ResponseEntity<List<Asset>> searchByName(@RequestBody String searchString) {
-        List<Asset> compatibleAssets = assetService.searchByName(searchString);
+    public ResponseEntity<List<Asset>> searchByName(@RequestBody Map<String, String> searchString) {
+        List<Asset> compatibleAssets = assetService.searchByName(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleAssets);
     }
 
@@ -72,20 +75,39 @@ public class AssetController {
         return ResponseEntity.ok("Asset deleted successfully");
     }
 
-    //Finds what Assets are dependant on the given AssetID asset
-    //Way of testing if process works in postman (it does ;) )
-    @PostMapping("/isDependantOn")
-    public ResponseEntity<List<Integer>> isDependantOn(@RequestBody int assetId) {
-        List<Integer> dependantOn = assetService.isDependantOn(assetId);
-        return ResponseEntity.ok(dependantOn);
+    
+
+    /*
+     * //Finds what Assets are dependant on the given AssetID asset
+     * //Way of testing if process works in postman (it does ;) )
+     * 
+     * @PostMapping("/isDependantOn")
+     * public ResponseEntity<List<Integer>> isDependantOn(@RequestBody int assetId)
+     * {
+     * List<Integer> dependantOn = assetService.isDependantOn(assetId);
+     * return ResponseEntity.ok(dependantOn);
+     * }
+     * 
+     * //Finds the Assets that the given AssetID depends On
+     * //Way of testing if process works in postman (it does ;) )
+     * 
+     * @PostMapping("/isParentOf")
+     * public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
+     * List<Integer> dependencies = assetService.isParentOf(assetId);
+     * return ResponseEntity.ok(dependencies);
+     * 
+     *   @PostMapping("/attributes")
+    public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>>> getAssetsAndAttributes() {
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService.getAssetsAndAttributes();
+        return ResponseEntity.ok(assetsAndAttributes);
     }
 
-    //Finds the Assets that the given AssetID depends On
-    //Way of testing if process works in postman (it does ;) )
-    @PostMapping("/isParentOf")
-    public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
-        List<Integer> dependencies = assetService.isParentOf(assetId);
-        return ResponseEntity.ok(dependencies);
-    }
+     * }
+     */
 
+    @PostMapping("/sort/alphabetically") 
+    public ResponseEntity<List<Asset>> sortAlphabetically(@RequestBody List<Asset> unsortedAssets, @RequestParam(required = false) String orderBy) {
+        List<Asset> sortedAssets = assetService.sortAlphabetically(unsortedAssets);
+        return ResponseEntity.ok(sortedAssets);
+    }
 }

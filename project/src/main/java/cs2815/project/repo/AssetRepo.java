@@ -19,6 +19,9 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
 
+    @Query("SELECT a FROM Asset a WHERE a.asset_id = (SELECT MAX(a2.asset_id) FROM Asset a2)")
+    Asset findNewestAsset();
+
     @Query("SELECT a.title FROM Asset a")
     List<String> getAllNames();
 
@@ -36,6 +39,10 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Query("SELECT a FROM Asset a WHERE a.Asset_type.type_name = :typeName")
     List<Asset> findAssetByType(@Param("typeName") String typeName);
+
+    @Query("SELECT at.typeAttributeValue1, at.typeAttributeValue2, at.typeAttributeValue3 FROM Asset at WHERE at.asset_id = :assetId")
+    List<String> getAssetAttributes(@Param("assetId") int assetId);
+
 
     @Modifying
     @Transactional
