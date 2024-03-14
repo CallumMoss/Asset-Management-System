@@ -94,7 +94,7 @@ function AssetTypeDisplay({assetTypeList}) {
 
   return (
     <Container component={Paper}>
-      <h1>Asset Type Management</h1>
+
       {isEditing ? (
         <form>
           <TextField
@@ -112,43 +112,42 @@ function AssetTypeDisplay({assetTypeList}) {
           <Button onClick={handleUpdate}>Save</Button>
         </form>
       ) : (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <Button onClick={() => handleCreate()}>Create</Button>
-            <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <AlertDialog
-            open={openDialog}
-            handleClose={() => setOpenDialog(false)}
-            title="Confirm Delete"
-            message="Are you sure you want to delete this asset type?"
-            onConfirm={handleDeleteConfirmation}
-          />
+      <><h2>Asset Type Management</h2><Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
+                <Button onClick={() => handleCreate()}>Create</Button>
+                <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <AlertDialog
+                open={openDialog}
+                handleClose={() => setOpenDialog(false)}
+                title="Confirm Delete"
+                message="Are you sure you want to delete this asset type?"
+                onConfirm={handleDeleteConfirmation} />
 
-          {assetTypes.map((assetType) => (
-            <TableRow key={assetType.type_id}>
-              <TableCell>{assetType.type_name}</TableCell>
-              <TableCell>{assetType.description}</TableCell>
+              {assetTypes.map((assetType) => (
+                <TableRow key={assetType.type_id}>
+                  <TableCell>{assetType.type_name}</TableCell>
+                  <TableCell>{assetType.description}</TableCell>
 
-              <TableCell>
-                <Button onClick={() => handleEdit(assetType)}>
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => promptDeleteConfirmation(assetType.type_id)}>
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  <TableCell>
+                    <Button onClick={() => handleEdit(assetType)}>
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => promptDeleteConfirmation(assetType.type_id)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table></>
       )}
     </Container>
   );
