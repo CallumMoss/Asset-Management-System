@@ -1,5 +1,6 @@
 package cs2815.project.controller;
 
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,15 @@ public class AssetTypeController {
         List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsernames);
     }
+
+        @PostMapping("/attributes")
+    public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<String>>>> getTypesAndAttributes() {
+        List<AbstractMap.SimpleEntry<String, List<String>>> attributeTitles = assetTypeService.getTypesAndAttributes();
+        return ResponseEntity.ok(attributeTitles);
+    }
+
+
+    
 
     @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
     public ResponseEntity<List<AssetType>> sortAlphabetically(@RequestBody List<AssetType> unsortedAssetTypes) {

@@ -40,41 +40,49 @@ function LogsDialog({ logs, open, handleClose }) {
   );
 }
 
-function MessagesDialog({ messages, open, handleClose, username, asset }) {
+function MessagesDialog({ open, handleClose, user, asset }) {
   const [newMessage, setNewMessage] = useState("");
-  const [user, setUser] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    if (asset && asset.asset_id) {
+      refresh(asset.asset_id);
+    }
+  }, [asset]);
 
   const handleSend = async () => {
-    await getUser(username);
+    console.log(user);
+    console.log(asset);
+    console.log(newMessage);
     if (newMessage.trim() !== "") {
       const response = await axios.post("http://localhost:8080/messages/send", {
         textMessage: newMessage,
         user: user,
         asset: asset,
       });
-
       setNewMessage("");
+      refresh(asset.asset_id);
     }
   };
 
-  const getUser = async (userName) => {
+  const refresh = async (assetId) => {
+    console.log({ assetId });
     try {
       const response = await axios.get(
-        `http://localhost:8080/users/finduser/${userName}`
+        `http://localhost:8080/messages/refresh/${assetId}`
       );
-
       console.log("API Response:", response.data);
 
-      if (response.data) {
-        // Assuming the response is an object, not an array
-        setUser(response.data);
+      if (Array.isArray(response.data)) {
+        const messagesFromApi = response.data;
+        setMessages(messagesFromApi);
       } else {
         console.error("Unexpected response structure:", response.data);
-        setUser(null); // Fallback to null
+        setMessages([]); // Fallback to an empty array
       }
     } catch (error) {
-      console.error("Failed to fetch user:", error);
-      setUser(null); // Fallback to null in case of an error
+      console.error("Failed to fetch messages:", error);
+      alert("An error occurred while fetching logs.");
     }
   };
 
@@ -125,6 +133,7 @@ function DisplayAssets({ username, assetList }) {
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
+  const [user, setUser] = useState("");
 
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
 
@@ -133,6 +142,7 @@ function DisplayAssets({ username, assetList }) {
       getAssets();
     }
     setAssets(assetList);
+    getUser(username);
     console.log("Set assets to the searched assets.");
   }, [assetList]); // only called if assetList is updated.
 
@@ -150,6 +160,27 @@ function DisplayAssets({ username, assetList }) {
     } catch (error) {
       console.error("Failed to fetch assets:", error);
       alert("An error occurred while fetching assets.");
+    }
+  };
+
+  const getUser = async (username) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/users/finduser/${username}`
+      );
+
+      console.log("API Response:", response.data);
+
+      if (response.data) {
+        // Assuming the response is an object, not an array
+        setUser(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        setUser(null); // Fallback to null
+      }
+    } catch (error) {
+      console.error("Failed to fetch user:", error);
+      setUser(null); // Fallback to null in case of an error
     }
   };
 
@@ -183,30 +214,9 @@ function DisplayAssets({ username, assetList }) {
   };
 
   const handleViewMessages = (asset) => {
-    const assetId = asset.asset_id;
-    const fetchMessages = async (assetId) => {
-      console.log({ assetId });
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/messages/refresh/${assetId}`
-        );
-        console.log("API Response:", response.data);
-
-        if (Array.isArray(response.data)) {
-          const messagesFromApi = response.data;
-          setMessages(messagesFromApi);
-          setOpenMessageDialog(true);
-        } else {
-          console.error("Unexpected response structure:", response.data);
-          setMessages([]); // Fallback to an empty array
-        }
-      } catch (error) {
-        console.error("Failed to fetch messages:", error);
-        alert("An error occurred while fetching logs.");
-      }
-    };
-    fetchMessages(assetId);
-    console.log({ logs });
+    setSelectedAsset(asset);
+    getUser(username);
+    setOpenMessageDialog(true);
   };
 
   const handleViewLog = (asset_id) => {
@@ -245,23 +255,18 @@ function DisplayAssets({ username, assetList }) {
     setLogsDialogOpen(false);
   };
 
-  const handleSortBy = async (orderBy) => {
+  const handleSort = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/assets/sort/alphabetically",
-        assets, // Send the assets list in the request body
-        { params: { orderBy: orderBy } } // Send the orderBy parameter as a query parameter
-      );
-  
-      if (Array.isArray(response.data)) {
-        setAssets(response.data);
-      } else {
-        console.error("Unexpected response structure:", response.data);
-        alert("Could not sort assets. Unexpected response structure.");
-      }
+        const response = await axios.post("http://localhost:8080/assets/sort/alphabetically", assets );
+        if (Array.isArray(response.data)) {
+          setAssets(response.data);
+        } else {
+            console.error("Unexpected response structure:", response.data);
+            alert("Could not sort Assets. Unexpected response structure.");
+        }
     } catch (error) {
-      console.error("Axios Error:", error);
-      alert("Could not sort assets. An error occurred.");
+        console.error("Axios Error:", error);
+        alert("Could not sort Assets. An error occurred.");
     }
   };
    
@@ -278,22 +283,15 @@ function DisplayAssets({ username, assetList }) {
             <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <div style={{ display: "flex", alignItems: "center" }}>
-              <div>
-                <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
-                  aria-controls="sort-menu"
-                  aria-haspopup="true"
-                >
-                  Sort
-                </Button>
-                <Menu id="sort-menu"
-                  anchorEl={sortAnchorEl}
-                  open={Boolean(sortAnchorEl)}
-                  onClose={() => setSortAnchorEl(null)}>
-
-                  <MenuItem onClick={() => handleSortBy("title")}>asset title</MenuItem>
-                </Menu>
-              </div>
-              <Button onClick={() => getAssets()}>Refresh</Button>
+            <div>
+                    <Button onClick={(e) => handleSort()}
+                      aria-controls="sort-menu"
+                      aria-haspopup="true"
+                    >
+                      Sort
+                    </Button>
+                  </div>
+                  <Button onClick={() => getAssets()}>Refresh</Button>
             </div>
           </TableRow>
         </TableHead>
@@ -406,10 +404,9 @@ function DisplayAssets({ username, assetList }) {
         handleClose={handleCloseLogsDialog}
       />
       <MessagesDialog
-        messages={messages}
         open={openMessageDialog}
         handleClose={handleCloseMessageDialog}
-        username={username}
+        user={user}
         asset={selectedAsset}
       />
     </Container>

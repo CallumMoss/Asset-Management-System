@@ -74,6 +74,9 @@ public class AssetController {
         assetService.deleteAsset(asset_id);
         return ResponseEntity.ok("Asset deleted successfully");
     }
+
+    
+
     /*
      * //Finds what Assets are dependant on the given AssetID asset
      * //Way of testing if process works in postman (it does ;) )
@@ -92,12 +95,25 @@ public class AssetController {
      * public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
      * List<Integer> dependencies = assetService.isParentOf(assetId);
      * return ResponseEntity.ok(dependencies);
+     * 
+     *   @PostMapping("/attributes")
+    public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>>> getAssetsAndAttributes() {
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService.getAssetsAndAttributes();
+        return ResponseEntity.ok(assetsAndAttributes);
+    }
+
      * }
      */
 
+<<<<<<< 54e28edd906e2c17114aaa3aaf912e16885f18dc
+    @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
+    public ResponseEntity<List<Asset>> sortAlphabetically(@RequestBody List<Asset> unsortedAssets) {
+        List<Asset> sortedAssets = assetService.sortAlphabetically(unsortedAssets);
+=======
     @PostMapping("/sort/alphabetically") 
     public ResponseEntity<List<Asset>> sortAlphabetically(@RequestBody List<Asset> unsortedAssets, @RequestParam(required = false) String orderBy) {
         List<Asset> sortedAssets = assetService.sortAlphabetically(unsortedAssets, orderBy);
+>>>>>>> f1249a169358acbda8bac0da5e7f19342fec6c91
         return ResponseEntity.ok(sortedAssets);
     }
 }

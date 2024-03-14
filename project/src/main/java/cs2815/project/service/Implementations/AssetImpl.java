@@ -2,6 +2,7 @@ package cs2815.project.service.Implementations;
 
 import cs2815.project.model.Asset;
 import cs2815.project.model.AssetDependency;
+import cs2815.project.model.AssetType;
 import cs2815.project.model.Languages;
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -258,21 +260,18 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets, String orderBy) {
+    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets) {
         List<String> sortByList = new ArrayList<String>();
         List<Asset> sortedAssets = unsortedAssets;
-        switch (orderBy) {
-            default:
-                for (Asset asset : unsortedAssets) {
-                    sortByList.add(asset.getTitle().toLowerCase());
-                }
+        for (Asset asset : unsortedAssets) {
+            sortByList.add(asset.getTitle());
         }
         String temp;
         Asset tempBis;
         int size = sortByList.size();
         for (int i = 0; i < size; i++) {
             for (int j = i + 1; j < size; j++) {
-                if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
+                if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
                     temp = sortByList.get(i);
                     tempBis = sortedAssets.get(i);
                     sortByList.set(i, sortByList.get(j));
@@ -284,4 +283,28 @@ public class AssetImpl implements AssetService {
         }
         return sortedAssets;
     }
+
+       @Override
+    public List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes() {
+        List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributesByType = new ArrayList<>();
+
+        for( AssetType assetType : assetTypeList ) {
+            List<Asset> typeAssets = repo.findAssetByType(assetType.getType_name());
+            List<AbstractMap.SimpleEntry<String, List<String>>> assetsAndAttributes = new ArrayList<>();
+
+            for( Asset asset : typeAssets) {
+
+                List<String> assetAttributes = repo.getAssetAttributes(asset.getAsset_id());
+                assetsAndAttributes.add(new AbstractMap.SimpleEntry<>(asset.getTitle(), assetAttributes));
+
+            }
+
+            assetsAndAttributesByType.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), assetsAndAttributes));
+        }
+
+        return assetsAndAttributesByType;
+    }
 }
+
+

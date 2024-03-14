@@ -40,6 +40,13 @@ public class Asset {
         private String asset_description;
         private String link;
 
+
+        private String typeAttributeValue1;
+        private String typeAttributeValue2;
+        private String typeAttributeValue3;
+
+
+
         private Timestamp updateTimestamp;
 
         @ManyToOne
@@ -51,7 +58,6 @@ public class Asset {
         private List<User> authors;
 
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
-        @JsonManagedReference
         private List<AssetDependency> dependencies;
 
         @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,

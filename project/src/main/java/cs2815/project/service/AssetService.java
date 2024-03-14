@@ -3,6 +3,7 @@ package cs2815.project.service;
 import cs2815.project.model.Asset;
 import cs2815.project.model.specialmodels.AssetWrapper;
 
+import java.util.AbstractMap;
 import java.util.List;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -26,5 +27,7 @@ public interface AssetService {
 
     void createBaseAssets();
 
-    List<Asset> sortAlphabetically(List<Asset> unsortedAssets, String orderBy);
+    List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes();
+
+    List<Asset> sortAlphabetically(List<Asset> unsortedAssets);
 }

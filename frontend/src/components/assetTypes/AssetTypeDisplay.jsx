@@ -79,18 +79,18 @@ function AssetTypeDisplay({ assetTypeList }) {
     }
   };
 
-  const handleSortBy = async (orderBy) => {
+  const handleSort = async () => {
     try {
-        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", assetTypes, { params: { orderBy: orderBy } } );
+        const response = await axios.post("http://localhost:8080/asset_types/sort/alphabetically", assetTypes );
         if (Array.isArray(response.data)) {
           setAssetTypes(response.data);
         } else {
             console.error("Unexpected response structure:", response.data);
-            alert("Could not sort users. Unexpected response structure.");
+            alert("Could not sort AssetTypes. Unexpected response structure.");
         }
     } catch (error) {
         console.error("Axios Error:", error);
-        alert("Could not sort users. An error occurred.");
+        alert("Could not sort AssetTypes. An error occurred.");
     }
 };
 
@@ -104,7 +104,7 @@ function AssetTypeDisplay({ assetTypeList }) {
             <div style={{ display: "flex", alignItems: "center" }}>
                   <Button onClick={() => handleCreate()}>Create</Button>
                   <div>
-                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                    <Button onClick={(e) => handleSort()}
                       aria-controls="sort-menu"
                       aria-haspopup="true"
                     >

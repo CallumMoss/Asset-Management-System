@@ -227,14 +227,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchByRole(@RequestBody String searchString) {
+    public List<User> searchByRole(String searchString) {
         List<String> roleList = repo.findAllRoles();
         List<User> compatibleUsers = new ArrayList<>();
         for (String role : roleList) {
             if (searchString.equals(role) || isSimilar(searchString, role)) {
                 List<User> users = repo.getUserByRole(role);
-                compatibleUsers.addAll(users);
-                return compatibleUsers;
+                if (!compatibleUsers.contains(users.get(0))) {
+                    compatibleUsers.addAll(users);
+                }
             }
         }
         return compatibleUsers;
