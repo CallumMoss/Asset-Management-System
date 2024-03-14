@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
@@ -42,5 +44,23 @@ public class User {
 
     public void encryptPassword(PasswordEncoder key) {
         this.user_password = key.encode(user_password);
+    }
+
+        @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id &&
+                Objects.equals(user_first_name, user.user_first_name) &&
+                Objects.equals(user_last_name, user.user_last_name) &&
+                Objects.equals(user_name, user.user_name) &&
+                Objects.equals(user_password, user.user_password) &&
+                Objects.equals(user_role, user.user_role);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user_first_name, user_last_name, user_name, user_password, user_role);
     }
 }
