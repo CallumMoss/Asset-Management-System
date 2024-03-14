@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="207c19a7-3225-48e6-b095-3052b9bb7d6f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/TeamProject02.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="207c19a7-3225-48e6-b095-3052b9bb7d6f" name="Changes" comment="Updated design on dashboard page by removing Author Allocation and centering feature cards">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/navigation/dashboard.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/navigation/dashboard.jsx" afterDir="false" />
     </list>
@@ -67,6 +60,7 @@
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
+    "ts.external.directory.path": "/Applications/IntelliJ IDEA.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -104,9 +98,22 @@
       <updated>1709826011720</updated>
       <workItem from="1709826012884" duration="1301000" />
     </task>
+    <task id="LOCAL-00001" summary="Updated design on dashboard page by removing Author Allocation and centering feature cards">
+      <option name="closed" value="true" />
+      <created>1710443884099</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1710443884099</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Updated design on dashboard page by removing Author Allocation and centering feature cards" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated design on dashboard page by removing Author Allocation and centering feature cards" />
   </component>
 </project>

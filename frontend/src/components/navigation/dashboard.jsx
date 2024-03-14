@@ -9,13 +9,19 @@ import '../Menustyle.css';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-function FeatureCard({ title, description, number }) {
+function FeatureCard({ title, description, number, latestAsset }) {
   return (
       <div className="bg-white p-4 shadow rounded-lg m-2 transition-transform duration-300 hover:scale-105">
         <h2 className="text-lg font-bold mt-2 mb-2">{title}</h2>
         <p className="mb-2">{description}</p>
         {number !== undefined && (
             <div className="text-6xl font-bold mt-4">{number}</div>
+        )}
+        {latestAsset && (
+            <div>
+              <p><strong>Name:</strong> {latestAsset.title}</p>
+              <p><strong>Description:</strong> {latestAsset.asset_description}</p>
+            </div>
         )}
       </div>
   );
@@ -48,12 +54,13 @@ function Dashboard({ username, userRole }) {
   });
 
   const [totalAssets, setTotalAssets] = useState(0);
+  const [latestAsset, setLatestAsset] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/assets/refresh');
-        const assets = response.data;
+        const responseAssets = await axios.get('http://localhost:8080/assets/refresh');
+        const assets = responseAssets.data;
 
         setTotalAssets(assets.length);
 
@@ -74,6 +81,10 @@ function Dashboard({ username, userRole }) {
             },
           ],
         });
+
+        const responseLatestAsset = await axios.get('http://localhost:8080/assets/getnewest');
+        setLatestAsset(responseLatestAsset.data);
+
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -102,6 +113,7 @@ function Dashboard({ username, userRole }) {
             <FeatureCard
                 title="Latest Asset"
                 description="Check the most recently added Asset."
+                latestAsset={latestAsset}
             />
 
           </div>
