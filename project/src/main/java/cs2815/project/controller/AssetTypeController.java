@@ -49,14 +49,21 @@ public class AssetTypeController {
         return ResponseEntity.ok(compatibleUsernames);
     }
 
-        @PostMapping("/attributes")
+    @PostMapping("/attributes")
     public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<String>>>> getTypesAndAttributes() {
         List<AbstractMap.SimpleEntry<String, List<String>>> attributeTitles = assetTypeService.getTypesAndAttributes();
         return ResponseEntity.ok(attributeTitles);
     }
 
+    @PostMapping("/attributesByType")
+    public ResponseEntity<List<String>> getAttributes(@RequestBody AssetType assetType) {
+        List<String> attributeTitles = assetTypeService.getAttributes(assetType);
+        return ResponseEntity.ok(attributeTitles);
+    }
 
-    
+
+
+
 
     @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
     public ResponseEntity<List<AssetType>> sortAlphabetically(@RequestBody List<AssetType> unsortedAssetTypes) {

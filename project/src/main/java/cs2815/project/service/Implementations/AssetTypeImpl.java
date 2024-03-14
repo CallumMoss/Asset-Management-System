@@ -89,6 +89,13 @@ public class AssetTypeImpl implements AssetTypeService {
     }
 
     @Override
+    public List<String> getAttributes(AssetType assetType) {
+        List<String> titles = repo.getAttributesById(assetType.getType_id());
+        return titles;
+    }
+
+
+    @Override
     public void editAssetType(AssetType assetType) {
         repo.updateAssetTypeFieldsById(assetType.getType_id(), assetType.getType_name(), assetType.getDescription());
 
