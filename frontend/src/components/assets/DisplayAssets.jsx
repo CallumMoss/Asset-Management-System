@@ -32,6 +32,7 @@ function DisplayAssets({assetList}) {
   const [assetTypes, setAssetTypes] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
+  const [page, setPage] = useState(0);
   
   useEffect(() => {
     if(assetList.length == 0) {
@@ -45,6 +46,11 @@ function DisplayAssets({assetList}) {
   useEffect(() => {
     fetchAssetTypes();
   }, []);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
 
   const fetchAssetTypes = async () => {
     try {
@@ -280,7 +286,11 @@ function DisplayAssets({assetList}) {
           ))}
         </TableBody>
       </Table>
+      
+      
       )}
+
+
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
         <DialogContent>
@@ -332,12 +342,27 @@ function DisplayAssets({assetList}) {
               </p>
             </div>
           )}
+          
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
-      
+
+      {/* Pagination controls */}
+      {!isEditing &&(
+        <>
+      <Button disabled={page === 0} onClick={() => handlePageChange(page - 1)}>
+        Previous
+      </Button>
+      <Button
+        disabled={assets.length <= (page + 1) * 5}
+        onClick={() => handlePageChange(page + 1)}
+      >
+        Next
+      </Button>  
+      </>
+      )}
     </Container>
   );
 }
