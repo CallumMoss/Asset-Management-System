@@ -169,7 +169,7 @@ public class AssetImpl implements AssetService {
 
     @Override
     public void editAsset(Asset asset) {    
-        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description());
+        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description(), asset.getLink());
     }
 
 }
