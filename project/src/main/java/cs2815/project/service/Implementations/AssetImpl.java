@@ -260,21 +260,18 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets, String orderBy) {
+    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets) {
         List<String> sortByList = new ArrayList<String>();
         List<Asset> sortedAssets = unsortedAssets;
-        switch (orderBy) {
-            default:
-                for (Asset asset : unsortedAssets) {
-                    sortByList.add(asset.getTitle());
-                }
+        for (Asset asset : unsortedAssets) {
+            sortByList.add(asset.getTitle());
         }
         String temp;
         Asset tempBis;
         int size = sortByList.size();
         for (int i = 0; i < size; i++) {
             for (int j = i + 1; j < size; j++) {
-                if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
+                if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
                     temp = sortByList.get(i);
                     tempBis = sortedAssets.get(i);
                     sortByList.set(i, sortByList.get(j));
