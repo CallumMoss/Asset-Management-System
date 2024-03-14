@@ -138,12 +138,22 @@ function DisplayAssets({ username, assetList }) {
   useEffect(() => {
     if (assetList.length === 0) {
       getAssets();
+      fetchAssetTypes();
     }
     setAssets(assetList);
     getUser(username);
   }, [assetList]); // only called if assetList is updated.
 
-  // Function to fetch assets from server
+  const fetchAssetTypes = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/asset_types/refresh');
+      setAssetTypes(response.data);
+      console.log("Fetched asset types:", response.data);
+    } catch (error) {
+      console.error("Error fetching asset types:", error);
+    }
+  }
+
   const getAssets = async () => {
     try {
       const response = await axios.get("http://localhost:8080/assets/refresh");
@@ -180,10 +190,22 @@ function DisplayAssets({ username, assetList }) {
   // Function to handle edit action
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
+    setIsEditing(true);
     // Implement your edit functionality here
+    setEditingAsset({ ...assetId });
   };
 
-  // Function to prompt delete action
+  const handleSave = async () => {
+    try {
+      await axios.post('http://localhost:8080/asset/edit', editingAsset);
+      setEditingAsset(null);
+    } catch (error) {
+      console.error(error.response.data);
+      alert("An error occured while updating the asset.");
+    }
+    setIsEditing(false);
+  }
+
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
     setOpenAlertDialog(true);
@@ -276,6 +298,7 @@ function DisplayAssets({ username, assetList }) {
 
   return (
     <Container component={Paper}>
+      <h1>Assets</h1>
       <Table>
         <TableHead>
           <TableRow>
@@ -329,15 +352,12 @@ function DisplayAssets({ username, assetList }) {
               </TableCell>
               <TableCell>
                 <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
-                <Button onClick={() => promptDelete(asset.asset_id)}>
-                  Delete
-                </Button>
+                <Button onClick={() => promptDelete(asset.asset_id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
         <DialogContent>
@@ -401,17 +421,6 @@ function DisplayAssets({ username, assetList }) {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
-      <LogsDialog
-        logs={logs}
-        open={logsDialogOpen}
-        handleClose={handleCloseLogsDialog}
-      />
-      <MessagesDialog
-        open={openMessageDialog}
-        handleClose={handleCloseMessageDialog}
-        user={user}
-        asset={selectedAsset}
-      />
     </Container>
   );
 }

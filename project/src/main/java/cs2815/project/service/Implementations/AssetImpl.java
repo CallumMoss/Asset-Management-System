@@ -211,6 +211,12 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
+<<<<<<< HEAD
+    public void editAsset(Asset asset) {    
+        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description(), asset.getLink());
+    }
+
+=======
     public void createBaseAssets() {
         /*
          * List<String> authors = Arrays.asList("BaseAdmin");
@@ -305,6 +311,7 @@ public class AssetImpl implements AssetService {
 
         return assetsAndAttributesByType;
     }
+>>>>>>> a6f76271e352a5480504c6a6bb8a91a829cf8099
 }
 
 
