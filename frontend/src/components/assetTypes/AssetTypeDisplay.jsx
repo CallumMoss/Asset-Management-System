@@ -13,24 +13,27 @@ import {
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
-function AssetTypeDisplay({assetTypeList}) {
+function AssetTypeDisplay({ assetTypeList }) {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
 
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+
   useEffect(() => {
-    if(assetTypeList.length == 0) {
+    if (assetTypeList.length == 0) {
       fetchAssetTypes();
     }
-      setAssetTypes(assetTypeList);
-      console.log("Set assetTypes to the searched asset types.");
-    
+    setAssetTypes(assetTypeList);
+    console.log("Set assetTypes to the searched asset types.");
   }, [assetTypeList]); // only called if userList is updated.
 
   const fetchAssetTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/asset_types/refresh");
+      const response = await axios.get(
+        "http://localhost:8080/asset_types/refresh"
+      );
       console.log("API Response:", response.data);
 
       if (Array.isArray(response.data)) {
@@ -76,16 +79,40 @@ function AssetTypeDisplay({assetTypeList}) {
     }
   };
 
+  const handleSort = async () => {
+    try {
+        const response = await axios.post("http://localhost:8080/asset_types/sort/alphabetically", assetTypes );
+        if (Array.isArray(response.data)) {
+          setAssetTypes(response.data);
+        } else {
+            console.error("Unexpected response structure:", response.data);
+            alert("Could not sort AssetTypes. Unexpected response structure.");
+        }
+    } catch (error) {
+        console.error("Axios Error:", error);
+        alert("Could not sort AssetTypes. An error occurred.");
+    }
+};
+
   return (
     <Container component={Paper}>
-      <h1>Asset Type Management</h1>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <Button onClick={() => handleCreate()}>Create</Button>
-            <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                  <Button onClick={() => handleCreate()}>Create</Button>
+                  <div>
+                    <Button onClick={(e) => handleSort()}
+                      aria-controls="sort-menu"
+                      aria-haspopup="true"
+                    >
+                      Sort
+                    </Button>
+                  </div>
+                  <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+            </div>
           </TableRow>
         </TableHead>
         <TableBody>

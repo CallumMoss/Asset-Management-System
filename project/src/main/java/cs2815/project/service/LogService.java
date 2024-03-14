@@ -13,4 +13,6 @@ public interface LogService {
     List<Log> getUserLog();
 
     List<Log> getAssetLog();
+
+    List<Log> getLogsByAssetId(int assetId);
 }
