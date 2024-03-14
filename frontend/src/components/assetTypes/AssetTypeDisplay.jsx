@@ -22,15 +22,13 @@ function AssetTypeDisplay({ assetTypeList }) {
   const [editedAssetType, setEditedAssetType] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
-
   useEffect(() => {
-    if (assetTypeList.length == 0) {
+    if (assetTypeList.length === 0) {
       fetchAssetTypes();
     }
     setAssetTypes(assetTypeList);
     console.log("Set assetTypes to the searched asset types.");
-  }, [assetTypeList]); // only called if userList is updated.
+  }, [assetTypeList]); // only called if assetTypeList is updated.
 
   const fetchAssetTypes = async () => {
     try {
@@ -61,7 +59,10 @@ function AssetTypeDisplay({ assetTypeList }) {
 
   const handleUpdate = async () => {
     try {
-      await axios.post("http://localhost:8080/asset_types/edit", editedAssetType);
+      await axios.post(
+        "http://localhost:8080/asset_types/edit",
+        editedAssetType
+      );
       fetchAssetTypes();
       console.log("Asset Type updated successfully");
     } catch (error) {
@@ -97,18 +98,21 @@ function AssetTypeDisplay({ assetTypeList }) {
 
   const handleSort = async () => {
     try {
-        const response = await axios.post("http://localhost:8080/asset_types/sort/alphabetically", assetTypes );
-        if (Array.isArray(response.data)) {
-          setAssetTypes(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort AssetTypes. Unexpected response structure.");
-        }
+      const response = await axios.post(
+        "http://localhost:8080/asset_types/sort/alphabetically",
+        assetTypes
+      );
+      if (Array.isArray(response.data)) {
+        setAssetTypes(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort AssetTypes. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort AssetTypes. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort AssetTypes. An error occurred.");
     }
-};
+  };
 
   return (
     <Container component={Paper}>
@@ -117,18 +121,7 @@ function AssetTypeDisplay({ assetTypeList }) {
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <div style={{ display: "flex", alignItems: "center" }}>
-                  <Button onClick={() => handleCreate()}>Create</Button>
-                  <div>
-                    <Button onClick={(e) => handleSort()}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
-                      Sort
-                    </Button>
-                  </div>
-                  <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-            </div>
+            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -139,52 +132,54 @@ function AssetTypeDisplay({ assetTypeList }) {
             message="Are you sure you want to delete this asset type?"
             onConfirm={handleDeleteConfirmation}
           />
-          <TextField
-          label="Description" 
-          variant="outlined" 
-          value={editedAssetType.description}
-          onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
-          />
-          <Button onClick={handleUpdate}>Save</Button>
-        </form>
-      ) : (
-      <><h2>Asset Type Management</h2><Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-                <Button onClick={() => handleCreate()}>Create</Button>
-                <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <AlertDialog
-                open={openDialog}
-                handleClose={() => setOpenDialog(false)}
-                title="Confirm Delete"
-                message="Are you sure you want to delete this asset type?"
-                onConfirm={handleDeleteConfirmation} />
-
+          {isEditing ? (
+            <TableRow>
+              <TableCell>
+                <TextField
+                  label="Description"
+                  variant="outlined"
+                  value={editedAssetType.description}
+                  onChange={(e) =>
+                    setEditedAssetType({
+                      ...editedAssetType,
+                      description: e.target.value,
+                    })
+                  }
+                />
+              </TableCell>
+              <TableCell>
+                <Button onClick={handleUpdate}>Save</Button>
+              </TableCell>
+            </TableRow>
+          ) : (
+            <>
               {assetTypes.map((assetType) => (
                 <TableRow key={assetType.type_id}>
                   <TableCell>{assetType.type_name}</TableCell>
                   <TableCell>{assetType.description}</TableCell>
-
                   <TableCell>
-                    <Button onClick={() => handleEdit(assetType)}>
-                      Edit
-                    </Button>
+                    <Button onClick={() => handleEdit(assetType)}>Edit</Button>
                     <Button
-                      onClick={() => promptDeleteConfirmation(assetType.type_id)}>
+                      onClick={() =>
+                        promptDeleteConfirmation(assetType.type_id)
+                      }
+                    >
                       Delete
                     </Button>
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table></>
-      )}
+            </>
+          )}
+        </TableBody>
+      </Table>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Button onClick={() => handleCreate()}>Create</Button>
+        <Button onClick={(e) => handleSort()} aria-controls="sort-menu" aria-haspopup="true">
+          Sort
+        </Button>
+        <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+      </div>
     </Container>
   );
 }
