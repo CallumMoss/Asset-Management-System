@@ -14,134 +14,37 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Menu,
+  Select,
   MenuItem,
 } from "@mui/material";
-import AlertDialog from "./AlertDialog";
+import AlertDialog from './AlertDialog';
 
-import ViewLog from "./ViewLogAsset";
-
-function LogsDialog({ logs, open, handleClose }) {
-  return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Logs</DialogTitle>
-      <DialogContent>
-        {logs.map((log) => (
-          <TableRow key={log.id}>
-            <TableCell>{log.updateDescription}</TableCell>
-            <TableCell>{log.updateTimestamp}</TableCell>
-          </TableRow>
-        ))}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-function MessagesDialog({ open, handleClose, user, asset }) {
-  const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    if (asset && asset.asset_id) {
-      refresh(asset.asset_id);
-    }
-  }, [asset]);
-
-  const handleSend = async () => {
-    console.log(user);
-    console.log(asset);
-    console.log(newMessage);
-    if (newMessage.trim() !== "") {
-      const response = await axios.post("http://localhost:8080/messages/send", {
-        textMessage: newMessage,
-        user: user,
-        asset: asset,
-      });
-      setNewMessage("");
-      refresh(asset.asset_id);
-    }
-  };
-
-  const refresh = async (assetId) => {
-    console.log({ assetId });
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/messages/refresh/${assetId}`
-      );
-      console.log("API Response:", response.data);
-
-      if (Array.isArray(response.data)) {
-        const messagesFromApi = response.data;
-        setMessages(messagesFromApi);
-      } else {
-        console.error("Unexpected response structure:", response.data);
-        setMessages([]); // Fallback to an empty array
-      }
-    } catch (error) {
-      console.error("Failed to fetch messages:", error);
-      alert("An error occurred while fetching logs.");
-    }
-  };
-
-  return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Messages</DialogTitle>
-      <DialogContent>
-        {messages.map((message) => (
-          <TableRow key={message.messageId}>
-            <TableCell>{message.textMessage}</TableCell>
-            <TableCell>{message.messageSent}</TableCell>
-            <TableCell>
-              {message.user ? message.user.user_name : "Deleted User"}
-            </TableCell>
-          </TableRow>
-        ))}
-      </DialogContent>
-      <DialogContent>
-        {/* Textbox for input */}
-        <TextField
-          label="Type your message"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={2}
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-      </DialogContent>
-      <DialogActions>
-        {/* Send button */}
-        <Button onClick={handleSend} color="primary">
-          Send
-        </Button>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
-  );
-}
-
-function DisplayAssets({ username, assetList }) {
+import ViewLog from "./ViewLogAsset"
+function DisplayAssets({assetList}) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openMessageDialog, setOpenMessageDialog] = useState(false);
   const [logs, setLogs] = useState([]);
-  const [messages, setMessages] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
+  const [editingAsset, setEditingAsset] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [assetTypes, setAssetTypes] = useState([]);
+  const [languages, setLanguages] = useState([]);
+  const [langList, setLangList] = useState([]);
+  
+  useEffect(() => {
+    if(assetList.length == 0) {
+      getAssets();
+    }
+      setAssets(assetList);
+      console.log("Set assets to the searched assets.");
+    
+  }, [assetList]); // only called if assetList is updated.
 
   useEffect(() => {
-    if (assetList.length == 0) {
-      getAssets();
-      fetchAssetTypes();
-    }
-    setAssets(assetList);
-    getUser(username);
-    console.log("Set assets to the searched assets.");
-  }, [assetList]); // only called if assetList is updated.
+    fetchAssetTypes();
+  }, []);
 
   const fetchAssetTypes = async () => {
     try {
@@ -150,6 +53,22 @@ function DisplayAssets({ username, assetList }) {
       console.log("Fetched asset types:", response.data);
     } catch (error) {
       console.error("Error fetching asset types:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchLanguages();
+  }, []);
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/languages/refresh"
+      );
+      setLangList(response.data);
+      console.log("Fetched languages:", response.data);
+    } catch (error) {
+      console.error("Error fetching languages:", error);
     }
   }
 
@@ -167,27 +86,6 @@ function DisplayAssets({ username, assetList }) {
     } catch (error) {
       console.error("Failed to fetch assets:", error);
       alert("An error occurred while fetching assets.");
-    }
-  };
-
-  const getUser = async (username) => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8080/users/finduser/${username}`
-      );
-
-      console.log("API Response:", response.data);
-
-      if (response.data) {
-        // Assuming the response is an object, not an array
-        setUser(response.data);
-      } else {
-        console.error("Unexpected response structure:", response.data);
-        setUser(null); // Fallback to null
-      }
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
-      setUser(null); // Fallback to null in case of an error
     }
   };
 
@@ -233,25 +131,17 @@ function DisplayAssets({ username, assetList }) {
     setOpenDialog(true);
   };
 
-  const handleViewMessages = (asset) => {
-    setSelectedAsset(asset);
-    getUser(username);
-    setOpenMessageDialog(true);
-  };
-
   const handleViewLog = (asset_id) => {
     const fetchLogs = async (assetId) => {
-      console.log({ assetId });
       try {
         const response = await axios.get(
-          `http://localhost:8080/logs/${assetId}`
+          `http://localhost:8080/logs/refresh/${assetId}`
         );
         console.log("API Response:", response.data);
 
         if (Array.isArray(response.data)) {
           const logsFromApi = response.data;
           setLogs(logsFromApi);
-          setLogsDialogOpen(true);
         } else {
           console.error("Unexpected response structure:", response.data);
           setLogs([]); // Fallback to an empty array
@@ -268,31 +158,77 @@ function DisplayAssets({ username, assetList }) {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-  const handleCloseMessageDialog = () => {
-    setOpenMessageDialog(false);
-  };
-  const handleCloseLogsDialog = () => {
-    setLogsDialogOpen(false);
-  };
 
-  const handleSort = async () => {
-    try {
-        const response = await axios.post("http://localhost:8080/assets/sort/alphabetically", assets );
-        if (Array.isArray(response.data)) {
-          setAssets(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort Assets. Unexpected response structure.");
-        }
-    } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort Assets. An error occurred.");
-    }
-  };
-   
   return (
     <Container component={Paper}>
       <h1>Assets</h1>
+      {isEditing ? (
+        <form>
+          <TextField
+          label="Asset Title"
+          variant="outlined"
+          value={editingAsset.title}
+          onChange={(e) => setEditingAsset({ ...editingAsset, title: e.target.value})}
+          />
+          <TextField
+          label="Description"
+          variant="outlined"
+          value={editingAsset.asset_description}
+          onChange={(e) => setEditingAsset({ ...editingAsset, asset_description: e.target.value})}
+          />
+          <TextField
+          label="Link"
+          variant="outlined"
+          value={editingAsset.link}
+          onChange={(e) => setEditingAsset({ ...editingAsset, link: e.target.value})}
+          />
+          <Select
+            id="Asset Type"
+            name="Asset Type"
+            value={editingAsset.asset_type}
+            onChange={(e) => setEditingAsset({ ...editingAsset, asset_type: e.target.value})}
+          >
+            <MenuItem value="" disabled>
+              Select an asset type
+            </MenuItem>
+            {assetTypes.map((assetType) => (
+              <MenuItem key={assetType.type_id} value={assetType.type_name}>
+                {assetType.type_name}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Select
+            id="Languages"
+            name="Languages"
+            value={editingAsset.language}
+            onChange={(e) => setLanguages({ ...editingAsset, language: e.target.value})}
+          >
+            <MenuItem value="" disabled>
+              Select an asset type
+            </MenuItem>
+            {assetTypes.map((assetType) => (
+              <MenuItem key={assetType.type_id} value={assetType.type_name}>
+                {assetType.type_name}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <TextField
+          label="Languages"
+          variant="outlined"
+          value={editingAsset.language}
+          onChange={(e) => setEditingAsset({ ...editingAsset, language: e.target.value})}
+          />
+          <TextField
+          label="Authors"
+          variant="outlined"
+          value={editingAsset.authors}
+          onChange={(e) => setEditingAsset({ ...editingAsset, authors: e.target.value})}
+          />
+          <Button onClick={handleSave}>Save</Button>
+        </form>
+      ) : (
       <Table>
         <TableHead>
           <TableRow>
@@ -303,26 +239,17 @@ function DisplayAssets({ username, assetList }) {
             <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
-                    <Button onClick={(e) => handleSort()}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
-                      Sort
-                    </Button>
-                  </div>
-                  <Button onClick={() => getAssets()}>Refresh</Button>
-            </div>
+            <Button onClick={() => getAssets()}>Refresh</Button>
           </TableRow>
         </TableHead>
         <TableBody>
+
           <AlertDialog
-            open={openAlertDialog}
-            handleClose={() => setOpenAlertDialog(false)}
-            title="Confirm Delete"
-            message="Are you sure you want to delete this asset?"
-            onConfirm={confirmDelete}
+              open={openAlertDialog}
+              handleClose={() => setOpenAlertDialog(false)}
+              title="Confirm Delete"
+              message="Are you sure you want to delete this asset?"
+              onConfirm={confirmDelete}
           />
 
           {assets.map((asset) => (
@@ -346,13 +273,14 @@ function DisplayAssets({ username, assetList }) {
                 ))}
               </TableCell>
               <TableCell>
-                <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
+                <Button onClick={() => handleEdit(asset)}>Edit</Button>
                 <Button onClick={() => promptDelete(asset.asset_id)}>Delete</Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+      )}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
         <DialogContent>
@@ -376,23 +304,16 @@ function DisplayAssets({ username, assetList }) {
               </p>
               <br></br>
               <p>
-                Assets that the CURRENT asset is depending on:{" "}
-                {selectedAsset.dependencies
+                Dependant Assets:{" "}
+                {selectedAsset.dependent
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
               <p>
-                Assets depending on CURRENT asset:{" "}
-                {selectedAsset.dependencies
-                  .filter(
-                    (dependency) =>
-                      dependency.dependent && dependency.dependent.title
-                  )
-                  .map(
-                    (dependency) =>
-                      `${dependency.dependent.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
+                Assets depending on current asset:{" "}
+                {selectedAsset.dependent
+                  .map((dependency) => dependency.title)
+                  .join(", ")}
               </p>
               <br></br>
               <p>
@@ -404,7 +325,7 @@ function DisplayAssets({ username, assetList }) {
                 </p>
                 <p>
                   Discussion Board:
-                  <Button onClick={() => handleViewMessages(selectedAsset)}>
+                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
                     Open
                   </Button>
                 </p>
@@ -416,6 +337,7 @@ function DisplayAssets({ username, assetList }) {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
+      
     </Container>
   );
 }
