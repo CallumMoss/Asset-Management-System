@@ -38,8 +38,8 @@ function CreateAsset() {
   const [dependenciesList, setDependenciesList] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
-  const [dependencyDetails, setDependencyDetails] = useState({ detail1: '', detail2: '' });
-  const [showDependencyDetails, setShowDependencyDetails] = useState(false);
+  // Updated to handle multiple dependencies and their specific details
+  const [dependencyDetails, setDependencyDetails] = useState([]);
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -89,17 +89,24 @@ function CreateAsset() {
 
   const handleDependenciesChange = (event) => {
     const { target: { value } } = event;
-    setDependencies(typeof value === 'string' ? value.split(',') : value);
-    setShowDependencyDetails(value.length > 0);
+    const selectedDependencies = typeof value === 'string' ? value.split(',') : value;
+    setDependencies(selectedDependencies);
+    // Prepare dependency details for new selection
+    const newDependencyDetails = selectedDependencies.map(dep => {
+      const existingDetail = dependencyDetails.find(detail => detail.name === dep);
+      return existingDetail || { name: dep, relationType: "" };
+    });
+    setDependencyDetails(newDependencyDetails);
+  };
+
+  const handleDependencyDetailChange = (name, relationType) => {
+    setDependencyDetails(current =>
+      current.map(dep => dep.name === name ? { ...dep, relationType } : dep)
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formattedDependencies = dependencies.map(dep => ({
-      name: dep,
-      relationType: "dependsOn"
-    }));
-
     try {
       await axios.post("http://localhost:8080/assets/createasset", {
         title,
@@ -107,7 +114,7 @@ function CreateAsset() {
         link,
         asset_type: type,
         authors,
-        dependencies: formattedDependencies,
+        dependencies: dependencyDetails,
         languages,
       });
       console.log("Asset created successfully");
@@ -173,7 +180,6 @@ function CreateAsset() {
                 ))}
               </Select>
             </FormControl>
-            {/* Multi-select for Authors */}
             <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="authors-label">Authors</InputLabel>
               <Select
@@ -202,7 +208,6 @@ function CreateAsset() {
                 ))}
               </Select>
             </FormControl>
-            {/* Multi-select for Dependencies */}
             <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="dependencies-label">Dependencies</InputLabel>
               <Select
@@ -231,33 +236,18 @@ function CreateAsset() {
                 ))}
               </Select>
             </FormControl>
-            {showDependencyDetails && (
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="dependency-detail1"
-                  label="Dependency Detail 1"
-                  name="dependencyDetail1"
-                  value={dependencyDetails.detail1}
-                  onChange={(e) => setDependencyDetails({ ...dependencyDetails, detail1: e.target.value })}
-                  sx={{ mr: 1, width: '48%' }}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="dependency-detail2"
-                  label="Dependency Detail 2"
-                  name="dependencyDetail2"
-                  value={dependencyDetails.detail2}
-                  onChange={(e) => setDependencyDetails({ ...dependencyDetails, detail2: e.target.value })}
-                  sx={{ width: '48%' }}
-                />
-              </Box>
-            )}
-            {/* Multi-select for Languages */}
+            {dependencyDetails.map((dep, index) => (
+              <TextField
+                key={index}
+                margin="normal"
+                required
+                fullWidth
+                label={`Relationship for ${dep.name}`}
+                value={dep.relationType}
+                onChange={(e) => handleDependencyDetailChange(dep.name, e.target.value)}
+                sx={{ mt: 2 }}
+              />
+            ))}
             <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="languages-label">Languages</InputLabel>
               <Select
