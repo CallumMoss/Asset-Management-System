@@ -264,7 +264,7 @@ public class AssetImpl implements AssetService {
         switch (orderBy) {
             default:
                 for (Asset asset : unsortedAssets) {
-                    sortByList.add(asset.getTitle());
+                    sortByList.add(asset.getTitle().toLowerCase());
                 }
         }
         String temp;

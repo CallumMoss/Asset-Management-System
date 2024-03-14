@@ -14,6 +14,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -245,19 +247,24 @@ function DisplayAssets({ username, assetList }) {
 
   const handleSortBy = async (orderBy) => {
     try {
-        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", assets, { params: { orderBy: orderBy } } );
-        if (Array.isArray(response.data)) {
-          setAssets(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort users. Unexpected response structure.");
-        }
+      const response = await axios.post(
+        "http://localhost:8080/assets/sort/alphabetically",
+        assets, // Send the assets list in the request body
+        { params: { orderBy: orderBy } } // Send the orderBy parameter as a query parameter
+      );
+  
+      if (Array.isArray(response.data)) {
+        setAssets(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort assets. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort users. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort assets. An error occurred.");
     }
-};
-
+  };
+   
   return (
     <Container component={Paper}>
       <Table>
@@ -271,15 +278,22 @@ function DisplayAssets({ username, assetList }) {
             <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
-                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
-                      Sort
-                    </Button>
-                  </div>
-                  <Button onClick={() => getAssets()}>Refresh</Button>
+              <div>
+                <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                  aria-controls="sort-menu"
+                  aria-haspopup="true"
+                >
+                  Sort
+                </Button>
+                <Menu id="sort-menu"
+                  anchorEl={sortAnchorEl}
+                  open={Boolean(sortAnchorEl)}
+                  onClose={() => setSortAnchorEl(null)}>
+
+                  <MenuItem onClick={() => handleSortBy("title")}>asset title</MenuItem>
+                </Menu>
+              </div>
+              <Button onClick={() => getAssets()}>Refresh</Button>
             </div>
           </TableRow>
         </TableHead>
