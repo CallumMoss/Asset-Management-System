@@ -13,11 +13,8 @@ public interface AssetService {
 
     void deleteAsset(int assetID);
 
-<<<<<<< HEAD
     void editAsset(Asset asset);
-=======
     Asset getNewestAsset();
->>>>>>> a6f76271e352a5480504c6a6bb8a91a829cf8099
 
     List<Asset> refresh();
 

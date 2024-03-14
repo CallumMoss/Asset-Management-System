@@ -112,12 +112,29 @@ function AssetTypeDisplay({ assetTypeList }) {
 
   return (
     <Container component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <div style={{ display: "flex", alignItems: "center" }}>
+      {isEditing ? (
+        <form>
+        <TextField
+        label="Type Name" 
+        variant="outlined"
+        value={editedAssetType.type_name}
+        onChange={(e) => setEditedAssetType({ ...editedAssetType, type_name: e.target.value })}
+        />
+        <TextField
+        label="Description" 
+        variant="outlined" 
+        value={editedAssetType.description}
+        onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
+        />
+        <Button onClick={handleUpdate}>Save</Button>
+      </form>
+      ) : (
+      <><h1>Asset Type Management</h1><Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Button onClick={() => handleCreate()}>Create</Button>
                   <div>
                     <Button onClick={(e) => handleSort()}
@@ -128,34 +145,7 @@ function AssetTypeDisplay({ assetTypeList }) {
                     </Button>
                   </div>
                   <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-            </div>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <AlertDialog
-            open={openDialog}
-            handleClose={() => setOpenDialog(false)}
-            title="Confirm Delete"
-            message="Are you sure you want to delete this asset type?"
-            onConfirm={handleDeleteConfirmation}
-          />
-          <TextField
-          label="Description" 
-          variant="outlined" 
-          value={editedAssetType.description}
-          onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
-          />
-          <Button onClick={handleUpdate}>Save</Button>
-        </form>
-      ) : (
-      <><h2>Asset Type Management</h2><Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-                <Button onClick={() => handleCreate()}>Create</Button>
-                <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+                </div>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -165,28 +155,17 @@ function AssetTypeDisplay({ assetTypeList }) {
                 title="Confirm Delete"
                 message="Are you sure you want to delete this asset type?"
                 onConfirm={handleDeleteConfirmation} />
-
-              {assetTypes.map((assetType) => (
-                <TableRow key={assetType.type_id}>
-                  <TableCell>{assetType.type_name}</TableCell>
-                  <TableCell>{assetType.description}</TableCell>
-
-                  <TableCell>
-                    <Button onClick={() => handleEdit(assetType)}>
-                      Edit
-                    </Button>
-                    <Button
-                      onClick={() => promptDeleteConfirmation(assetType.type_id)}>
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              <TextField
+                label="Description"
+                variant="outlined"
+                value={editedAssetType.description}
+                onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })} />
+              <Button onClick={handleUpdate}>Save</Button>
             </TableBody>
           </Table></>
-      )}
-    </Container>
+            )}
+      </Container>
   );
-}
+      }
 
 export default AssetTypeDisplay;
