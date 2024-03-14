@@ -14,6 +14,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -266,8 +268,8 @@ function DisplayAssets({ username, assetList }) {
         console.error("Axios Error:", error);
         alert("Could not sort Assets. An error occurred.");
     }
-};
-
+  };
+   
   return (
     <Container component={Paper}>
       <Table>
