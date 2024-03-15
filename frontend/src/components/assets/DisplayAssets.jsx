@@ -40,9 +40,10 @@ function LogsDialog({ logs, open, handleClose }) {
 }
 
 // Dialog component to display messages and send new messages
-function MessagesDialog({ open, handleClose, user, asset }) {
+function MessagesDialog({ open, handleClose, username, asset }) {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     if (asset && asset.asset_id) {
