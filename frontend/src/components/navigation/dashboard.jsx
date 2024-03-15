@@ -115,7 +115,6 @@ function Dashboard({ username, userRole }) {
                 description="Check the most recently added Asset."
                 latestAsset={latestAsset}
             />
-
           </div>
         </main>
       </div>

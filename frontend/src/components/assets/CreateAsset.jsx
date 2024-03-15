@@ -1,32 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Chip from '@mui/material/Chip';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Chip from "@mui/material/Chip";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import axios from "axios";
+import Navbar from "../navigation/Navbar";
 
 const defaultTheme = createTheme();
 
 function getStyles(name, personName, theme) {
   return {
     fontWeight:
-        personName.indexOf(name) === -1
-            ? theme.typography.fontWeightRegular
-            : theme.typography.fontWeightMedium,
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
   };
 }
 
-function CreateAsset() {
+function CreateAsset({ username, userRole }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
@@ -54,7 +55,9 @@ function CreateAsset() {
 
   const fetchAssetTypes = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/asset_types/refresh");
+      const response = await axios.get(
+        "http://localhost:8080/asset_types/refresh"
+      );
       setAssetTypes(response.data);
     } catch (error) {
       console.error("Error fetching asset types:", error);
@@ -81,7 +84,9 @@ function CreateAsset() {
 
   const fetchLanguages = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/languages/refresh");
+      const response = await axios.get(
+        "http://localhost:8080/languages/refresh"
+      );
       setLangList(response.data);
     } catch (error) {
       console.error("Error fetching languages:", error);
@@ -89,8 +94,11 @@ function CreateAsset() {
   };
 
   const handleDependenciesChange = (event) => {
-    const { target: { value } } = event;
-    const selectedDependencies = typeof value === 'string' ? value.split(',') : value;
+    const {
+      target: { value },
+    } = event;
+    const selectedDependencies =
+      typeof value === "string" ? value.split(",") : value;
     setDependencies(selectedDependencies);
     // Prepare dependency details for new selection
     const newDependencyDetails = selectedDependencies.map(dep => {
@@ -129,20 +137,24 @@ function CreateAsset() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
         <Box
-            sx={{
-              marginTop: 8,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-        >
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}>
           <Typography component="h1" variant="h5">
             Create Asset
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -190,21 +202,21 @@ function CreateAsset() {
                 multiple
                 value={authors}
                 onChange={(e) => setAuthors(e.target.value)}
-                input={<OutlinedInput id="select-multiple-chip" label="Authors" />}
+                input={
+                  <OutlinedInput id="select-multiple-chip" label="Authors" />
+                }
                 renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => (
                       <Chip key={value} label={value} />
                     ))}
                   </Box>
-                )}
-              >
+                )}>
                 {authorsList.map((author) => (
                   <MenuItem
                     key={author.id}
                     value={author.user_name}
-                    style={getStyles(author.user_name, authors, theme)}
-                  >
+                    style={getStyles(author.user_name, authors, theme)}>
                     {author.user_name}
                   </MenuItem>
                 ))}
@@ -218,21 +230,24 @@ function CreateAsset() {
                 multiple
                 value={dependencies}
                 onChange={handleDependenciesChange}
-                input={<OutlinedInput id="select-multiple-chip" label="Dependencies" />}
+                input={
+                  <OutlinedInput
+                    id="select-multiple-chip"
+                    label="Dependencies"
+                  />
+                }
                 renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => (
                       <Chip key={value} label={value} />
                     ))}
                   </Box>
-                )}
-              >
+                )}>
                 {dependenciesList.map((dependency) => (
                   <MenuItem
                     key={dependency.asset_id}
                     value={dependency.title}
-                    style={getStyles(dependency.title, dependencies, theme)}
-                  >
+                    style={getStyles(dependency.title, dependencies, theme)}>
                     {dependency.title}
                   </MenuItem>
                 ))}
@@ -258,21 +273,21 @@ function CreateAsset() {
                 multiple
                 value={languages}
                 onChange={(e) => setLanguages(e.target.value)}
-                input={<OutlinedInput id="select-multiple-chip" label="Languages" />}
+                input={
+                  <OutlinedInput id="select-multiple-chip" label="Languages" />
+                }
                 renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => (
                       <Chip key={value} label={value} />
                     ))}
                   </Box>
-                )}
-              >
+                )}>
                 {langList.map((language) => (
                   <MenuItem
                     key={language.language_id}
                     value={language.language_name}
-                    style={getStyles(language.language_name, languages, theme)}
-                  >
+                    style={getStyles(language.language_name, languages, theme)}>
                     {language.language_name}
                   </MenuItem>
                 ))}
@@ -292,8 +307,7 @@ function CreateAsset() {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+              sx={{ mt: 3, mb: 2 }}>
               Submit
             </Button>
           </Box>
