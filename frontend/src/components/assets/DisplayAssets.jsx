@@ -243,8 +243,27 @@ function DisplayAssets({ username, assetList }) {
 
   // Function to handle view log action
   const handleViewLog = (asset_id) => {
-    setLogsDialogOpen(true);
+    const fetchLogs = async (assetId) => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/logs/${assetId}`
+        );
+        if (Array.isArray(response.data)) {
+          const logsFromApi = response.data;
+          setLogs(logsFromApi);
+          setLogsDialogOpen(true);
+        } else {
+          console.error("Unexpected response structure:", response.data);
+          setLogs([]); // Fallback to an empty array
+        }
+      } catch (error) {
+        console.error("Failed to fetch logs:", error);
+        alert("An error occurred while fetching logs.");
+      }
+    };
+    fetchLogs(asset_id);
   };
+
   // Function to handle dialog close
   const handleCloseDialog = () => {
     setOpenDialog(false);
