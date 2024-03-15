@@ -149,7 +149,10 @@ function AppRoutes() {
             path="/changepassword" // when navigating to this page (when navigate is used in UserManagement)
             element={
               <ViewerElement currentUserType={currentUserType}>
-                <ChangePassword username={currentUserName} />
+                <ChangePassword
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </ViewerElement>
             }
           />

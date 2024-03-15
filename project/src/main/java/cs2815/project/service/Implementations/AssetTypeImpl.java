@@ -68,7 +68,7 @@ public class AssetTypeImpl implements AssetTypeService {
         List<String> sortByList = new ArrayList<>();
         List<AssetType> sortedAssetTypes = unsortedAssetTypes;
         for (AssetType assetType : unsortedAssetTypes) {
-            sortByList.add(assetType.getType_name());
+            sortByList.add(assetType.getType_name().toLowerCase());
         }
         String temp;
         AssetType tempBis;
