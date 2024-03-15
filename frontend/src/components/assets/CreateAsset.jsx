@@ -38,8 +38,9 @@ function CreateAsset() {
   const [dependenciesList, setDependenciesList] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
-  // Updated to handle multiple dependencies and their specific details
   const [dependencyDetails, setDependencyDetails] = useState([]);
+  const [typeAttributes, setTypeAttributes] = useState([]);
+  const [attributeValues, setAttributeValues] = useState({});
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -87,22 +88,34 @@ function CreateAsset() {
     }
   };
 
+  const handleTypeChange = (event) => {
+    const selectedType = event.target.value;
+    if (type === selectedType) {
+      setType("");
+    } else {
+      setType(selectedType);
+    }
+
+    // Insert logic here to dynamically set typeAttributes based on selectedType
+    const attributesByType = {
+      'Python File': ['Version', 'Compatibility', 'Size'],
+      'Documentation': ['Page Count', 'Format'],
+      'Project': ['Scope', 'Duration', 'Team Size'],
+      'Java File': ['JDK Version', 'Build System', 'Dependencies'],
+    };
+    setTypeAttributes(attributesByType[selectedType] || []);
+  };
+
   const handleDependenciesChange = (event) => {
     const { target: { value } } = event;
     const selectedDependencies = typeof value === 'string' ? value.split(',') : value;
     setDependencies(selectedDependencies);
-    // Prepare dependency details for new selection
-    const newDependencyDetails = selectedDependencies.map(dep => {
-      const existingDetail = dependencyDetails.find(detail => detail.name === dep);
-      return existingDetail || { name: dep, relationType: "" };
-    });
-    setDependencyDetails(newDependencyDetails);
   };
 
-  const handleDependencyDetailChange = (name, relationType) => {
-    setDependencyDetails(current =>
-      current.map(dep => dep.name === name ? { ...dep, relationType } : dep)
-    );
+  const handleDependencyDetailChange = (index, event) => {
+    const newDetails = [...dependencyDetails];
+    newDetails[index] = { ...newDetails[index], relationType: event.target.value };
+    setDependencyDetails(newDetails);
   };
 
   const handleSubmit = async (e) => {
@@ -116,6 +129,7 @@ function CreateAsset() {
         authors,
         dependencies: dependencyDetails,
         languages,
+        // Ensure to send the attributeValues as well
       });
       console.log("Asset created successfully");
       navigate("/assets");
@@ -170,7 +184,7 @@ function CreateAsset() {
                 labelId="type-label"
                 id="type"
                 value={type}
-                onChange={(e) => setType(e.target.value)}
+                onChange={handleTypeChange}
                 input={<OutlinedInput label="Asset Type" />}
               >
                 {assetTypes.map((assetType) => (
@@ -180,6 +194,17 @@ function CreateAsset() {
                 ))}
               </Select>
             </FormControl>
+            {/* Displaying Attributes */}
+            {typeAttributes.length > 0 && (
+              <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Typography variant="h6">Attributes</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+                  {typeAttributes.map((attribute, index) => (
+                    <Chip key={index} label={attribute} />
+                  ))}
+                </Box>
+              </Box>
+            )}
             <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="authors-label">Authors</InputLabel>
               <Select
@@ -244,7 +269,7 @@ function CreateAsset() {
                 fullWidth
                 label={`Relationship for ${dep.name}`}
                 value={dep.relationType}
-                onChange={(e) => handleDependencyDetailChange(dep.name, e.target.value)}
+                onChange={(e) => handleDependencyDetailChange(index, e)}
                 sx={{ mt: 2 }}
               />
             ))}
@@ -285,6 +310,7 @@ function CreateAsset() {
               name="link"
               value={link}
               onChange={(e) => setLink(e.target.value)}
+              sx={{ mt: 2 }}
             />
             <Button
               type="submit"

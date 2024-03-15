@@ -49,6 +49,14 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("DELETE FROM Asset at WHERE at.asset_id = :assetID")
     void deleteAssetbyID(@Param("assetID") int assetID);
 
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Asset a SET a.title = :newTitle, a.asset_description = :newDescription, a.link = :newLink WHERE a.asset_id = :assetID")
+    void updateAssetFieldsById(@Param("assetID") int assetId, @Param("newTitle") String newTitle, @Param("newDescription") String newDescription, @Param("newLink") String newLink);
+
+
+
     @Modifying
     @Transactional
     @Query("UPDATE Asset a SET a.Asset_type = null WHERE a.Asset_type.id = :AssetTypeId")

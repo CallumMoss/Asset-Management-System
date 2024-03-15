@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         logrepo.save(log);
 
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
-                user.getUser_last_name(), user.getUser_role());
+        user.getUser_last_name(), user.getUser_role());
     }
 
     @Override
@@ -227,14 +227,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> searchByRole(@RequestBody String searchString) {
+    public List<User> searchByRole(String searchString) {
         List<String> roleList = repo.findAllRoles();
         List<User> compatibleUsers = new ArrayList<>();
         for (String role : roleList) {
             if (searchString.equals(role) || isSimilar(searchString, role)) {
                 List<User> users = repo.getUserByRole(role);
-                compatibleUsers.addAll(users);
-                return compatibleUsers;
+                if (!compatibleUsers.contains(users.get(0))) {
+                    compatibleUsers.addAll(users);
+                }
             }
         }
         return compatibleUsers;

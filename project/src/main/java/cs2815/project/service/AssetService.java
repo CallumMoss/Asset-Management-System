@@ -13,6 +13,8 @@ public interface AssetService {
 
     void deleteAsset(int assetID);
 
+    void editAsset(Asset asset);
+    
     Asset getNewestAsset();
 
     List<Asset> refresh();
@@ -29,5 +31,5 @@ public interface AssetService {
 
     List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes();
 
-    List<Asset> sortAlphabetically(List<Asset> unsortedAssets, String orderBy);
+    List<Asset> sortAlphabetically(List<Asset> unsortedAssets);
 }

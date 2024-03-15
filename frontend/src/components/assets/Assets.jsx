@@ -11,22 +11,24 @@ function Assets({ username, userRole }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
 
+  // Function to handle search
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
       if (searchTerm !== "") {
-       
-        if(filter == "") { // default to asset title search
-          response = await axios.post("http://localhost:8080/assets/search/title", {searchTerm});
+        // If there is a search term
+        if (filter === "") {
+          // Default to asset title search
+          response = await axios.post("http://localhost:8080/assets/search/title", { searchTerm });
+        } else {
+          // Use the selected filter for search
+          response = await axios.post("http://localhost:8080/assets/search/" + filter, { searchTerm });
         }
-        else {
-          response = await axios.post("http://localhost:8080/assets/search/" + filter, {searchTerm});
-          }
         console.log(response);
       } else {
-        // if user hasnt searched, show regular results
+        // If user hasn't searched, show regular results
         response = await axios.get("http://localhost:8080/assets/refresh");
       }
       setSearchedAssets(response.data);
@@ -36,11 +38,13 @@ function Assets({ username, userRole }) {
     }
   };
 
+  // Function to handle filter change
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
     console.log("Filtering by:", e.target.value);
   };
 
+  // Effect to handle click outside the filter menu
   useEffect(() => {
     const handler = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -105,6 +109,7 @@ function Assets({ username, userRole }) {
           </div>
         </section>
         <section>
+          {/* DisplayAssets component to render the list of assets */}
           <DisplayAssets assetList={searchedAssets} username={username} />
         </section>
       </main>
