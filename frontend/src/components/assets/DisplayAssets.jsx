@@ -40,10 +40,9 @@ function LogsDialog({ logs, open, handleClose }) {
 }
 
 // Dialog component to display messages and send new messages
-function MessagesDialog({ open, handleClose, username, asset }) {
+function MessagesDialog({ open, handleClose, user, asset }) {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [user, setUser] = useState("");
 
   useEffect(() => {
     if (asset && asset.asset_id) {
@@ -147,13 +146,15 @@ function DisplayAssets({ username, assetList }) {
 
   const fetchAssetTypes = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/asset_types/refresh');
-      setAssetTypes(response.data);
+      const response = await axios.get(
+        "http://localhost:8080/asset_types/refresh"
+      );
+      //setAssetTypes(response.data);
       console.log("Fetched asset types:", response.data);
     } catch (error) {
       console.error("Error fetching asset types:", error);
     }
-  }
+  };
 
   const getAssets = async () => {
     try {
@@ -191,21 +192,21 @@ function DisplayAssets({ username, assetList }) {
   // Function to handle edit action
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
-    setIsEditing(true);
+    //setIsEditing(true);
     // Implement your edit functionality here
-    setEditingAsset({ ...assetId });
+    //setEditingAsset({ ...assetId });
   };
 
   const handleSave = async () => {
     try {
-      await axios.post('http://localhost:8080/asset/edit', editingAsset);
+      await axios.post("http://localhost:8080/asset/edit", editingAsset);
       setEditingAsset(null);
     } catch (error) {
       console.error(error.response.data);
       alert("An error occured while updating the asset.");
     }
     setIsEditing(false);
-  }
+  };
 
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
@@ -242,27 +243,8 @@ function DisplayAssets({ username, assetList }) {
 
   // Function to handle view log action
   const handleViewLog = (asset_id) => {
-    const fetchLogs = async (assetId) => {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/logs/${assetId}`
-        );
-        if (Array.isArray(response.data)) {
-          const logsFromApi = response.data;
-          setLogs(logsFromApi);
-          setLogsDialogOpen(true);
-        } else {
-          console.error("Unexpected response structure:", response.data);
-          setLogs([]); // Fallback to an empty array
-        }
-      } catch (error) {
-        console.error("Failed to fetch logs:", error);
-        alert("An error occurred while fetching logs.");
-      }
-    };
-    fetchLogs(asset_id);
+    setLogsDialogOpen(true);
   };
-
   // Function to handle dialog close
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -313,7 +295,10 @@ function DisplayAssets({ username, assetList }) {
             <TableCell>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {/* Sort button */}
-                <Button onClick={handleSort} aria-controls="sort-menu" aria-haspopup="true">
+                <Button
+                  onClick={handleSort}
+                  aria-controls="sort-menu"
+                  aria-haspopup="true">
                   Sort
                 </Button>
                 {/* Refresh button */}
@@ -353,7 +338,9 @@ function DisplayAssets({ username, assetList }) {
               </TableCell>
               <TableCell>
                 <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
-                <Button onClick={() => promptDelete(asset.asset_id)}>Delete</Button>
+                <Button onClick={() => promptDelete(asset.asset_id)}>
+                  Delete
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -422,6 +409,17 @@ function DisplayAssets({ username, assetList }) {
           <Button onClick={handleCloseDialog}>Close</Button>
         </DialogActions>
       </Dialog>
+      <LogsDialog
+        logs={logs}
+        open={logsDialogOpen}
+        handleClose={handleCloseLogsDialog}
+      />
+      <MessagesDialog
+        open={openMessageDialog}
+        handleClose={handleCloseMessageDialog}
+        asset={selectedAsset}
+        user={user}
+      />
     </Container>
   );
 }
