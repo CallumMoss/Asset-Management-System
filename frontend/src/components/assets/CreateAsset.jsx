@@ -1,55 +1,123 @@
-//Imports:
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Navbar from "../navigation/Navbar"; // Ensure this path matches your project structure
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Chip from '@mui/material/Chip';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import { createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import axios from 'axios';
 
-function CreateAsset({ userRole, username }) {
-  // State variables for the asset creation form
+const defaultTheme = createTheme();
+
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+        personName.indexOf(name) === -1
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightMedium,
+  };
+}
+
+function CreateAsset() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
-  const [author, setAuthor] = useState("");
-  const [dependency, setDependency] = useState("");
-  const [language, setLanguage] = useState("");
+  const [authors, setAuthors] = useState([]);
+  const [dependencies, setDependencies] = useState([]);
   const [assetTypes, setAssetTypes] = useState([]);
   const [link, setLink] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [dependenciesList, setDependenciesList] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
+  const [dependencyDetails, setDependencyDetails] = useState([]);
+  const [typeAttributes, setTypeAttributes] = useState([]);
+  const [attributeValues, setAttributeValues] = useState({});
 
-  // Fetchs data from server on the component mount
+  const theme = useTheme();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [assetTypesRes, authorsRes, dependenciesRes, languagesRes] =
-          await Promise.all([
-            axios.get("http://localhost:8080/asset_types/refresh"),
-            axios.get("http://localhost:8080/users/refresh"),
-            axios.get("http://localhost:8080/assets/refresh"),
-            axios.get("http://localhost:8080/languages/refresh"),
-          ]);
-        // Sets the state with the fetched data
-        setAssetTypes(assetTypesRes.data);
-        setAuthorsList(
-          authorsRes.data.map((a) => ({ id: a.id, name: a.user_name }))
-        );
-        setDependenciesList(
-          dependenciesRes.data.map((d) => ({ id: d.id, title: d.title }))
-        );
-        setLangList(
-          languagesRes.data.map((l) => ({ id: l.id, name: l.language_name }))
-        );
-      } catch (error) {
-        console.error("Error fetching data", error);
-      }
-    };
-    fetchData();
+    fetchAssetTypes();
+    fetchAuthors();
+    fetchDependencies();
+    fetchLanguages();
   }, []);
 
-  const navigate = useNavigate(); // Navigation hook
+  const fetchAssetTypes = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/asset_types/refresh");
+      setAssetTypes(response.data);
+    } catch (error) {
+      console.error("Error fetching asset types:", error);
+    }
+  };
 
-  // Function to handle the form submission
+  const fetchAuthors = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/users/refresh");
+      setAuthorsList(response.data);
+    } catch (error) {
+      console.error("Error fetching authors:", error);
+    }
+  };
+
+  const fetchDependencies = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/assets/refresh");
+      setDependenciesList(response.data);
+    } catch (error) {
+      console.error("Error fetching dependencies:", error);
+    }
+  };
+
+  const fetchLanguages = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/languages/refresh");
+      setLangList(response.data);
+    } catch (error) {
+      console.error("Error fetching languages:", error);
+    }
+  };
+
+  const handleTypeChange = (event) => {
+    const selectedType = event.target.value;
+    if (type === selectedType) {
+      setType("");
+    } else {
+      setType(selectedType);
+    }
+
+    // Insert logic here to dynamically set typeAttributes based on selectedType
+    const attributesByType = {
+      'Python File': ['Version', 'Compatibility', 'Size'],
+      'Documentation': ['Page Count', 'Format'],
+      'Project': ['Scope', 'Duration', 'Team Size'],
+      'Java File': ['JDK Version', 'Build System', 'Dependencies'],
+    };
+    setTypeAttributes(attributesByType[selectedType] || []);
+  };
+
+  const handleDependenciesChange = (event) => {
+    const { target: { value } } = event;
+    const selectedDependencies = typeof value === 'string' ? value.split(',') : value;
+    setDependencies(selectedDependencies);
+  };
+
+  const handleDependencyDetailChange = (index, event) => {
+    const newDetails = [...dependencyDetails];
+    newDetails[index] = { ...newDetails[index], relationType: event.target.value };
+    setDependencyDetails(newDetails);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -58,13 +126,13 @@ function CreateAsset({ userRole, username }) {
         asset_description: description,
         link,
         asset_type: type,
-
-        //Adjusted these for single selection.
-        authors: author ? [author] : [],
-        dependencies: dependency ? [dependency] : [], 
-        languages: language ? [language] : [], 
+        authors,
+        dependencies: dependencyDetails,
+        languages,
+        // Ensure to send the attributeValues as well
       });
-      navigate("/assets"); // Redirects to assets page after successful submission.
+      console.log("Asset created successfully");
+      navigate("/assets");
     } catch (error) {
       console.error("Error creating asset:", error);
       alert("An error occurred while creating the asset");
@@ -72,176 +140,191 @@ function CreateAsset({ userRole, username }) {
   };
 
   return (
-    <>
-      {/* Navbar */}
-      <Navbar userRole={userRole} username={username} />
-
-      {/* Asset creation form */}
-      <div className="container mx-auto px-4">
-        <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
-
-          {/* Title */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="title"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="description"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Description
-              </label>
-              <textarea
-                id="description"
-                rows="3"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                required></textarea>
-            </div>
-          </div>
-
-          {/* Asset Type */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="type"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Asset Type
-              </label>
-              <select
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="sm">
+        <CssBaseline />
+        <Box
+            sx={{
+              marginTop: 8,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+        >
+          <Typography component="h1" variant="h5">
+            Create Asset
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="title"
+              label="Title"
+              name="title"
+              autoFocus
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="description"
+              label="Description"
+              name="description"
+              multiline
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel id="type-label">Asset Type</InputLabel>
+              <Select
+                labelId="type-label"
                 id="type"
                 value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-                required>
-                <option value="">Select an asset type</option>
-                {assetTypes.map((type) => (
-                  <option key={type.type_id} value={type.type_name}>
-                    {type.type_name}
-                  </option>
+                onChange={handleTypeChange}
+                input={<OutlinedInput label="Asset Type" />}
+              >
+                {assetTypes.map((assetType) => (
+                  <MenuItem key={assetType.type_id} value={assetType.type_name}>
+                    {assetType.type_name}
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Author */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="author"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Author
-              </label>
-              <select
-                id="author"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
-                <option value="">Select an author</option>
+              </Select>
+            </FormControl>
+            {/* Displaying Attributes */}
+            {typeAttributes.length > 0 && (
+              <Box sx={{ mt: 2, textAlign: 'center' }}>
+                <Typography variant="h6">Attributes</Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 1 }}>
+                  {typeAttributes.map((attribute, index) => (
+                    <Chip key={index} label={attribute} />
+                  ))}
+                </Box>
+              </Box>
+            )}
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel id="authors-label">Authors</InputLabel>
+              <Select
+                labelId="authors-label"
+                id="authors"
+                multiple
+                value={authors}
+                onChange={(e) => setAuthors(e.target.value)}
+                input={<OutlinedInput id="select-multiple-chip" label="Authors" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
                 {authorsList.map((author) => (
-                  <option key={author.id} value={author.id}>
-                    {author.name}
-                  </option>
+                  <MenuItem
+                    key={author.id}
+                    value={author.user_name}
+                    style={getStyles(author.user_name, authors, theme)}
+                  >
+                    {author.user_name}
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Dependency */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="dependency"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Dependency
-              </label>
-              <select
-                id="dependency"
-                value={dependency}
-                onChange={(e) => setDependency(e.target.value)}
-                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
-                <option value="">Select a dependency</option>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel id="dependencies-label">Dependencies</InputLabel>
+              <Select
+                labelId="dependencies-label"
+                id="dependencies"
+                multiple
+                value={dependencies}
+                onChange={handleDependenciesChange}
+                input={<OutlinedInput id="select-multiple-chip" label="Dependencies" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
                 {dependenciesList.map((dependency) => (
-                  <option key={dependency.id} value={dependency.id}>
+                  <MenuItem
+                    key={dependency.asset_id}
+                    value={dependency.title}
+                    style={getStyles(dependency.title, dependencies, theme)}
+                  >
                     {dependency.title}
-                  </option>
+                  </MenuItem>
                 ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Language */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="language"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Language
-              </label>
-              <select
-                id="language"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white">
-                <option value="">Select a language</option>
-                {langList.map((language) => (
-                  <option key={language.id} value={language.id}>
-                    {language.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Link */}
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                htmlFor="link"
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
-                Link
-              </label>
-              <input
-                type="text"
-                id="link"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
+              </Select>
+            </FormControl>
+            {dependencyDetails.map((dep, index) => (
+              <TextField
+                key={index}
+                margin="normal"
                 required
+                fullWidth
+                label={`Relationship for ${dep.name}`}
+                value={dep.relationType}
+                onChange={(e) => handleDependencyDetailChange(index, e)}
+                sx={{ mt: 2 }}
               />
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <div className="flex flex-wrap -mx-3 mb-2">
-            <div className="w-full px-3 text-center">
-              <button
-                className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                type="submit">
-                Submit
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </>
+            ))}
+            <FormControl fullWidth sx={{ mt: 2 }}>
+              <InputLabel id="languages-label">Languages</InputLabel>
+              <Select
+                labelId="languages-label"
+                id="languages"
+                multiple
+                value={languages}
+                onChange={(e) => setLanguages(e.target.value)}
+                input={<OutlinedInput id="select-multiple-chip" label="Languages" />}
+                renderValue={(selected) => (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+              >
+                {langList.map((language) => (
+                  <MenuItem
+                    key={language.language_id}
+                    value={language.language_name}
+                    style={getStyles(language.language_name, languages, theme)}
+                  >
+                    {language.language_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="link"
+              label="Link"
+              name="link"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              sx={{ mt: 2 }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
+
 export default CreateAsset;
