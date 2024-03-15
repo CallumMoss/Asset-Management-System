@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
+import Navbar from "../navigation/Navbar";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Chip from "@mui/material/Chip";
@@ -16,7 +17,7 @@ import ListItemText from "@mui/material/ListItemText";
 
 const defaultTheme = createTheme();
 
-function ChangePassword({ username }) {
+function ChangePassword({ username, userRole }) {
   const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -71,6 +72,7 @@ function ChangePassword({ username }) {
 
   return (
     <ThemeProvider theme={defaultTheme}>
+      <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
         <Box
