@@ -131,11 +131,14 @@ function DisplayAssets({ username, assetList }) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openMessageDialog, setOpenMessageDialog] = useState(false);
   const [logs, setLogs] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
+  const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [editingAsset, setEditingAsset] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [user, setUser] = useState("");
   const [assetTypes, setAssetTypes] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
@@ -158,7 +161,7 @@ function DisplayAssets({ username, assetList }) {
       const response = await axios.get(
         "http://localhost:8080/asset_types/refresh"
       );
-      //setAssetTypes(response.data);
+      setAssetTypes(response.data);
       console.log("Fetched asset types:", response.data);
     } catch (error) {
       console.error("Error fetching asset types:", error);
@@ -324,7 +327,6 @@ function DisplayAssets({ username, assetList }) {
 
   return (
     <Container component={Paper}>
-      <h1>Assets</h1>
       {isEditing ? (
         <form>
           <TextField
@@ -392,71 +394,70 @@ function DisplayAssets({ username, assetList }) {
           <Button onClick={handleSave}>Save</Button>
         </form>
       ) : (
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Asset Title</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Link</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Asset Type</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <TableCell>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* Sort button */}
-                <Button
-                  onClick={handleSort}
-                  aria-controls="sort-menu"
-                  aria-haspopup="true">
-                  Sort
-                </Button>
-                {/* Refresh button */}
-                <Button onClick={() => getAssets()}>Refresh</Button>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+      <><h1>Assets</h1><Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ fontWeight: "bold" }}>Asset Title</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Link</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Asset Type</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
+                <TableCell>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {/* Sort button */}
+                    <Button
+                      onClick={handleSort}
+                      aria-controls="sort-menu"
+                      aria-haspopup="true">
+                      Sort
+                    </Button>
+                    {/* Refresh button */}
+                    <Button onClick={() => getAssets()}>Refresh</Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
 
-          <AlertDialog
-              open={openAlertDialog}
-              handleClose={() => setOpenAlertDialog(false)}
-              title="Confirm Delete"
-              message="Are you sure you want to delete this asset?"
-              onConfirm={confirmDelete}
-          />
+              <AlertDialog
+                open={openAlertDialog}
+                handleClose={() => setOpenAlertDialog(false)}
+                title="Confirm Delete"
+                message="Are you sure you want to delete this asset?"
+                onConfirm={confirmDelete} />
 
-          {assets.map((asset) => (
-            <TableRow key={asset.asset_id}>
-              <TableCell onClick={() => handleTitleClick(asset)}>
-                {asset.title}
-              </TableCell>
-              <TableCell>{asset.asset_description}</TableCell>
-              <TableCell>{asset.link}</TableCell>
-              <TableCell>
-                {asset.asset_type && <div>{asset.asset_type.type_name}</div>}
-              </TableCell>
-              <TableCell>
-                {asset.languages.map((language) => (
-                  <div key={language.language_id}>{language.language_name}</div>
-                ))}
-              </TableCell>
-              <TableCell>
-                {asset.authors.map((author) => (
-                  <div key={author.id}>{author.user_name}</div>
-                ))}
-              </TableCell>
-              <TableCell>
-                <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
-                <Button onClick={() => promptDelete(asset.asset_id)}>
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+              {assets.map((asset) => (
+                <TableRow key={asset.asset_id}>
+                  <TableCell onClick={() => handleTitleClick(asset)}>
+                    {asset.title}
+                  </TableCell>
+                  <TableCell>{asset.asset_description}</TableCell>
+                  <TableCell>{asset.link}</TableCell>
+                  <TableCell>
+                    {asset.asset_type && <div>{asset.asset_type.type_name}</div>}
+                  </TableCell>
+                  <TableCell>
+                    {asset.languages.map((language) => (
+                      <div key={language.language_id}>{language.language_name}</div>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    {asset.authors.map((author) => (
+                      <div key={author.id}>{author.user_name}</div>
+                    ))}
+                  </TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
+                    <Button onClick={() => promptDelete(asset.asset_id)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table></>
       )}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
