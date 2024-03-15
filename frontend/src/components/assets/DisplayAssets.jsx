@@ -19,6 +19,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from './AlertDialog';
+import ViewLog from "./ViewLogAsset"
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -216,9 +217,9 @@ function DisplayAssets({ username, assetList }) {
   // Function to handle edit action
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
-    //setIsEditing(true);
+    setIsEditing(true);
     // Implement your edit functionality here
-    //setEditingAsset({ ...assetId });
+    setEditingAsset({ ...assetId });
   };
 
   const handleSave = async () => {
