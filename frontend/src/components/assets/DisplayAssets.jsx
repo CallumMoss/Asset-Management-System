@@ -15,10 +15,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Select,
-  MenuItem,
 } from "@mui/material";
-import AlertDialog from './AlertDialog';
+import AlertDialog from "./AlertDialog";
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -130,27 +128,21 @@ function DisplayAssets({ username, assetList }) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openMessageDialog, setOpenMessageDialog] = useState(false);
   const [logs, setLogs] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
-  const [editingAsset, setEditingAsset] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [assetTypes, setAssetTypes] = useState([]);
-  const [languages, setLanguages] = useState([]);
-  const [langList, setLangList] = useState([]);
-  
-  useEffect(() => {
-    if(assetList.length == 0) {
-      getAssets();
-    }
-      setAssets(assetList);
-      console.log("Set assets to the searched assets.");
-    
-  }, [assetList]); // only called if assetList is updated.
+  const [logsDialogOpen, setLogsDialogOpen] = useState(false);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
-    fetchAssetTypes();
-  }, []);
+    if (assetList.length === 0) {
+      getAssets();
+      fetchAssetTypes();
+    }
+    setAssets(assetList);
+    getUser(username);
+  }, [assetList]); // only called if assetList is updated.
 
   const fetchAssetTypes = async () => {
     try {
@@ -163,22 +155,6 @@ function DisplayAssets({ username, assetList }) {
       console.error("Error fetching asset types:", error);
     }
   };
-
-  useEffect(() => {
-    fetchLanguages();
-  }, []);
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/languages/refresh"
-      );
-      setLangList(response.data);
-      console.log("Fetched languages:", response.data);
-    } catch (error) {
-      console.error("Error fetching languages:", error);
-    }
-  }
 
   const getAssets = async () => {
     try {
@@ -270,11 +246,12 @@ function DisplayAssets({ username, assetList }) {
     const fetchLogs = async (assetId) => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/logs/refresh/${assetId}`
+          `http://localhost:8080/logs/${assetId}`
         );
         if (Array.isArray(response.data)) {
           const logsFromApi = response.data;
           setLogs(logsFromApi);
+          setLogsDialogOpen(true);
         } else {
           console.error("Unexpected response structure:", response.data);
           setLogs([]); // Fallback to an empty array
@@ -324,73 +301,6 @@ function DisplayAssets({ username, assetList }) {
   return (
     <Container component={Paper}>
       <h1>Assets</h1>
-      {isEditing ? (
-        <form>
-          <TextField
-          label="Asset Title"
-          variant="outlined"
-          value={editingAsset.title}
-          onChange={(e) => setEditingAsset({ ...editingAsset, title: e.target.value})}
-          />
-          <TextField
-          label="Description"
-          variant="outlined"
-          value={editingAsset.asset_description}
-          onChange={(e) => setEditingAsset({ ...editingAsset, asset_description: e.target.value})}
-          />
-          <TextField
-          label="Link"
-          variant="outlined"
-          value={editingAsset.link}
-          onChange={(e) => setEditingAsset({ ...editingAsset, link: e.target.value})}
-          />
-          <Select
-            id="Asset Type"
-            name="Asset Type"
-            value={editingAsset.asset_type}
-            onChange={(e) => setEditingAsset({ ...editingAsset, asset_type: e.target.value})}
-          >
-            <MenuItem value="" disabled>
-              Select an asset type
-            </MenuItem>
-            {assetTypes.map((assetType) => (
-              <MenuItem key={assetType.type_id} value={assetType.type_name}>
-                {assetType.type_name}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <Select
-            id="Languages"
-            name="Languages"
-            value={editingAsset.language}
-            onChange={(e) => setLanguages({ ...editingAsset, language: e.target.value})}
-          >
-            <MenuItem value="" disabled>
-              Select an asset type
-            </MenuItem>
-            {assetTypes.map((assetType) => (
-              <MenuItem key={assetType.type_id} value={assetType.type_name}>
-                {assetType.type_name}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <TextField
-          label="Languages"
-          variant="outlined"
-          value={editingAsset.language}
-          onChange={(e) => setEditingAsset({ ...editingAsset, language: e.target.value})}
-          />
-          <TextField
-          label="Authors"
-          variant="outlined"
-          value={editingAsset.authors}
-          onChange={(e) => setEditingAsset({ ...editingAsset, authors: e.target.value})}
-          />
-          <Button onClick={handleSave}>Save</Button>
-        </form>
-      ) : (
       <Table>
         <TableHead>
           <TableRow>
@@ -417,13 +327,12 @@ function DisplayAssets({ username, assetList }) {
           </TableRow>
         </TableHead>
         <TableBody>
-
           <AlertDialog
-              open={openAlertDialog}
-              handleClose={() => setOpenAlertDialog(false)}
-              title="Confirm Delete"
-              message="Are you sure you want to delete this asset?"
-              onConfirm={confirmDelete}
+            open={openAlertDialog}
+            handleClose={() => setOpenAlertDialog(false)}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this asset?"
+            onConfirm={confirmDelete}
           />
 
           {assets.map((asset) => (
@@ -456,7 +365,6 @@ function DisplayAssets({ username, assetList }) {
           ))}
         </TableBody>
       </Table>
-      )}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
         <DialogContent>
@@ -480,16 +388,23 @@ function DisplayAssets({ username, assetList }) {
               </p>
               <br />
               <p>
-                Dependant Assets:{" "}
-                {selectedAsset.dependent
+                Assets that the CURRENT asset is depending on:{" "}
+                {selectedAsset.dependencies
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
               <p>
-                Assets depending on current asset:{" "}
-                {selectedAsset.dependent
-                  .map((dependency) => dependency.title)
-                  .join(", ")}
+                Assets depending on CURRENT asset:{" "}
+                {selectedAsset.dependencies
+                  .filter(
+                    (dependency) =>
+                      dependency.dependent && dependency.dependent.title
+                  )
+                  .map(
+                    (dependency) =>
+                      `${dependency.dependent.title} (${dependency.relationType})`
+                  )
+                  .join(", ") || "None"}
               </p>
               <br />
               <p>
@@ -501,7 +416,7 @@ function DisplayAssets({ username, assetList }) {
                 </p>
                 <p>
                   Discussion Board:
-                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                  <Button onClick={() => handleViewMessages(selectedAsset)}>
                     Open
                   </Button>
                 </p>
