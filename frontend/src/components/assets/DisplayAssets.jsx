@@ -153,8 +153,13 @@ function DisplayAssets({ username, assetList }) {
   }, [assetList]); // only called if assetList is updated.
 
   useEffect(() => {
-    fetchAssetTypes();
-  }, []);
+    if (assetList.length === 0) {
+      getAssets();
+      fetchAssetTypes();
+    }
+    setAssets(assetList);
+    getUser(username);
+  }, [assetList]); // only called if assetList is updated.
 
   const fetchAssetTypes = async () => {
     try {
@@ -167,22 +172,6 @@ function DisplayAssets({ username, assetList }) {
       console.error("Error fetching asset types:", error);
     }
   };
-
-  useEffect(() => {
-    fetchLanguages();
-  }, []);
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/languages/refresh"
-      );
-      setLangList(response.data);
-      console.log("Fetched languages:", response.data);
-    } catch (error) {
-      console.error("Error fetching languages:", error);
-    }
-  }
 
   const getAssets = async () => {
     try {
@@ -274,11 +263,12 @@ function DisplayAssets({ username, assetList }) {
     const fetchLogs = async (assetId) => {
       try {
         const response = await axios.get(
-          `http://localhost:8080/logs/refresh/${assetId}`
+          `http://localhost:8080/logs/${assetId}`
         );
         if (Array.isArray(response.data)) {
           const logsFromApi = response.data;
           setLogs(logsFromApi);
+          setLogsDialogOpen(true);
         } else {
           console.error("Unexpected response structure:", response.data);
           setLogs([]); // Fallback to an empty array
@@ -482,16 +472,23 @@ function DisplayAssets({ username, assetList }) {
               </p>
               <br />
               <p>
-                Dependant Assets:{" "}
-                {selectedAsset.dependent
+                Assets that the CURRENT asset is depending on:{" "}
+                {selectedAsset.dependencies
                   .map((dependency) => dependency.title)
                   .join(", ")}
               </p>
               <p>
-                Assets depending on current asset:{" "}
-                {selectedAsset.dependent
-                  .map((dependency) => dependency.title)
-                  .join(", ")}
+                Assets depending on CURRENT asset:{" "}
+                {selectedAsset.dependencies
+                  .filter(
+                    (dependency) =>
+                      dependency.dependent && dependency.dependent.title
+                  )
+                  .map(
+                    (dependency) =>
+                      `${dependency.dependent.title} (${dependency.relationType})`
+                  )
+                  .join(", ") || "None"}
               </p>
               <br />
               <p>
@@ -503,7 +500,7 @@ function DisplayAssets({ username, assetList }) {
                 </p>
                 <p>
                   Discussion Board:
-                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                  <Button onClick={() => handleViewMessages(selectedAsset)}>
                     Open
                   </Button>
                 </p>
