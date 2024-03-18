@@ -41,12 +41,14 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
 
     // if users table is empty, call all createBase for all tables
-        if (userService.refreshUser().isEmpty()) {
-            userService.createBaseUsers();
-            languageService.createBaseLanguages();
-            assetTypeService.createBaseTypes();
-            assetService.createBaseAssets();
-        }
+    if (userService.refreshUser().size() == 0) {
+        System.out.println("Initializing db");
+        userService.createBaseUsers();
+        languageService.createBaseLanguages();
+        assetTypeService.createBaseTypes();
+        assetService.createBaseAssets();
+    }
+
 
         boolean loginSuccessful = userService.logIn(user);
         String userRole = userService.getUserRole(user.getUser_name());
