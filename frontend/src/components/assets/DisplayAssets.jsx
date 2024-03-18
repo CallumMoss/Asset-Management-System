@@ -150,6 +150,7 @@ function DisplayAssets({ username, assetList }) {
       fetchAssetTypes();
     }
     setAssets(assetList);
+    setCurrentPage(1);
     getUser(username);
   }, [assetList]); // only called if assetList is updated.
 
