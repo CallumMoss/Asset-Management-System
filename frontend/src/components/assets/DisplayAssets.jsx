@@ -32,7 +32,12 @@ function DisplayAssets({assetList}) {
   const [assetTypes, setAssetTypes] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentAssets = assets.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(assets.length / itemsPerPage)
   
   useEffect(() => {
     if(assetList.length == 0) {
@@ -46,10 +51,6 @@ function DisplayAssets({assetList}) {
   useEffect(() => {
     fetchAssetTypes();
   }, []);
-
-  const handlePageChange = (newPage) => {
-    setPage(newPage);
-  };
 
 
   const fetchAssetTypes = async () => {
@@ -80,9 +81,10 @@ function DisplayAssets({assetList}) {
 
   const getAssets = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/assets/refresh");
+      const response = await axios.get(
+        `http://localhost:8080/assets/refresh`
+      );
       console.log("API Response:", response.data);
-
       if (Array.isArray(response.data)) {
         setAssets(response.data);
       } else {
@@ -258,7 +260,7 @@ function DisplayAssets({assetList}) {
               onConfirm={confirmDelete}
           />
 
-          {assets.map((asset) => (
+          {currentAssets.map((asset) => (
             <TableRow key={asset.asset_id}>
               <TableCell onClick={() => handleTitleClick(asset)}>
                 {asset.title}
@@ -350,19 +352,19 @@ function DisplayAssets({assetList}) {
       </Dialog>
 
       {/* Pagination controls */}
-      {!isEditing &&(
-        <>
-      <Button disabled={page === 0} onClick={() => handlePageChange(page - 1)}>
-        Previous
-      </Button>
-      <Button
-        disabled={assets.length <= (page + 1) * 5}
-        onClick={() => handlePageChange(page + 1)}
-      >
-        Next
-      </Button>  
-      </>
-      )}
+      {!isEditing && (
+  <>
+    <Button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+      Previous
+    </Button>
+    <Button
+      disabled={currentPage === nPages}
+      onClick={() => setCurrentPage(currentPage + 1)}
+    >
+      Next
+    </Button>
+  </>
+)}
     </Container>
   );
 }

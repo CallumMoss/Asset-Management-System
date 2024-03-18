@@ -2,6 +2,7 @@ package cs2815.project.controller;
 
 import cs2815.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,11 +35,9 @@ public class AssetController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<List<Asset>> refresh() {
-
-        return ResponseEntity.ok(assetService.refresh());
-
-    }
+    public ResponseEntity<List<Asset>> refresh(){
+    return ResponseEntity.ok(assetService.refresh());
+}
 
     @GetMapping("/getnewest")
     public ResponseEntity<Asset> getNewest() {

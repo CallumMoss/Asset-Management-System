@@ -10,7 +10,11 @@ import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.model.specialmodels.DependencyWrapper;
 import cs2815.project.repo.*;
 import cs2815.project.service.AssetService;
+
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -185,6 +189,13 @@ public class AssetImpl implements AssetService {
     @Override
     public List<Asset> refresh() {
         return repo.getAllAssets();
+    }
+
+
+    @Override
+    public Page<Asset> getPaginatedAssets(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repo.findAll(pageable);
     }
 
     @Override
