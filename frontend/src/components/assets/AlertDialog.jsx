@@ -1,3 +1,4 @@
+//Imports:
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -6,6 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+{/*This component will be used inform users of alerts and confirmations.*/}
 function AlertDialog({ open, handleClose, title, message, onConfirm }) {
     return (
         <Dialog
