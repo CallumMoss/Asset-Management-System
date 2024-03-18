@@ -2,6 +2,9 @@ package cs2815.project.repo;
 
 import cs2815.project.model.Asset;
 import cs2815.project.model.User;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,6 +21,10 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
+
+
+    @Query("SELECT a FROM Asset a")
+    Page<Asset> findAll(Pageable pageable);
 
     @Query("SELECT a FROM Asset a WHERE a.asset_id = (SELECT MAX(a2.asset_id) FROM Asset a2)")
     Asset findNewestAsset();
