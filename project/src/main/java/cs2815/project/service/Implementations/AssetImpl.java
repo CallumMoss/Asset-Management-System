@@ -216,51 +216,29 @@ public class AssetImpl implements AssetService {
     }
 
     public void createBaseAssets() {
-        /*
-         * List<String> authors = Arrays.asList("BaseAdmin");
-         * List<String> dependencies = Arrays.asList();
-         * List<String> languages = Arrays.asList("Java");
-         * AssetWrapper wrapper = new AssetWrapper(
-         * "Piece.py", // title
-         * "A python program that contains a class which describes the attributes and functions of a chess piece."
-         * , // asset_description
-         * "website.com/piece.py", // link
-         * "Python File", // asset_type
-         * authors, // authors
-         * dependencies, // dependencies
-         * languages // languages
-         * );
-         * createAsset(wrapper);
-         * //
-         * authors = Arrays.asList("BaseViewer");
-         * dependencies = Arrays.asList();
-         * languages = Arrays.asList("Python", "Java");
-         * wrapper = new AssetWrapper(
-         * "Heroes Rising", // title
-         * "2D Game developed as part of the first year games module.", //
-         * asset_description
-         * "some_link.com", // link
-         * "Project", // asset_type
-         * authors, // authors
-         * dependencies, // dependencies
-         * languages // languages
-         * );
-         * createAsset(wrapper);
-         * 
-         * authors = Arrays.asList("BaseUser", "BaseViewer");
-         * dependencies = Arrays.asList("Heroes Rising");
-         * languages = Arrays.asList();
-         * wrapper = new AssetWrapper(
-         * "README", // title
-         * "Read me file for the project Heroes Rising.", // asset_description
-         * "random/readme.md", // link
-         * "Documentation", // asset_type
-         * authors, // authors
-         * dependencies, // dependencies
-         * languages // languages
-         * );
-         * createAsset(wrapper);
-         */
+        List<String> authors = Arrays.asList("BaseAdmin");
+        DependencyWrapper dwrapper = new DependencyWrapper();
+        List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
+        dwrapper_list.add(dwrapper);
+        List<String> languages = Arrays.asList("Java");
+        AssetWrapper wrapper = new AssetWrapper("Piece.py", "A python program that contains a class which describes the attributes and functions of a chess piece.", "website.com/piece.py", "Python File", authors,  dwrapper_list, languages);
+        createAsset(wrapper);
+        //
+        authors = Arrays.asList("BaseViewer");
+        dwrapper = new DependencyWrapper();
+        dwrapper_list.clear();
+        dwrapper_list.add(dwrapper);
+        languages = Arrays.asList("Python", "Java");
+        wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.", "some_link.com", "Project", authors, dwrapper_list, languages);
+        createAsset(wrapper);
+        
+        authors = Arrays.asList("BaseUser", "BaseViewer");
+        dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
+        dwrapper_list.clear();
+        dwrapper_list.add(dwrapper);
+        languages = Arrays.asList();
+        wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md", "Documentation", authors, dwrapper_list, languages);
+        createAsset(wrapper);
     }
 
     @Override
