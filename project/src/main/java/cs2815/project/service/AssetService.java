@@ -16,10 +16,8 @@ public interface AssetService {
     void deleteAsset(int assetID);
 
     void editAsset(Asset asset);
-
+    
     Asset getNewestAsset();
-
-    Page<Asset> getPaginatedAssets(int page, int size);
 
     List<Asset> refresh();
 

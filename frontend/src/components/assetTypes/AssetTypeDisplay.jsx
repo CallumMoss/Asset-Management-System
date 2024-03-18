@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
   Container,
+  TextField,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -18,16 +19,18 @@ function AssetTypeDisplay({ assetTypeList }) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
+  const [editedAssetType, setEditedAssetType] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
 
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
 
   useEffect(() => {
-    if (assetTypeList.length == 0) {
+    if (assetTypeList.length === 0) {
       fetchAssetTypes();
     }
     setAssetTypes(assetTypeList);
     console.log("Set assetTypes to the searched asset types.");
-  }, [assetTypeList]); // only called if userList is updated.
+  }, [assetTypeList]); // only called if assetTypeList is updated.
 
   const fetchAssetTypes = async () => {
     try {
@@ -49,9 +52,25 @@ function AssetTypeDisplay({ assetTypeList }) {
     }
   };
 
-  const handleEdit = (userName) => {
+  const handleEdit = (assetType) => {
     // Implement your edit functionality here
-    console.log("Edit asset type:", userName);
+    console.log("Edit asset type:", assetType);
+    setEditedAssetType(assetType);
+    setIsEditing(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8080/asset_types/edit",
+        editedAssetType
+      );
+      fetchAssetTypes();
+      console.log("Asset Type updated successfully");
+    } catch (error) {
+      console.error("Failed to update asset type:", error);
+    }
+    setIsEditing(false);
   };
 
   const handleCreate = () => {
@@ -81,67 +100,82 @@ function AssetTypeDisplay({ assetTypeList }) {
 
   const handleSort = async () => {
     try {
-        const response = await axios.post("http://localhost:8080/asset_types/sort/alphabetically", assetTypes );
-        if (Array.isArray(response.data)) {
-          setAssetTypes(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort AssetTypes. Unexpected response structure.");
-        }
+      const response = await axios.post(
+        "http://localhost:8080/asset_types/sort/alphabetically",
+        assetTypes
+      );
+      if (Array.isArray(response.data)) {
+        setAssetTypes(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort AssetTypes. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort AssetTypes. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort AssetTypes. An error occurred.");
     }
-};
+  };
 
   return (
     <Container component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <div style={{ display: "flex", alignItems: "center" }}>
-                  <Button onClick={() => handleCreate()}>Create</Button>
-                  <div>
-                    <Button onClick={(e) => handleSort()}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
-                      Sort
-                    </Button>
-                  </div>
-                  <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-            </div>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <AlertDialog
-            open={openDialog}
-            handleClose={() => setOpenDialog(false)}
-            title="Confirm Delete"
-            message="Are you sure you want to delete this asset type?"
-            onConfirm={handleDeleteConfirmation}
-          />
-
-          {assetTypes.map((assetType) => (
-            <TableRow key={assetType.type_id}>
-              <TableCell>{assetType.type_name}</TableCell>
-              <TableCell>{assetType.description}</TableCell>
-
-              <TableCell>
-                <Button onClick={() => handleEdit(assetType.user_name)}>
-                  Edit
+      {isEditing ? (
+        <form>
+        <TextField
+        label="Type Name" 
+        variant="outlined"
+        value={editedAssetType.type_name}
+        onChange={(e) => setEditedAssetType({ ...editedAssetType, type_name: e.target.value })}
+        />
+        <TextField
+        label="Description" 
+        variant="outlined" 
+        value={editedAssetType.description}
+        onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
+        />
+        <Button onClick={handleUpdate}>Save</Button>
+      </form>
+      ) : (
+      <><Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
+                <Button onClick={() => handleCreate()}>Create</Button>
+                <Button onClick={(e) => handleSort()} aria-controls="sort-menu" aria-haspopup="true">
+                  Sort
                 </Button>
-                <Button
-                  onClick={() => promptDeleteConfirmation(assetType.type_id)}>
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <AlertDialog
+                open={openDialog}
+                handleClose={() => setOpenDialog(false)}
+                title="Confirm Delete"
+                message="Are you sure you want to delete this asset type?"
+                onConfirm={handleDeleteConfirmation} />
+
+              <>
+                {assetTypes.map((assetType) => (
+                  <TableRow key={assetType.type_id}>
+                    <TableCell>{assetType.type_name}</TableCell>
+                    <TableCell>{assetType.description}</TableCell>
+                    <TableCell>
+                      <Button onClick={() => handleEdit(assetType)}>Edit</Button>
+                      <Button
+                        onClick={() => promptDeleteConfirmation(assetType.type_id)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </>
+              
+            </TableBody>
+          </Table></>
+      )}
     </Container>
   );
 }

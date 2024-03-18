@@ -192,11 +192,6 @@ public class AssetImpl implements AssetService {
     }
 
 
-    @Override
-    public Page<Asset> getPaginatedAssets(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return repo.findAll(pageable);
-    }
 
     @Override
     public Asset getNewestAsset() {
@@ -321,5 +316,3 @@ public class AssetImpl implements AssetService {
         return assetsAndAttributesByType;
     }
 }
-
-
