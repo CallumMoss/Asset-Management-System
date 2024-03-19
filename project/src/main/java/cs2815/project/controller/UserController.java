@@ -96,8 +96,8 @@ public class UserController {
     }
 
     @PostMapping("/search/username")
-    public ResponseEntity<List<User>> searchByUsername(@RequestBody String searchString) {
-        List<User> compatibleUsers = userService.searchByUsername(searchString);
+    public ResponseEntity<List<User>> searchByUsername(@RequestBody Map<String,String> searchString) {
+        List<User> compatibleUsers = userService.searchByUsername(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
