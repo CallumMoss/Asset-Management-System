@@ -192,7 +192,6 @@ function UserManagementDisplay({ userList }) {
               <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
               <TableCell>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Button onClick={() => handleCreate()}>Create</Button>

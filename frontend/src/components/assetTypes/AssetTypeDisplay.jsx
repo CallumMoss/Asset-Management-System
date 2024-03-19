@@ -140,7 +140,6 @@ function AssetTypeDisplay({ assetTypeList }) {
               <TableRow>
                 <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
                 <Button onClick={() => handleCreate()}>Create</Button>
                 <Button onClick={(e) => setSortAnchorEl(e.currentTarget)} aria-controls="sort-menu" aria-haspopup="true">
                   Sort

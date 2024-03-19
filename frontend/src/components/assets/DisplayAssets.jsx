@@ -315,7 +315,6 @@ function DisplayAssets({ username, assetList }) {
             <TableCell style={{ fontWeight: "bold" }}>Asset Type</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <TableCell>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {/* Sort button */}
