@@ -36,12 +36,11 @@ function DependencyDisplay({ dependencyList }) {
             <TableHead>
               <TableRow>
                 <TableCell style={{ fontWeight: "bold" }}>
-                  Relationship
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
                   Dependent Asset
                 </TableCell>
-
+                <TableCell style={{ fontWeight: "bold" }}>
+                  Relationship
+                </TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>
                   <Button>Sort</Button>
                 </TableCell>
@@ -50,8 +49,9 @@ function DependencyDisplay({ dependencyList }) {
             <TableBody>
               {groupedDependencies[parentAsset].map((dependency) => (
                 <TableRow key={dependency.id}>
-                  <TableCell>{dependency.relationType}</TableCell>
                   <TableCell>{dependency.dependent.title}</TableCell>
+                  <TableCell>{dependency.relationType}</TableCell>
+
                   <TableCell>
                     <Button>Delete</Button>
                   </TableCell>
