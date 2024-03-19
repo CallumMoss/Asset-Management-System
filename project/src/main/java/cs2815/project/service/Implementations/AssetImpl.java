@@ -11,17 +11,11 @@ import cs2815.project.model.specialmodels.DependencyWrapper;
 import cs2815.project.repo.*;
 import cs2815.project.service.AssetService;
 
-import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AssetImpl implements AssetService {
@@ -248,31 +242,54 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets) {
+    public List<Asset> sort(List<Asset> unsortedAssets, String orderBy) {
         List<String> sortByList = new ArrayList<String>();
-        List<Asset> sortedAssets = unsortedAssets;
+        List<Asset> sortedAssets = new ArrayList<>();
+        List<Asset> allAssets = searchByName("");
+
+        List<Integer> unsortedAssetIds = new ArrayList<Integer>();
         for (Asset asset : unsortedAssets) {
             sortByList.add(asset.getTitle());
+            unsortedAssetIds.add(asset.getAsset_id());
         }
-        String temp;
-        Asset tempBis;
-        int size = sortByList.size();
-        for (int i = 0; i < size; i++) {
-            for (int j = i + 1; j < size; j++) {
-                if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
-                    temp = sortByList.get(i);
-                    tempBis = sortedAssets.get(i);
-                    sortByList.set(i, sortByList.get(j));
-                    sortedAssets.set(i, sortedAssets.get(j));
-                    sortByList.set(j, temp);
-                    sortedAssets.set(j, tempBis);
+        switch (orderBy) {
+            case "Oldest":
+                for (Asset asset : allAssets) {
+                    if (unsortedAssetIds.contains(asset.getAsset_id())) {
+                        sortedAssets.add(asset);
+                    }
                 }
-            }
+                break;
+            case "Newest":
+                for (Asset asset : allAssets) {
+                    if (unsortedAssetIds.contains(asset.getAsset_id())) {
+                        sortedAssets.add(asset);
+                    }
+                }
+                Collections.reverse((sortedAssets));
+                break;
+            default:
+                sortedAssets = unsortedAssets;
+                String temp;
+                Asset tempBis;
+                int size = sortByList.size();
+                for (int i = 0; i < size; i++) {
+                    for (int j = i + 1; j < size; j++) {
+                        if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
+                            temp = sortByList.get(i);
+                            tempBis = sortedAssets.get(i);
+                            sortByList.set(i, sortByList.get(j));
+                            sortedAssets.set(i, sortedAssets.get(j));
+                            sortByList.set(j, temp);
+                            sortedAssets.set(j, tempBis);
+                        }
+                    }
+                }
         }
         return sortedAssets;
     }
 
-       @Override
+    @Override
     public List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes() {
         List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();
         List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributesByType = new ArrayList<>();

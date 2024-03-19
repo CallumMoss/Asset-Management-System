@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
+  TextField, Menu, MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -141,6 +141,7 @@ function DisplayAssets({ username, assetList }) {
   const currentAssets = assets.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(assets.length / itemsPerPage);
   const [isEditing, setIsEditing] = useState(false);
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
 
 
 
@@ -281,14 +282,15 @@ function DisplayAssets({ username, assetList }) {
   };
 
   // Function to handle sorting
-  const handleSort = async () => {
+  const handleSortBy = async (orderBy) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/assets/sort/alphabetically",
-        assets
+        "http://localhost:8080/assets/sort",
+        assets, { params: { orderBy: orderBy } }
       );
       if (Array.isArray(response.data)) {
         setAssets(response.data);
+        setCurrentPage(1);
       } else {
         console.error("Unexpected response structure:", response.data);
         alert("Could not sort Assets. Unexpected response structure.");
@@ -315,14 +317,22 @@ function DisplayAssets({ username, assetList }) {
             <TableCell>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {/* Sort button */}
-                <Button
-                  onClick={handleSort}
-                  aria-controls="sort-menu"
-                  aria-haspopup="true">
+                <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                        aria-controls="sort-menu"
+                        aria-haspopup="true"
+                >
                   Sort
                 </Button>
-                {/* Refresh button */}
-                <Button onClick={() => getAssets()}>Refresh</Button>
+                {/*menu for sortby options*/}
+                <Menu id="sort-menu"
+                      anchorEl={sortAnchorEl}
+                      open={Boolean(sortAnchorEl)}
+                      onClose={() => setSortAnchorEl(null)}>
+
+                  <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Alphabetically")}>Alphabetically</MenuItem>
+                </Menu>
               </div>
             </TableCell>
           </TableRow>

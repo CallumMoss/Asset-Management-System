@@ -35,9 +35,7 @@ public class AssetController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<List<Asset>> refresh(){
-    return ResponseEntity.ok(assetService.refresh());
-}
+    public ResponseEntity<List<Asset>> refresh(){ return ResponseEntity.ok(assetService.refresh()); }
 
     @GetMapping("/getnewest")
     public ResponseEntity<Asset> getNewest() {
@@ -113,9 +111,10 @@ public class AssetController {
     }
 
 
-    @PostMapping("/sort/alphabetically") 
-    public ResponseEntity<List<Asset>> sortAlphabetically(@RequestBody List<Asset> unsortedAssets, @RequestParam(required = false) String orderBy) {
-        List<Asset> sortedAssets = assetService.sortAlphabetically(unsortedAssets);
+    @PostMapping("/sort")
+    public ResponseEntity<List<Asset>> sort(@RequestBody List<Asset> unsortedAssets, @RequestParam String orderBy) {
+        List<Asset> sortedAssets = assetService.sort(unsortedAssets, orderBy);
         return ResponseEntity.ok(sortedAssets);
     }
+
 }
