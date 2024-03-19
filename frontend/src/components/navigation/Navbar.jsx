@@ -15,6 +15,7 @@ import userIcon from "../user.png"; // Update path if necessary
 
 function Navbar({ username, userRole }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElAsset, setAnchorElAsset] = React.useState(null);
   const [adminAnchorEl, setAdminAnchorEl] = React.useState(null);
   const navigate = useNavigate();
 
@@ -28,6 +29,12 @@ function Navbar({ username, userRole }) {
     setAnchorElUser(null);
   };
 
+  const handleOpenAssetMenu = (event) => {
+    setAnchorElAsset(event.currentTarget);
+  };
+  const handleCloseAssetMenu = (event) => {
+    setAnchorElAsset(null);
+  };
   // Function to handle clicking on admin menu
   const handleAdminMenuClick = (event) => {
     setAdminAnchorEl(event.currentTarget);
@@ -58,11 +65,14 @@ function Navbar({ username, userRole }) {
               to="/dashboard">
               Dashboard
             </Button>
-            {/* Assets Link */}
+            {/* Assets Menu */}
             <Button
               sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              to="/assets">
+              id="asset-menu-button"
+              aria-controls={anchorElAsset ? "asset-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={anchorElAsset ? "true" : undefined}
+              onClick={handleOpenAssetMenu}>
               Assets
             </Button>
             {/* Admin menu */}
@@ -106,6 +116,30 @@ function Navbar({ username, userRole }) {
                   handleAdminMenuClose();
                 }}>
                 Logs
+              </MenuItem>
+            </Menu>
+            {/* Asset submenu */}
+            <Menu
+              id="asset-menu"
+              anchorEl={anchorElAsset}
+              open={Boolean(anchorElAsset)}
+              onClose={handleCloseAssetMenu}
+              MenuListProps={{
+                "aria-labelledby": "admin-menu-button",
+              }}>
+              <MenuItem
+                onClick={() => {
+                  navigate("/assets");
+                  handleAdminMenuClose();
+                }}>
+                Asset Management
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/dependency");
+                  handleAdminMenuClose();
+                }}>
+                Dependencies
               </MenuItem>
             </Menu>
           </Box>

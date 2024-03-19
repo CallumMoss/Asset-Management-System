@@ -3,6 +3,7 @@ package cs2815.project.model;
 import java.sql.Timestamp;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -40,12 +41,9 @@ public class Asset {
         private String asset_description;
         private String link;
 
-
         private String typeAttributeValue1;
         private String typeAttributeValue2;
         private String typeAttributeValue3;
-
-
 
         private Timestamp updateTimestamp;
 
