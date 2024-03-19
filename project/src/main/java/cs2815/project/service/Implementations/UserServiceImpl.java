@@ -1,5 +1,6 @@
 package cs2815.project.service.Implementations;
 
+import cs2815.project.model.Asset;
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
 import cs2815.project.repo.ChatBoardRepo;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -136,9 +138,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> sortAlphabetically(List<User> unsortedUsers, String orderBy) {
+    public List<User> sort(List<User> unsortedUsers, String orderBy) {
         List<String> sortByList = new ArrayList<String>();
-        List<User> sortedUsers = unsortedUsers;
+        List<User> sortedUsers = new ArrayList<>();
+        List<User> allUsers = searchByUsername("");
+
+        List<Integer> unsortedUserIds = new ArrayList<Integer>();
+        for (User user : unsortedUsers) {
+            unsortedUserIds.add(user.getId());
+        }
         switch (orderBy) {
             case "FirstName":
                 for (User user : unsortedUsers) {
@@ -150,6 +158,21 @@ public class UserServiceImpl implements UserService {
                     sortByList.add(user.getUser_last_name().toLowerCase());
                 }
                 break;
+            case "Oldest":
+                for (User user : allUsers) {
+                    if (unsortedUserIds.contains(user.getId())) {
+                        sortedUsers.add(user);
+                    }
+                }
+                return sortedUsers;
+            case "Newest":
+                for (User user : allUsers) {
+                    if (unsortedUserIds.contains(user.getId())) {
+                        sortedUsers.add(user);
+                    }
+                }
+                Collections.reverse((sortedUsers));
+                return sortedUsers;
             default:
                 for (User user : unsortedUsers) {
                     // May need to add.LowerCase() to this in future, case sensitivity makes
@@ -157,6 +180,7 @@ public class UserServiceImpl implements UserService {
                     sortByList.add(user.getUser_name());
                 }
         }
+        sortedUsers = unsortedUsers;
         String temp;
         User tempBis;
         int size = sortByList.size();

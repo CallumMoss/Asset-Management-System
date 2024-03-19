@@ -140,20 +140,7 @@ function UserManagementDisplay({ userList }) {
 
   const handleSortBy = async (orderBy) => {
     try {
-        let orderByParam = ""; // Initialize the orderByParam
-
-        // Used to determine value of orderby to be sent as param
-        switch (orderBy) {
-            case "firstName":
-                orderByParam = "FirstName";
-                break;
-            case "lastName":
-                orderByParam = "LastName";
-                break;
-            default:
-                orderByParam = "UserName";
-        }
-        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", users, { params: { orderBy: orderByParam } } );
+        const response = await axios.post("http://localhost:8080/users/sort", users, { params: { orderBy: orderBy } } );
         if (Array.isArray(response.data)) {
             setUsers(response.data);
         } else {
@@ -205,7 +192,6 @@ function UserManagementDisplay({ userList }) {
               <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
               <TableCell>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Button onClick={() => handleCreate()}>Create</Button>
@@ -222,12 +208,13 @@ function UserManagementDisplay({ userList }) {
                       open={Boolean(sortAnchorEl)}
                       onClose={() => setSortAnchorEl(null)}>
 
-                      <MenuItem onClick={() => handleSortBy("username")}>Username</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("firstName")}>First Name</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("lastName")}>Last Name</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("UserName")}>Username</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("FirstName")}>First Name</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("LastName")}>Last Name</MenuItem>
                     </Menu>
                   </div>
-                  <Button onClick={() => fetchUsers()}>Refresh</Button>
                 </div>
               </TableCell>
             </TableRow>

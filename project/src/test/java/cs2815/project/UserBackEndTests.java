@@ -175,7 +175,7 @@ class UserBackEndTests {
     @Test
     void test7() {
         // Testing sorting alphabetically by username
-        List<User> sorted_users = usi.sortAlphabetically(usi.refreshUser(), "UserName");
+        List<User> sorted_users = usi.sort(usi.refreshUser(), "UserName");
         List<User> expected_users = new ArrayList<User>();
 
         expected_users.add(new User(3, "BaseAdmin", "Admin", "Johnson", "$2a$10$0UFTgHWL7qpm2h45eQPer.UFmUQO7wbJFVbfU9PhSXrbWAaEqJbzm", "Admin"));
@@ -191,7 +191,7 @@ class UserBackEndTests {
     @Test
     void test8() {
         // Testing sorting alphabetically by first name
-        List<User> sorted_users = usi.sortAlphabetically(usi.refreshUser(), "FirstName");
+        List<User> sorted_users = usi.sort(usi.refreshUser(), "FirstName");
         List<User> expected_users = new ArrayList<User>();
 
         expected_users.add(new User(3, "BaseAdmin", "Admin", "Johnson", "$2a$10$0UFTgHWL7qpm2h45eQPer.UFmUQO7wbJFVbfU9PhSXrbWAaEqJbzm", "Admin"));
@@ -207,7 +207,7 @@ class UserBackEndTests {
     @Test
     void test9() {
         // Testing sorting alphabetically by last name
-        List<User> sorted_users = usi.sortAlphabetically(usi.refreshUser(), "FirstName");
+        List<User> sorted_users = usi.sort(usi.refreshUser(), "FirstName");
         List<User> expected_users = new ArrayList<User>();
 
         expected_users.add(new User(3, "BaseAdmin", "Admin", "Johnson", "$2a$10$0UFTgHWL7qpm2h45eQPer.UFmUQO7wbJFVbfU9PhSXrbWAaEqJbzm", "Admin"));

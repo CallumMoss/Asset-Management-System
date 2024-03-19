@@ -119,9 +119,9 @@ public class UserController {
         return ResponseEntity.ok(compatibleUsers);
     }
 
-    @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
-    public ResponseEntity<List<User>> sortAlphabetically(@RequestBody List<User> unsortedUsers, @RequestParam(required = false) String orderBy) {
-        List<User> sortedUsers = userService.sortAlphabetically(unsortedUsers, orderBy);
+    @PostMapping("/sort") // If no orderBy string returned, will sort by username. Accepts "FirstName", "LastName", "Oldest" and "Newest"
+    public ResponseEntity<List<User>> sort(@RequestBody List<User> unsortedUsers, @RequestParam String orderBy) {
+        List<User> sortedUsers = userService.sort(unsortedUsers, orderBy);
         return ResponseEntity.ok(sortedUsers);
     }
 }

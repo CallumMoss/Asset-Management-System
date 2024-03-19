@@ -54,6 +54,15 @@ function AssetType({ userRole, username }) {
           <h1 className="text-3xl font-bold mb-4">Asset Type Management</h1>
           <div className="flex flex-col items-center space-y-4 mb-4">
             <div className="flex items-center space-x-4 w-full max-w-lg">
+              {/* ClearSearch button to reset the search */}
+              <button
+                  className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSearchedTypes([]);
+                  }}>
+                X
+              </button>
               <input
                 type="text"
                 id="assetTypeSearchInput"

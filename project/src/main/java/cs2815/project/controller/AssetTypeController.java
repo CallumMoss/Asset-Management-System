@@ -65,9 +65,9 @@ public class AssetTypeController {
 
 
 
-    @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
-    public ResponseEntity<List<AssetType>> sortAlphabetically(@RequestBody List<AssetType> unsortedAssetTypes) {
-        List<AssetType> sortedAssetTypes = assetTypeService.sortAlphabetically(unsortedAssetTypes);
+    @PostMapping("/sort") // orderBy accepts "Oldest" or "Newest", anything else will return alphabetically.
+    public ResponseEntity<List<AssetType>> sort(@RequestBody List<AssetType> unsortedAssetTypes, @RequestParam String orderBy) {
+        List<AssetType> sortedAssetTypes = assetTypeService.sort(unsortedAssetTypes, orderBy);
         return ResponseEntity.ok(sortedAssetTypes);
     }
 }
