@@ -138,7 +138,7 @@ function DisplayAssets({ username, assetList }) {
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [user, setUser] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const indexOfLastRecord = currentPage * itemsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
   const currentAssets = assets.slice(indexOfFirstRecord, indexOfLastRecord);

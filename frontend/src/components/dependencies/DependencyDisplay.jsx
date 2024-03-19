@@ -41,6 +41,10 @@ function DependencyDisplay({ dependencyList }) {
                 <TableCell style={{ fontWeight: "bold" }}>
                   Dependent Asset
                 </TableCell>
+
+                <TableCell style={{ fontWeight: "bold" }}>
+                  <Button>Sort</Button>
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -48,6 +52,9 @@ function DependencyDisplay({ dependencyList }) {
                 <TableRow key={dependency.id}>
                   <TableCell>{dependency.relationType}</TableCell>
                   <TableCell>{dependency.dependent.title}</TableCell>
+                  <TableCell>
+                    <Button>Delete</Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
