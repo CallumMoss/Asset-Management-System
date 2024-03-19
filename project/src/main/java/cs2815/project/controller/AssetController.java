@@ -111,7 +111,7 @@ public class AssetController {
     }
 
 
-    @PostMapping("/sort")
+    @PostMapping("/sort") // orderBy accepts "Oldest" or "Newest", anything else will return alphabetically.
     public ResponseEntity<List<Asset>> sort(@RequestBody List<Asset> unsortedAssets, @RequestParam String orderBy) {
         List<Asset> sortedAssets = assetService.sort(unsortedAssets, orderBy);
         return ResponseEntity.ok(sortedAssets);

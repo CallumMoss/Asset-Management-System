@@ -142,6 +142,7 @@ function DisplayAssets({ username, assetList }) {
   const nPages = Math.ceil(assets.length / itemsPerPage);
   const [isEditing, setIsEditing] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+  const [orderBy, setOrderBy] = useState(null);
 
 
 
@@ -284,6 +285,7 @@ function DisplayAssets({ username, assetList }) {
   // Function to handle sorting
   const handleSortBy = async (orderBy) => {
     try {
+      setOrderBy(orderBy);
       const response = await axios.post(
         "http://localhost:8080/assets/sort",
         assets, { params: { orderBy: orderBy } }
