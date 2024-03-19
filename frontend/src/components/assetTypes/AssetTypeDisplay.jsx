@@ -10,7 +10,7 @@ import {
   TableRow,
   Paper,
   Container,
-  TextField,
+  TextField, Menu, MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
@@ -98,11 +98,11 @@ function AssetTypeDisplay({ assetTypeList }) {
     }
   };
 
-  const handleSort = async () => {
+  const handleSortBy = async (orderBy) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/asset_types/sort/alphabetically",
-        assetTypes
+        "http://localhost:8080/asset_types/sort",
+        assetTypes, { params: { orderBy: orderBy } }
       );
       if (Array.isArray(response.data)) {
         setAssetTypes(response.data);
@@ -142,10 +142,19 @@ function AssetTypeDisplay({ assetTypeList }) {
                 <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
                 <Button onClick={() => handleCreate()}>Create</Button>
-                <Button onClick={(e) => handleSort()} aria-controls="sort-menu" aria-haspopup="true">
+                <Button onClick={(e) => setSortAnchorEl(e.currentTarget)} aria-controls="sort-menu" aria-haspopup="true">
                   Sort
                 </Button>
-                <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
+                {/*menu for sortby options*/}
+                <Menu id="sort-menu"
+                      anchorEl={sortAnchorEl}
+                      open={Boolean(sortAnchorEl)}
+                      onClose={() => setSortAnchorEl(null)}>
+
+                  <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Alphabetically")}>Alphabetically</MenuItem>
+                </Menu>
               </TableRow>
             </TableHead>
             <TableBody>

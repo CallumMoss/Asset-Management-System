@@ -249,7 +249,7 @@ public class AssetImpl implements AssetService {
 
         List<Integer> unsortedAssetIds = new ArrayList<Integer>();
         for (Asset asset : unsortedAssets) {
-            sortByList.add(asset.getTitle());
+            sortByList.add(asset.getTitle().toLowerCase());
             unsortedAssetIds.add(asset.getAsset_id());
         }
         switch (orderBy) {

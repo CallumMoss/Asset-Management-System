@@ -22,7 +22,7 @@ public interface AssetTypeService {
 
     List<AbstractMap.SimpleEntry<String, List<String>>> getTypesAndAttributes();
 
-    List<AssetType> sortAlphabetically(List<AssetType> unsortedAssetTypes);
+    List<AssetType> sort(List<AssetType> unsortedAssetTypes, String orderBy);
 
     List<String> getAttributes(AssetType assetType);
 }
