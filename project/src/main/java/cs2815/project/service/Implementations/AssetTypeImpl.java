@@ -1,5 +1,6 @@
 package cs2815.project.service.Implementations;
 
+import cs2815.project.model.Asset;
 import cs2815.project.model.AssetType;
 import cs2815.project.model.Log;
 import cs2815.project.repo.AssetRepo;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -64,26 +66,49 @@ public class AssetTypeImpl implements AssetTypeService {
 
 
     @Override
-    public List<AssetType> sortAlphabetically(List<AssetType> unsortedAssetTypes) {
+    public List<AssetType> sort(List<AssetType> unsortedAssetTypes, String orderBy) {
         List<String> sortByList = new ArrayList<>();
-        List<AssetType> sortedAssetTypes = unsortedAssetTypes;
+        List<AssetType> sortedAssetTypes =  new ArrayList<>();
+        List<AssetType> allAssetTypes = searchTypes("");
+
+        List<Integer> unsortedAssetTypeIds = new ArrayList<Integer>();
         for (AssetType assetType : unsortedAssetTypes) {
             sortByList.add(assetType.getType_name().toLowerCase());
+            unsortedAssetTypeIds.add(assetType.getType_id());
         }
-        String temp;
-        AssetType tempBis;
-        int size = sortByList.size();
-        for (int i = 0; i < size; i++) {
-            for (int j = i + 1; j < size; j++) {
-                if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
-                    temp = sortByList.get(i);
-                    tempBis = sortedAssetTypes.get(i);
-                    sortByList.set(i, sortByList.get(j));
-                    sortedAssetTypes.set(i, sortedAssetTypes.get(j));
-                    sortByList.set(j, temp);
-                    sortedAssetTypes.set(j, tempBis);
+        switch (orderBy) {
+            case "Oldest":
+                for (AssetType assetType : allAssetTypes) {
+                    if (unsortedAssetTypeIds.contains(assetType.getType_id())) {
+                        sortedAssetTypes.add(assetType);
+                    }
                 }
-            }
+                break;
+            case "Newest":
+                for (AssetType assetType : allAssetTypes) {
+                    if (unsortedAssetTypeIds.contains(assetType.getType_id())) {
+                        sortedAssetTypes.add(assetType);
+                    }
+                }
+                Collections.reverse((sortedAssetTypes));
+                break;
+            default:
+                sortedAssetTypes = unsortedAssetTypes;
+                String temp;
+                AssetType tempBis;
+                int size = sortByList.size();
+                for (int i = 0; i < size; i++) {
+                    for (int j = i + 1; j < size; j++) {
+                        if (sortByList.get(i).compareTo(sortByList.get(j)) > 0) {
+                            temp = sortByList.get(i);
+                            tempBis = sortedAssetTypes.get(i);
+                            sortByList.set(i, sortByList.get(j));
+                            sortedAssetTypes.set(i, sortedAssetTypes.get(j));
+                            sortByList.set(j, temp);
+                            sortedAssetTypes.set(j, tempBis);
+                        }
+                    }
+                }
         }
         return sortedAssetTypes;
     }

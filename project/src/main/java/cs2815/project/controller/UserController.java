@@ -41,12 +41,14 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
 
     // if users table is empty, call all createBase for all tables
-        if (userService.refreshUser().isEmpty()) {
-            userService.createBaseUsers();
-            languageService.createBaseLanguages();
-            assetTypeService.createBaseTypes();
-            assetService.createBaseAssets();
-        }
+    if (userService.refreshUser().size() == 0) {
+        System.out.println("Initializing db");
+        userService.createBaseUsers();
+        languageService.createBaseLanguages();
+        assetTypeService.createBaseTypes();
+        assetService.createBaseAssets();
+    }
+
 
         boolean loginSuccessful = userService.logIn(user);
         String userRole = userService.getUserRole(user.getUser_name());
@@ -117,9 +119,9 @@ public class UserController {
         return ResponseEntity.ok(compatibleUsers);
     }
 
-    @PostMapping("/sort/alphabetically") // If no orderBy string returned, will sort by username. Accepts "FirstName" and "LastName"
-    public ResponseEntity<List<User>> sortAlphabetically(@RequestBody List<User> unsortedUsers, @RequestParam(required = false) String orderBy) {
-        List<User> sortedUsers = userService.sortAlphabetically(unsortedUsers, orderBy);
+    @PostMapping("/sort") // If no orderBy string returned, will sort by username. Accepts "FirstName", "LastName", "Oldest" and "Newest"
+    public ResponseEntity<List<User>> sort(@RequestBody List<User> unsortedUsers, @RequestParam String orderBy) {
+        List<User> sortedUsers = userService.sort(unsortedUsers, orderBy);
         return ResponseEntity.ok(sortedUsers);
     }
 }

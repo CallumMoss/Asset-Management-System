@@ -15,8 +15,11 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+import { useNavigate } from "react-router-dom";
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -134,6 +137,16 @@ function DisplayAssets({ username, assetList }) {
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [user, setUser] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentAssets = assets.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(assets.length / itemsPerPage);
+  const [isEditing, setIsEditing] = useState(false);
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+  const [orderBy, setOrderBy] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (assetList.length === 0) {
@@ -141,6 +154,7 @@ function DisplayAssets({ username, assetList }) {
       fetchAssetTypes();
     }
     setAssets(assetList);
+    setCurrentPage(1);
     getUser(username);
   }, [assetList]); // only called if assetList is updated.
 
@@ -197,17 +211,6 @@ function DisplayAssets({ username, assetList }) {
     //setEditingAsset({ ...assetId });
   };
 
-  const handleSave = async () => {
-    try {
-      await axios.post("http://localhost:8080/asset/edit", editingAsset);
-      setEditingAsset(null);
-    } catch (error) {
-      console.error(error.response.data);
-      alert("An error occured while updating the asset.");
-    }
-    setIsEditing(false);
-  };
-
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
     setOpenAlertDialog(true);
@@ -232,6 +235,9 @@ function DisplayAssets({ username, assetList }) {
   const handleTitleClick = (asset) => {
     setSelectedAsset(asset);
     setOpenDialog(true);
+  };
+  const handleShowDependencies = () => {
+    navigate("/dependency");
   };
 
   // Function to handle view messages action
@@ -280,14 +286,17 @@ function DisplayAssets({ username, assetList }) {
   };
 
   // Function to handle sorting
-  const handleSort = async () => {
+  const handleSortBy = async (orderBy) => {
     try {
+      setOrderBy(orderBy);
       const response = await axios.post(
-        "http://localhost:8080/assets/sort/alphabetically",
-        assets
+        "http://localhost:8080/assets/sort",
+        assets,
+        { params: { orderBy: orderBy } }
       );
       if (Array.isArray(response.data)) {
         setAssets(response.data);
+        setCurrentPage(1);
       } else {
         console.error("Unexpected response structure:", response.data);
         alert("Could not sort Assets. Unexpected response structure.");
@@ -310,18 +319,31 @@ function DisplayAssets({ username, assetList }) {
             <TableCell style={{ fontWeight: "bold" }}>Asset Type</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
             <TableCell>
               <div style={{ display: "flex", alignItems: "center" }}>
                 {/* Sort button */}
                 <Button
-                  onClick={handleSort}
+                  onClick={(e) => setSortAnchorEl(e.currentTarget)}
                   aria-controls="sort-menu"
                   aria-haspopup="true">
                   Sort
                 </Button>
-                {/* Refresh button */}
-                <Button onClick={() => getAssets()}>Refresh</Button>
+                {/*menu for sortby options*/}
+                <Menu
+                  id="sort-menu"
+                  anchorEl={sortAnchorEl}
+                  open={Boolean(sortAnchorEl)}
+                  onClose={() => setSortAnchorEl(null)}>
+                  <MenuItem onClick={() => handleSortBy("Newest")}>
+                    Newest
+                  </MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Oldest")}>
+                    Oldest
+                  </MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Alphabetically")}>
+                    Alphabetically
+                  </MenuItem>
+                </Menu>
               </div>
             </TableCell>
           </TableRow>
@@ -335,7 +357,7 @@ function DisplayAssets({ username, assetList }) {
             onConfirm={confirmDelete}
           />
 
-          {assets.map((asset) => (
+          {currentAssets.map((asset) => (
             <TableRow key={asset.asset_id}>
               <TableCell onClick={() => handleTitleClick(asset)}>
                 {asset.title}
@@ -406,6 +428,10 @@ function DisplayAssets({ username, assetList }) {
                   )
                   .join(", ") || "None"}
               </p>
+              <p>
+                All dependencies:
+                <Button onClick={() => handleShowDependencies()}>Show</Button>
+              </p>
               <br />
               <p>
                 <p>
@@ -439,6 +465,22 @@ function DisplayAssets({ username, assetList }) {
         asset={selectedAsset}
         user={user}
       />
+
+      {/* Pagination controls */}
+      {!isEditing && (
+        <>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}>
+            Previous
+          </Button>
+          <Button
+            disabled={currentPage === nPages}
+            onClick={() => setCurrentPage(currentPage + 1)}>
+            Next
+          </Button>
+        </>
+      )}
     </Container>
   );
 }

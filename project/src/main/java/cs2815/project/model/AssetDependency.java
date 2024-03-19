@@ -2,6 +2,7 @@ package cs2815.project.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,13 +31,13 @@ public class AssetDependency {
 
     @ManyToOne
     @JoinColumn(name = "asset_id")
-    @JsonIgnoreProperties("dependencies")
+    @JsonIgnoreProperties(value = "dependencies", allowSetters = true)
     private Asset asset;
 
     @ManyToOne
     @JoinColumn(name = "dependent_id")
-    private Asset dependent;
 
+    private Asset dependent;
     @Column(name = "relation_type")
     private String relationType;
 

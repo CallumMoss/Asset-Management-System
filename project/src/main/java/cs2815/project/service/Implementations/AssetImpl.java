@@ -10,14 +10,12 @@ import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.model.specialmodels.DependencyWrapper;
 import cs2815.project.repo.*;
 import cs2815.project.service.AssetService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class AssetImpl implements AssetService {
@@ -187,6 +185,8 @@ public class AssetImpl implements AssetService {
         return repo.getAllAssets();
     }
 
+
+
     @Override
     public Asset getNewestAsset() {
         return repo.findNewestAsset();
@@ -216,79 +216,80 @@ public class AssetImpl implements AssetService {
     }
 
     public void createBaseAssets() {
-        /*
-         * List<String> authors = Arrays.asList("BaseAdmin");
-         * List<String> dependencies = Arrays.asList();
-         * List<String> languages = Arrays.asList("Java");
-         * AssetWrapper wrapper = new AssetWrapper(
-         * "Piece.py", // title
-         * "A python program that contains a class which describes the attributes and functions of a chess piece."
-         * , // asset_description
-         * "website.com/piece.py", // link
-         * "Python File", // asset_type
-         * authors, // authors
-         * dependencies, // dependencies
-         * languages // languages
-         * );
-         * createAsset(wrapper);
-         * //
-         * authors = Arrays.asList("BaseViewer");
-         * dependencies = Arrays.asList();
-         * languages = Arrays.asList("Python", "Java");
-         * wrapper = new AssetWrapper(
-         * "Heroes Rising", // title
-         * "2D Game developed as part of the first year games module.", //
-         * asset_description
-         * "some_link.com", // link
-         * "Project", // asset_type
-         * authors, // authors
-         * dependencies, // dependencies
-         * languages // languages
-         * );
-         * createAsset(wrapper);
-         * 
-         * authors = Arrays.asList("BaseUser", "BaseViewer");
-         * dependencies = Arrays.asList("Heroes Rising");
-         * languages = Arrays.asList();
-         * wrapper = new AssetWrapper(
-         * "README", // title
-         * "Read me file for the project Heroes Rising.", // asset_description
-         * "random/readme.md", // link
-         * "Documentation", // asset_type
-         * authors, // authors
-         * dependencies, // dependencies
-         * languages // languages
-         * );
-         * createAsset(wrapper);
-         */
+        List<String> authors = Arrays.asList("BaseAdmin");
+        DependencyWrapper dwrapper = new DependencyWrapper();
+        List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
+        dwrapper_list.add(dwrapper);
+        List<String> languages = Arrays.asList("Java");
+        AssetWrapper wrapper = new AssetWrapper("Piece.py", "A python program that contains a class which describes the attributes and functions of a chess piece.", "website.com/piece.py", "Python File", authors,  dwrapper_list, languages);
+        createAsset(wrapper);
+        //
+        authors = Arrays.asList("BaseViewer");
+        dwrapper = new DependencyWrapper();
+        dwrapper_list.clear();
+        dwrapper_list.add(dwrapper);
+        languages = Arrays.asList("Python", "Java");
+        wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.", "some_link.com", "Project", authors, dwrapper_list, languages);
+        createAsset(wrapper);
+        
+        authors = Arrays.asList("BaseUser", "BaseViewer");
+        dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
+        dwrapper_list.clear();
+        dwrapper_list.add(dwrapper);
+        languages = Arrays.asList();
+        wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md", "Documentation", authors, dwrapper_list, languages);
+        createAsset(wrapper);
     }
 
     @Override
-    public List<Asset> sortAlphabetically(List<Asset> unsortedAssets) {
+    public List<Asset> sort(List<Asset> unsortedAssets, String orderBy) {
         List<String> sortByList = new ArrayList<String>();
-        List<Asset> sortedAssets = unsortedAssets;
+        List<Asset> sortedAssets = new ArrayList<>();
+        List<Asset> allAssets = searchByName("");
+
+        List<Integer> unsortedAssetIds = new ArrayList<Integer>();
         for (Asset asset : unsortedAssets) {
-            sortByList.add(asset.getTitle());
+            sortByList.add(asset.getTitle().toLowerCase());
+            unsortedAssetIds.add(asset.getAsset_id());
         }
-        String temp;
-        Asset tempBis;
-        int size = sortByList.size();
-        for (int i = 0; i < size; i++) {
-            for (int j = i + 1; j < size; j++) {
-                if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
-                    temp = sortByList.get(i);
-                    tempBis = sortedAssets.get(i);
-                    sortByList.set(i, sortByList.get(j));
-                    sortedAssets.set(i, sortedAssets.get(j));
-                    sortByList.set(j, temp);
-                    sortedAssets.set(j, tempBis);
+        switch (orderBy) {
+            case "Oldest":
+                for (Asset asset : allAssets) {
+                    if (unsortedAssetIds.contains(asset.getAsset_id())) {
+                        sortedAssets.add(asset);
+                    }
                 }
-            }
+                break;
+            case "Newest":
+                for (Asset asset : allAssets) {
+                    if (unsortedAssetIds.contains(asset.getAsset_id())) {
+                        sortedAssets.add(asset);
+                    }
+                }
+                Collections.reverse((sortedAssets));
+                break;
+            default:
+                sortedAssets = unsortedAssets;
+                String temp;
+                Asset tempBis;
+                int size = sortByList.size();
+                for (int i = 0; i < size; i++) {
+                    for (int j = i + 1; j < size; j++) {
+                        if (sortByList.get(i).toLowerCase().compareTo(sortByList.get(j).toLowerCase()) > 0) {
+                            temp = sortByList.get(i);
+                            tempBis = sortedAssets.get(i);
+                            sortByList.set(i, sortByList.get(j));
+                            sortedAssets.set(i, sortedAssets.get(j));
+                            sortByList.set(j, temp);
+                            sortedAssets.set(j, tempBis);
+                        }
+                    }
+                }
         }
         return sortedAssets;
     }
 
-       @Override
+    @Override
     public List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes() {
         List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();
         List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributesByType = new ArrayList<>();
