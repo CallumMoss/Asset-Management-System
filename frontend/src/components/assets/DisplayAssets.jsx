@@ -238,7 +238,9 @@ function DisplayAssets({ username, assetList }) {
   const confirmDelete = async () => {
     if (deleteAssetId !== null) {
       try {
-        await axios.delete(`http://localhost:8080/assets/${deleteAssetId}`);
+        await axios.delete(
+          `http://localhost:8080/assets/${deleteAssetId}/username=${username}`
+        );
         setOpenAlertDialog(false);
         getAssets();
         console.log("Asset deleted successfully:", deleteAssetId);

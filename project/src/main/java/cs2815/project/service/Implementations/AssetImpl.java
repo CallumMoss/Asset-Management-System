@@ -185,18 +185,17 @@ public class AssetImpl implements AssetService {
         return repo.getAllAssets();
     }
 
-
-
     @Override
     public Asset getNewestAsset() {
         return repo.findNewestAsset();
     }
 
     @Override
-    public void deleteAsset(int assetID) {
+    public void deleteAsset(int assetID, String username) {
 
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUser(userRepo.findByUserName(username));
         log.setUpdateDescription(repo.findAssetById(assetID).getTitle() + " was deleted!");
 
         logRepo.save(log);
@@ -211,8 +210,9 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-    public void editAsset(Asset asset) {    
-        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description(), asset.getLink());
+    public void editAsset(Asset asset) {
+        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description(),
+                asset.getLink());
     }
 
     public void createBaseAssets() {
@@ -221,7 +221,9 @@ public class AssetImpl implements AssetService {
         List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
         dwrapper_list.add(dwrapper);
         List<String> languages = Arrays.asList("Java");
-        AssetWrapper wrapper = new AssetWrapper("Piece.py", "A python program that contains a class which describes the attributes and functions of a chess piece.", "website.com/piece.py", "Python File", authors,  dwrapper_list, languages);
+        AssetWrapper wrapper = new AssetWrapper("Piece.py",
+                "A python program that contains a class which describes the attributes and functions of a chess piece.",
+                "website.com/piece.py", "Python File", authors, dwrapper_list, languages);
         createAsset(wrapper);
         //
         authors = Arrays.asList("BaseViewer");
@@ -229,15 +231,17 @@ public class AssetImpl implements AssetService {
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
         languages = Arrays.asList("Python", "Java");
-        wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.", "some_link.com", "Project", authors, dwrapper_list, languages);
+        wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.",
+                "some_link.com", "Project", authors, dwrapper_list, languages);
         createAsset(wrapper);
-        
+
         authors = Arrays.asList("BaseUser", "BaseViewer");
         dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
         languages = Arrays.asList();
-        wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md", "Documentation", authors, dwrapper_list, languages);
+        wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md",
+                "Documentation", authors, dwrapper_list, languages);
         createAsset(wrapper);
     }
 
@@ -294,11 +298,11 @@ public class AssetImpl implements AssetService {
         List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();
         List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributesByType = new ArrayList<>();
 
-        for( AssetType assetType : assetTypeList ) {
+        for (AssetType assetType : assetTypeList) {
             List<Asset> typeAssets = repo.findAssetByType(assetType.getType_name());
             List<AbstractMap.SimpleEntry<String, List<String>>> assetsAndAttributes = new ArrayList<>();
 
-            for( Asset asset : typeAssets) {
+            for (Asset asset : typeAssets) {
 
                 List<String> assetAttributes = repo.getAssetAttributes(asset.getAsset_id());
                 assetsAndAttributes.add(new AbstractMap.SimpleEntry<>(asset.getTitle(), assetAttributes));
