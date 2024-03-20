@@ -179,6 +179,10 @@ function DisplayAssets({ username, assetList }) {
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
+  const [editingAsset, setEditingAsset] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [assetTypes, setAssetTypes] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [user, setUser] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -186,7 +190,6 @@ function DisplayAssets({ username, assetList }) {
   const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
   const currentAssets = assets.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(assets.length / itemsPerPage);
-  const [isEditing, setIsEditing] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
   const [orderBy, setOrderBy] = useState(null);
   const [parentAssets, setParentAssets] = useState([]);
