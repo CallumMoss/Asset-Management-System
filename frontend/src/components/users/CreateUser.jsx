@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
+//Imports
 
+//Function to create new users:
 function CreateUser({ userRole, username }) {
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
@@ -12,6 +14,7 @@ function CreateUser({ userRole, username }) {
 
   const navigate = useNavigate();
 
+  //Function to handle use of submit button:
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -31,7 +34,9 @@ function CreateUser({ userRole, username }) {
   };
 
   return (
+    //Returns desired format for create user page:
     <div>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <div className="container mx-auto px-4">
         <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
@@ -127,6 +132,7 @@ function CreateUser({ userRole, username }) {
           </div>
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full px-3 text-center">
+              {/*Submit button*/}
               <button
                 className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
                 type="submit">
@@ -139,5 +145,4 @@ function CreateUser({ userRole, username }) {
     </div>
   );
 }
-
 export default CreateUser;

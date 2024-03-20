@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../style.css"; // Importing component-specific styles
 import "../Menustyle.css";
-import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "../user.png";
 import Navbar from "../navigation/Navbar";
 import LogDisplay from "./LogDisplay";
 import axios from "axios";
+//Imports
 
+//Function to display logs:
 function Log({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedLogs, setSearchedLogs] = useState([]);
 
+  //Function to search through logs:
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
@@ -31,7 +32,9 @@ function Log({ userRole, username }) {
   };
 
   return (
+    //Return wanted format of Logs page:
     <div>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
@@ -47,6 +50,7 @@ function Log({ userRole, username }) {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <div className="flex space-x-2">
+                {/*Search button*/}
                 <button
                   id="logSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
@@ -66,5 +70,4 @@ function Log({ userRole, username }) {
     </div>
   );
 }
-
 export default Log;

@@ -11,7 +11,9 @@ import {
   Paper,
   Container,
 } from "@mui/material";
+//Imports
 
+//Function to display logs in table:
 function LogDisplay({ logList }) {
   const [logs, setLogs] = useState([]);
   const navigate = useNavigate();
@@ -33,6 +35,7 @@ function LogDisplay({ logList }) {
     }
   }, [logList]); // only called if logList is updated.
 
+  //Function to get Log data:
   const fetchLogs = async () => {
     try {
       const response = await axios.get("http://localhost:8080/logs/refresh");
@@ -51,6 +54,7 @@ function LogDisplay({ logList }) {
     }
   };
 
+  //Function to format time of new log information:
   const formatLogTime = (timestamp) => {
     try {
       console.log(logs);
@@ -75,6 +79,7 @@ function LogDisplay({ logList }) {
   };
 
   return (
+    //Returning wanted format of Logs table:
     <Container component={Paper}>
       <Table>
         <TableHead>
@@ -114,5 +119,4 @@ function LogDisplay({ logList }) {
     </Container>
   );
 }
-
 export default LogDisplay;
