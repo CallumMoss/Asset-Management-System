@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Navbar from "../navigation/Navbar"; 
+import Navbar from "../navigation/Navbar";
 
 function CreateUser({ userRole, username }) {
   const [first_name, setFirstName] = useState("");
@@ -15,7 +15,7 @@ function CreateUser({ userRole, username }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/users/createuser", {
+      await axios.post(`http://localhost:8080/users/createuser/${username}`, {
         user_first_name: first_name,
         user_last_name: last_name,
         user_name: user_name,
@@ -23,7 +23,7 @@ function CreateUser({ userRole, username }) {
         user_role: role,
       });
       console.log("User created successfully");
-      navigate("/admin/user-management"); 
+      navigate("/admin/user-management");
     } catch (error) {
       console.error("Error creating user:", error);
       alert("An error occurred while creating the user");
@@ -37,7 +37,9 @@ function CreateUser({ userRole, username }) {
         <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="first_name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="first_name">
                 First Name
               </label>
               <input
@@ -51,7 +53,9 @@ function CreateUser({ userRole, username }) {
               />
             </div>
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="last_name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="last_name">
                 Last Name
               </label>
               <input
@@ -67,7 +71,9 @@ function CreateUser({ userRole, username }) {
           </div>
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="user_name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="user_name">
                 Username
               </label>
               <input
@@ -81,7 +87,9 @@ function CreateUser({ userRole, username }) {
               />
             </div>
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="password">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="password">
                 Password
               </label>
               <input
@@ -97,7 +105,9 @@ function CreateUser({ userRole, username }) {
           </div>
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full px-3">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="role">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="role">
                 User Role
               </label>
               <select
@@ -105,9 +115,10 @@ function CreateUser({ userRole, username }) {
                 id="role"
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                required
-              >
-                <option value="" disabled>Select a role</option>
+                required>
+                <option value="" disabled>
+                  Select a role
+                </option>
                 <option value="Viewer">Viewer</option>
                 <option value="User">User</option>
                 <option value="Admin">Admin</option>
@@ -118,8 +129,7 @@ function CreateUser({ userRole, username }) {
             <div className="w-full px-3 text-center">
               <button
                 className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                type="submit"
-              >
+                type="submit">
                 Submit
               </button>
             </div>

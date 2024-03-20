@@ -51,14 +51,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void registerUser(User user) {
+    public void registerUser(User user, String username) {
 
         user.encryptPassword(key);
 
         Log log = new Log();
 
         repo.save(user);
-        log.setUser(user);
+        log.setUser(repo.findByUserName(username));
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUpdateDescription(user.getUser_name() + " was created!");
 
@@ -96,25 +96,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void editUser(User user) {
+    public void editUser(User user, String username) {
 
         Log log = new Log();
-        log.setUser(user);
+        log.setUser(repo.findByUserName(username));
         log.setUpdateDescription(user.getUser_name() + " was succesfully edited!");
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         logrepo.save(log);
 
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
-        user.getUser_last_name(), user.getUser_role());
+                user.getUser_last_name(), user.getUser_role());
     }
 
     @Override
-    public void deleteUser(int userId) {
+    public void deleteUser(int userId, String username) {
 
         Log log = new Log();
         User tempUser = repo.findById(userId);
         log.setUpdateDescription(tempUser.getUser_name() + " was succefully deleted!");
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUser(repo.findByUserName(username));
         logrepo.save(log);
 
         repo.eraseUserIdFromAssetUser(userId);

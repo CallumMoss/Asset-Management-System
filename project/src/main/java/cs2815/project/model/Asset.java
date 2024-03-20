@@ -1,11 +1,7 @@
 package cs2815.project.model;
 
 import java.sql.Timestamp;
-import java.util.*;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,6 +21,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This class defines the entity asset in the database.
+ * 
+ * @author Tom
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,29 +33,62 @@ import lombok.Setter;
 @Entity
 @Table(name = "assets")
 public class Asset {
+
+        /**
+         * Generated Id
+         */
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int asset_id;
 
+        /**
+         * Title column, which must be unique
+         */
         @Column(unique = true)
         private String title;
+
+        /**
+         * Description column, where we store the Asset Description
+         */
         private String asset_description;
+
+        /**
+         * Link column, where we can store the link to a storage.
+         */
         private String link;
 
+        /**
+         * Storing the custom attributes
+         */
         private String typeAttributeValue1;
         private String typeAttributeValue2;
         private String typeAttributeValue3;
 
+        /**
+         * Storing the date
+         */
         private Timestamp updateTimestamp;
 
+        /**
+         * Defining a many-to-one relation with AssetType table and storing asset type
+         * data
+         */
         @ManyToOne
         @JoinColumn(name = "asset_type_id")
         private AssetType Asset_type;
 
+        /**
+         * Defining a many-to-many relation with the users table, and automatically
+         * creating a middle table named "asset_user".
+         */
         @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
         @JoinTable(name = "asset_user", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
         private List<User> authors;
 
+        /**
+         * Defining a one-to-many relation with the dependency table, and storing all
+         * the dependencies in the dependency table.
+         */
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
         private List<AssetDependency> dependencies;
 

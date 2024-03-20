@@ -23,10 +23,11 @@ public class AssetController {
     @Autowired
     private AssetService assetService;
 
-    @PostMapping("/createasset")
-    public ResponseEntity<String> createAsset(@RequestBody AssetWrapper assetWrapper) {
+    @PostMapping("/createasset/{username}")
+    public ResponseEntity<String> createAsset(@RequestBody AssetWrapper assetWrapper, @PathVariable String username) {
+
         try {
-            assetService.createAsset(assetWrapper);
+            assetService.createAsset(assetWrapper, username);
             return ResponseEntity.ok("Asset created successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -35,7 +36,9 @@ public class AssetController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<List<Asset>> refresh(){ return ResponseEntity.ok(assetService.refresh()); }
+    public ResponseEntity<List<Asset>> refresh() {
+        return ResponseEntity.ok(assetService.refresh());
+    }
 
     @GetMapping("/getnewest")
     public ResponseEntity<Asset> getNewest() {
@@ -68,9 +71,9 @@ public class AssetController {
         return ResponseEntity.ok(compatibleAssets);
     }
 
-    @DeleteMapping("/{asset_id}")
-    public ResponseEntity<String> deleteAsset(@PathVariable int asset_id) {
-        assetService.deleteAsset(asset_id);
+    @DeleteMapping("/{asset_id}/username={username}")
+    public ResponseEntity<String> deleteAsset(@PathVariable int asset_id, @PathVariable String username) {
+        assetService.deleteAsset(asset_id, username);
         return ResponseEntity.ok("Asset deleted successfully");
     }
 
@@ -79,9 +82,6 @@ public class AssetController {
         assetService.editAsset(asset);
         return ResponseEntity.ok("Asset edited successfully");
     }
-
-
-    
 
     /*
      * //Finds what Assets are dependant on the given AssetID asset
@@ -106,12 +106,13 @@ public class AssetController {
      */
     @PostMapping("/attributes")
     public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>>> getAssetsAndAttributes() {
-        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService.getAssetsAndAttributes();
+        List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService
+                .getAssetsAndAttributes();
         return ResponseEntity.ok(assetsAndAttributes);
     }
 
-
-    @PostMapping("/sort") // orderBy accepts "Oldest" or "Newest", anything else will return alphabetically.
+    @PostMapping("/sort") // orderBy accepts "Oldest" or "Newest", anything else will return
+                          // alphabetically.
     public ResponseEntity<List<Asset>> sort(@RequestBody List<Asset> unsortedAssets, @RequestParam String orderBy) {
         List<Asset> sortedAssets = assetService.sort(unsortedAssets, orderBy);
         return ResponseEntity.ok(sortedAssets);

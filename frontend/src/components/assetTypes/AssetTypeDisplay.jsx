@@ -10,11 +10,13 @@ import {
   TableRow,
   Paper,
   Container,
-  TextField, Menu, MenuItem,
+  TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
-function AssetTypeDisplay({ assetTypeList }) {
+function AssetTypeDisplay({ username, assetTypeList }) {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
@@ -62,7 +64,7 @@ function AssetTypeDisplay({ assetTypeList }) {
   const handleUpdate = async () => {
     try {
       await axios.post(
-        "http://localhost:8080/asset_types/edit",
+        `http://localhost:8080/asset_types/edit/${username}`,
         editedAssetType
       );
       fetchAssetTypes();
@@ -86,7 +88,7 @@ function AssetTypeDisplay({ assetTypeList }) {
     if (deleteAssetTypeId !== null) {
       try {
         await axios.delete(
-          `http://localhost:8080/asset_types/${deleteAssetTypeId}`
+          `http://localhost:8080/asset_types/${deleteAssetTypeId}/${username}`
         );
         setOpenDialog(false);
         fetchAssetTypes();
@@ -102,7 +104,8 @@ function AssetTypeDisplay({ assetTypeList }) {
     try {
       const response = await axios.post(
         "http://localhost:8080/asset_types/sort",
-        assetTypes, { params: { orderBy: orderBy } }
+        assetTypes,
+        { params: { orderBy: orderBy } }
       );
       if (Array.isArray(response.data)) {
         setAssetTypes(response.data);
@@ -120,39 +123,61 @@ function AssetTypeDisplay({ assetTypeList }) {
     <Container component={Paper}>
       {isEditing ? (
         <form>
-        <TextField
-        label="Type Name" 
-        variant="outlined"
-        value={editedAssetType.type_name}
-        onChange={(e) => setEditedAssetType({ ...editedAssetType, type_name: e.target.value })}
-        />
-        <TextField
-        label="Description" 
-        variant="outlined" 
-        value={editedAssetType.description}
-        onChange={(e) => setEditedAssetType({ ...editedAssetType, description: e.target.value })}
-        />
-        <Button onClick={handleUpdate}>Save</Button>
-      </form>
+          <TextField
+            label="Type Name"
+            variant="outlined"
+            value={editedAssetType.type_name}
+            onChange={(e) =>
+              setEditedAssetType({
+                ...editedAssetType,
+                type_name: e.target.value,
+              })
+            }
+          />
+          <TextField
+            label="Description"
+            variant="outlined"
+            value={editedAssetType.description}
+            onChange={(e) =>
+              setEditedAssetType({
+                ...editedAssetType,
+                description: e.target.value,
+              })
+            }
+          />
+          <Button onClick={handleUpdate}>Save</Button>
+        </form>
       ) : (
-      <><Table>
+        <>
+          <Table>
             <TableHead>
               <TableRow>
                 <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  Description
+                </TableCell>
                 <Button onClick={() => handleCreate()}>Create</Button>
-                <Button onClick={(e) => setSortAnchorEl(e.currentTarget)} aria-controls="sort-menu" aria-haspopup="true">
+                <Button
+                  onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                  aria-controls="sort-menu"
+                  aria-haspopup="true">
                   Sort
                 </Button>
                 {/*menu for sortby options*/}
-                <Menu id="sort-menu"
-                      anchorEl={sortAnchorEl}
-                      open={Boolean(sortAnchorEl)}
-                      onClose={() => setSortAnchorEl(null)}>
-
-                  <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
-                  <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
-                  <MenuItem onClick={() => handleSortBy("Alphabetically")}>Alphabetically</MenuItem>
+                <Menu
+                  id="sort-menu"
+                  anchorEl={sortAnchorEl}
+                  open={Boolean(sortAnchorEl)}
+                  onClose={() => setSortAnchorEl(null)}>
+                  <MenuItem onClick={() => handleSortBy("Newest")}>
+                    Newest
+                  </MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Oldest")}>
+                    Oldest
+                  </MenuItem>
+                  <MenuItem onClick={() => handleSortBy("Alphabetically")}>
+                    Alphabetically
+                  </MenuItem>
                 </Menu>
               </TableRow>
             </TableHead>
@@ -162,7 +187,8 @@ function AssetTypeDisplay({ assetTypeList }) {
                 handleClose={() => setOpenDialog(false)}
                 title="Confirm Delete"
                 message="Are you sure you want to delete this asset type?"
-                onConfirm={handleDeleteConfirmation} />
+                onConfirm={handleDeleteConfirmation}
+              />
 
               <>
                 {assetTypes.map((assetType) => (
@@ -170,19 +196,22 @@ function AssetTypeDisplay({ assetTypeList }) {
                     <TableCell>{assetType.type_name}</TableCell>
                     <TableCell>{assetType.description}</TableCell>
                     <TableCell>
-                      <Button onClick={() => handleEdit(assetType)}>Edit</Button>
+                      <Button onClick={() => handleEdit(assetType)}>
+                        Edit
+                      </Button>
                       <Button
-                        onClick={() => promptDeleteConfirmation(assetType.type_id)}
-                      >
+                        onClick={() =>
+                          promptDeleteConfirmation(assetType.type_id)
+                        }>
                         Delete
                       </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </>
-              
             </TableBody>
-          </Table></>
+          </Table>
+        </>
       )}
     </Container>
   );

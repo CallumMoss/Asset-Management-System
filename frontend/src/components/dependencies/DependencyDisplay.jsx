@@ -11,32 +11,89 @@ import {
   Paper,
   Container,
 } from "@mui/material";
+import AlertDialog from "./AlertDialog";
 
-function DependencyDisplay({ dependencyList }) {
+function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
   const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteDependencyId, setDeleteDependencyId] = useState(null);
+
+  // Group dependencies by parent asset
+  const groupedDependencies = dependencyList.reduce((acc, dependency) => {
+    const parentAsset = dependency.asset.title;
+    if (!acc[parentAsset]) {
+      acc[parentAsset] = [];
+    }
+    acc[parentAsset].push(dependency);
+    return acc;
+  }, {});
+
+  const promptDeleteConfirmation = (dependency) => {
+    setDeleteDependencyId(dependency.id);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteConfirmation = async () => {
+    if (deleteDependencyId !== null) {
+      try {
+        await axios.delete(
+          `http://localhost:8080/assetdependency/${deleteDependencyId}/${username}`
+        );
+        setOpenDialog(false);
+        console.log("Dependency deleted successfully:", deleteDependencyId);
+      } catch (error) {
+        console.error("Axios Error:", error);
+        alert("An error occurred while deleting the dependency.");
+      }
+    }
+  };
 
   return (
     <Container component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>
-              Dependent Asset
-            </TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Realtionship</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Parent Asset</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {dependencyList.map((dependency) => (
-            <TableRow key={dependency.id}>
-              <TableCell>{dependency.asset.title}</TableCell>
-              <TableCell>{dependency.relationType}</TableCell>
-              <TableCell>{dependency.dependent.title}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {Object.keys(groupedDependencies).map((parentAsset) => (
+        <div key={parentAsset}>
+          <h2 style={{ fontWeight: "bold", marginTop: "20px" }}>
+            Parent Asset: {parentAsset}
+          </h2>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  Dependent Asset
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  Relationship
+                </TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  <Button>Sort</Button>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {groupedDependencies[parentAsset].map((dependency) => (
+                <TableRow key={dependency.id}>
+                  <TableCell>{dependency.dependent.title}</TableCell>
+                  <TableCell>{dependency.relationType}</TableCell>
+
+                  <TableCell>
+                    <Button
+                      onClick={() => promptDeleteConfirmation(dependency)}>
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+              <AlertDialog
+                open={openDialog}
+                handleClose={() => setOpenDialog(false)}
+                title="Confirm Delete"
+                message="Are you sure you want to delete this dependency?"
+                onConfirm={handleDeleteConfirmation}
+              />
+            </TableBody>
+          </Table>
+        </div>
+      ))}
     </Container>
   );
 }

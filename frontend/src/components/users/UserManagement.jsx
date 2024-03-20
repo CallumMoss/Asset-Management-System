@@ -14,19 +14,24 @@ function UserManagement({ userRole, username }) {
     try {
       let response = null;
       if (searchTerm != "") {
-        if(filter == "") { // default to username search
-          response = await axios.post("http://localhost:8080/users/search/username", {searchTerm});
-        }
-        else {
-        response = await axios.post("http://localhost:8080/users/search/" + filter, {searchTerm});
+        if (filter == "") {
+          // default to username search
+          response = await axios.post(
+            "http://localhost:8080/users/search/username",
+            { searchTerm }
+          );
+        } else {
+          response = await axios.post(
+            "http://localhost:8080/users/search/" + filter,
+            { searchTerm }
+          );
         }
         console.log(response);
-      }  
-       else { // if user hasnt searched, show regular results
+      } else {
+        // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/users/refresh");
       }
       setSearchedUsers(response.data);
-
     } catch (error) {
       console.error("Error searching for the user:", error);
       alert("An error occurred while searching for the user");
@@ -47,11 +52,11 @@ function UserManagement({ userRole, username }) {
             <div className="flex items-center space-x-4 w-full max-w-lg">
               {/* ClearSearch button to reset the search */}
               <button
-                  className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSearchedUsers([]);
-                  }}>
+                className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSearchedUsers([]);
+                }}>
                 X
               </button>
               <input
@@ -73,7 +78,9 @@ function UserManagement({ userRole, username }) {
                   value={filter}
                   onChange={handleFilterChange}
                   className="py-2 px-4 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-200">
-                  <option value="" disabled>Filter</option>
+                  <option value="" disabled>
+                    Filter
+                  </option>
                   <option value="username">Username</option>
                   <option value="firstname">First Name</option>
                   <option value="lastname">Last Name</option>
@@ -83,7 +90,7 @@ function UserManagement({ userRole, username }) {
             </div>
           </div>
 
-          <UserManagementDisplay userList={searchedUsers} />
+          <UserManagementDisplay username={username} userList={searchedUsers} />
         </section>
       </main>
     </div>

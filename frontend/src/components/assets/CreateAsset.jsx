@@ -101,16 +101,18 @@ function CreateAsset({ username, userRole }) {
       typeof value === "string" ? value.split(",") : value;
     setDependencies(selectedDependencies);
     // Prepare dependency details for new selection
-    const newDependencyDetails = selectedDependencies.map(dep => {
-      const existingDetail = dependencyDetails.find(detail => detail.name === dep);
+    const newDependencyDetails = selectedDependencies.map((dep) => {
+      const existingDetail = dependencyDetails.find(
+        (detail) => detail.name === dep
+      );
       return existingDetail || { name: dep, relationType: "" };
     });
     setDependencyDetails(newDependencyDetails);
   };
 
   const handleDependencyDetailChange = (name, relationType) => {
-    setDependencyDetails(current =>
-      current.map(dep => dep.name === name ? { ...dep, relationType } : dep)
+    setDependencyDetails((current) =>
+      current.map((dep) => (dep.name === name ? { ...dep, relationType } : dep))
     );
   };
 
@@ -118,7 +120,7 @@ function CreateAsset({ username, userRole }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/assets/createasset", {
+      await axios.post(`http://localhost:8080/assets/createasset/${username}`, {
         title,
         asset_description: description,
         link,
@@ -185,8 +187,7 @@ function CreateAsset({ username, userRole }) {
                 id="type"
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                input={<OutlinedInput label="Asset Type" />}
-              >
+                input={<OutlinedInput label="Asset Type" />}>
                 {assetTypes.map((assetType) => (
                   <MenuItem key={assetType.type_id} value={assetType.type_name}>
                     {assetType.type_name}
@@ -261,7 +262,9 @@ function CreateAsset({ username, userRole }) {
                 fullWidth
                 label={`Relationship for ${dep.name}`}
                 value={dep.relationType}
-                onChange={(e) => handleDependencyDetailChange(dep.name, e.target.value)}
+                onChange={(e) =>
+                  handleDependencyDetailChange(dep.name, e.target.value)
+                }
                 sx={{ mt: 2 }}
               />
             ))}

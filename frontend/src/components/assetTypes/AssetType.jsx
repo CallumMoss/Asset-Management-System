@@ -14,14 +14,19 @@ function AssetType({ userRole, username }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
-   const handleSearch = async (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/asset_types/search", {searchTerm}); // searches by title
-      } else { // if user hasnt searched, show regular results
+      if (searchTerm !== "") {
+        // if user has searched something, show search results
+        response = await axios.post(
+          "http://localhost:8080/asset_types/search",
+          { searchTerm }
+        ); // searches by title
+      } else {
+        // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/asset_types/refresh");
       }
       setSearchedTypes(response.data);
@@ -56,11 +61,11 @@ function AssetType({ userRole, username }) {
             <div className="flex items-center space-x-4 w-full max-w-lg">
               {/* ClearSearch button to reset the search */}
               <button
-                  className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
-                  onClick={() => {
-                    setSearchTerm('');
-                    setSearchedTypes([]);
-                  }}>
+                className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
+                onClick={() => {
+                  setSearchTerm("");
+                  setSearchedTypes([]);
+                }}>
                 X
               </button>
               <input
@@ -82,7 +87,7 @@ function AssetType({ userRole, username }) {
             </div>
           </div>
 
-          <AssetTypeDisplay assetTypeList = {searchedTypes}/>
+          <AssetTypeDisplay username={username} assetTypeList={searchedTypes} />
         </section>
       </main>
     </div>

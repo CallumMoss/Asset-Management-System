@@ -6,6 +6,7 @@ import cs2815.project.model.Log;
 import cs2815.project.repo.AssetRepo;
 import cs2815.project.repo.AssetTypeRepo;
 import cs2815.project.repo.LogRepo;
+import cs2815.project.repo.UserRepo;
 import cs2815.project.service.AssetTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,28 +27,36 @@ public class AssetTypeImpl implements AssetTypeService {
     private LogRepo logrepo;
 
     @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
     private AssetRepo assetrepo;
 
     @Autowired
     private UserServiceImpl userService;
 
     @Override
-    public void createAssetType(AssetType assetType) {
+    public void createAssetType(AssetType assetType, String username) {
         repo.save(assetType);
 
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUser(userRepo.findByUserName(username));
         log.setUpdateDescription(assetType.getType_name() + " was created!");
 
         logrepo.save(log);
 
     }
+
     @Override
     public void createBaseTypes() {
-        createAssetType(new AssetType("Python File", "A file that contains python code for a given project."));
-        createAssetType(new AssetType("Documentation", "A file that contains documentation to supply extra information about any given asset."));
-        createAssetType(new AssetType("Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."));
-        createAssetType(new AssetType("Java File", "A file that contains java code for a given project."));
+        createAssetType(new AssetType("Python File", "A file that contains python code for a given project."), "Tom");
+        createAssetType(new AssetType("Documentation",
+                "A file that contains documentation to supply extra information about any given asset."), "Tom");
+        createAssetType(new AssetType("Project",
+                "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."),
+                "Tom");
+        createAssetType(new AssetType("Java File", "A file that contains java code for a given project."), "Tom");
     }
 
     @Override
@@ -56,7 +65,7 @@ public class AssetTypeImpl implements AssetTypeService {
         List<AssetType> assetTypeList = repo.getAllAssetTypes();
         List<AbstractMap.SimpleEntry<String, List<String>>> typeAndAttributes = new ArrayList<>();
 
-        for( AssetType assetType : assetTypeList ) {
+        for (AssetType assetType : assetTypeList) {
             List<String> typeAttributes = repo.getAttributesById(assetType.getType_id());
             typeAndAttributes.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), typeAttributes));
         }
@@ -64,11 +73,10 @@ public class AssetTypeImpl implements AssetTypeService {
         return typeAndAttributes;
     }
 
-
     @Override
     public List<AssetType> sort(List<AssetType> unsortedAssetTypes, String orderBy) {
         List<String> sortByList = new ArrayList<>();
-        List<AssetType> sortedAssetTypes =  new ArrayList<>();
+        List<AssetType> sortedAssetTypes = new ArrayList<>();
         List<AssetType> allAssetTypes = searchTypes("");
 
         List<Integer> unsortedAssetTypeIds = new ArrayList<Integer>();
@@ -119,24 +127,24 @@ public class AssetTypeImpl implements AssetTypeService {
         return titles;
     }
 
-
     @Override
-    public void editAssetType(AssetType assetType) {
+    public void editAssetType(AssetType assetType, String username) {
         repo.updateAssetTypeFieldsById(assetType.getType_id(), assetType.getType_name(), assetType.getDescription());
 
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUser(userRepo.findByUserName(username));
         log.setUpdateDescription(assetType.getType_name() + " was edited!");
 
         logrepo.save(log);
     }
 
     @Override
-    public void deleteAssetType(int assetTypeId) {
+    public void deleteAssetType(int assetTypeId, String username) {
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUpdateDescription(repo.findByTypeId(assetTypeId).getType_name() + " was deleted!");
-
+        log.setUser(userRepo.findByUserName(username));
         logrepo.save(log);
 
         assetrepo.eraseTypeIdFromAsset(assetTypeId);
@@ -157,8 +165,7 @@ public class AssetTypeImpl implements AssetTypeService {
         for (String type : TypeList) {
             if (searchString.equals(type)) {
                 compatibleList.add(repo.findByTypeName(type));
-            }
-            else if (userService.isSimilar(searchString, type)) {
+            } else if (userService.isSimilar(searchString, type)) {
                 compatibleList.add(repo.findByTypeName(type));
             }
         }

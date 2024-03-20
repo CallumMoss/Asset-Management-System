@@ -8,11 +8,11 @@ import cs2815.project.model.AssetType;
 
 public interface AssetTypeService {
 
-    void createAssetType(AssetType assetType);
+    void createAssetType(AssetType assetType, String username);
 
-    void editAssetType(AssetType assetType);
+    void editAssetType(AssetType assetType, String username);
 
-    void deleteAssetType(int assetTypeId);
+    void deleteAssetType(int assetTypeId, String username);
 
     List<AssetType> refreshAssetType();
 
