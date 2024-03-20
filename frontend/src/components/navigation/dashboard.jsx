@@ -3,12 +3,13 @@ import axios from 'axios';
 import Navbar from './Navbar';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
-
 import '../style.css';
 import '../Menustyle.css';
+//Imports
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+//Function for Latest asset made:
 function FeatureCard({ title, description, number, latestAsset }) {
   return (
       <div className="bg-white p-4 shadow rounded-lg m-2 transition-transform duration-300 hover:scale-105">
@@ -27,6 +28,7 @@ function FeatureCard({ title, description, number, latestAsset }) {
   );
 }
 
+//Function for Dashboard page:
 function Dashboard({ username, userRole }) {
   const [chartData, setChartData] = useState({
     labels: [],
@@ -94,7 +96,9 @@ function Dashboard({ username, userRole }) {
   }, []);
 
   return (
+    //Return for wanted format of Dashboard page:
       <div className="flex flex-col min-h-screen bg-gray-100">
+        {/*Calls navbar component from navigation to display navbar.*/}
         <Navbar userRole={userRole} username={username} />
         <main className="flex-grow p-8">
           <h1 className="text-2xl font-semibold mb-4">IT Asset Management Dashboard</h1>
@@ -120,5 +124,4 @@ function Dashboard({ username, userRole }) {
       </div>
   );
 }
-
 export default Dashboard;

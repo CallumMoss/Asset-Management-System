@@ -60,6 +60,7 @@ function CreateAssetType({ userRole, username }) {
   return (
     //Return of wanted format for Create AssetType page:
     <ThemeProvider theme={defaultTheme}>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
