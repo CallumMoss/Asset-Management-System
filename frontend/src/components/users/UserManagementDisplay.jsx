@@ -26,6 +26,12 @@ function UserManagementDisplay({ username, userList }) {
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
   const navigate = useNavigate();
   const sortOptionsRef = useRef(null); // Ref to the sorting options dropdown
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentUsers = users.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(users.length / itemsPerPage);
 
   useEffect(() => {
     if (userList.length === 0) {
@@ -252,7 +258,7 @@ function UserManagementDisplay({ username, userList }) {
               message="Are you sure you want to delete this user?"
               onConfirm={handleDeleteConfirmation}
             />
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.user_name}</TableCell>
                 <TableCell>{user.user_first_name}</TableCell>
@@ -271,6 +277,21 @@ function UserManagementDisplay({ username, userList }) {
             ))}
           </TableBody>
         </Table>
+      )}
+        {/* Pagination controls */}
+        {!isEditing && (
+        <>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}>
+            Previous
+          </Button>
+          <Button
+            disabled={currentPage === nPages}
+            onClick={() => setCurrentPage(currentPage + 1)}>
+            Next
+          </Button>
+        </>
       )}
     </Container>
   );

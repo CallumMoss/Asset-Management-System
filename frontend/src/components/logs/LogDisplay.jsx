@@ -15,6 +15,14 @@ import {
 function LogDisplay({ logList }) {
   const [logs, setLogs] = useState([]);
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentLogs = logs.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(logs.length / itemsPerPage);
+
+
 
   useEffect(() => {
     if (logList.length == 0) {
@@ -77,7 +85,7 @@ function LogDisplay({ logList }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {logs.map((log) => (
+          {currentLogs.map((log) => (
             <TableRow key={log.id}>
               <TableCell>{log.updateDescription}</TableCell>
               <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
@@ -88,6 +96,21 @@ function LogDisplay({ logList }) {
           ))}
         </TableBody>
       </Table>
+        {/* Pagination controls */}
+        {(
+        <>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}>
+            Previous
+          </Button>
+          <Button
+            disabled={currentPage === nPages}
+            onClick={() => setCurrentPage(currentPage + 1)}>
+            Next
+          </Button>
+        </>
+      )}
     </Container>
   );
 }
