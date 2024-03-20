@@ -23,6 +23,28 @@ import { useNavigate } from "react-router-dom";
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
+  const formatLogTime = (timestamp) => {
+    try {
+      console.log(logs);
+      const date = new Date(timestamp);
+      const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+        date.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${date.getFullYear()}`;
+      const formattedTime = `${date
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+      return `Date: ${formattedDate} | Time: ${formattedTime}`;
+    } catch (error) {
+      console.error("Failed to format log time:", error);
+      alert("An error occurred while formatting log time.");
+    }
+  };
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Logs</DialogTitle>
@@ -31,7 +53,7 @@ function LogsDialog({ logs, open, handleClose }) {
         {logs.map((log) => (
           <TableRow key={log.id}>
             <TableCell>{log.updateDescription}</TableCell>
-            <TableCell>{log.updateTimestamp}</TableCell>
+            <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
           </TableRow>
         ))}
       </DialogContent>
