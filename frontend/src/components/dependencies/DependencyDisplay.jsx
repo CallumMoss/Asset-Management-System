@@ -11,9 +11,12 @@ import {
   Paper,
   Container,
 } from "@mui/material";
+import AlertDialog from "./AlertDialog";
 
-function DependencyDisplay({ dependencyList }) {
+function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
   const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteDependencyId, setDeleteDependencyId] = useState(null);
 
   // Group dependencies by parent asset
   const groupedDependencies = dependencyList.reduce((acc, dependency) => {
@@ -24,6 +27,26 @@ function DependencyDisplay({ dependencyList }) {
     acc[parentAsset].push(dependency);
     return acc;
   }, {});
+
+  const promptDeleteConfirmation = (dependency) => {
+    setDeleteDependencyId(dependency.id);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteConfirmation = async () => {
+    if (deleteDependencyId !== null) {
+      try {
+        await axios.delete(
+          `http://localhost:8080/assetdependency/${deleteDependencyId}/${username}`
+        );
+        setOpenDialog(false);
+        console.log("Dependency deleted successfully:", deleteDependencyId);
+      } catch (error) {
+        console.error("Axios Error:", error);
+        alert("An error occurred while deleting the dependency.");
+      }
+    }
+  };
 
   return (
     <Container component={Paper}>
@@ -53,10 +76,20 @@ function DependencyDisplay({ dependencyList }) {
                   <TableCell>{dependency.relationType}</TableCell>
 
                   <TableCell>
-                    <Button>Delete</Button>
+                    <Button
+                      onClick={() => promptDeleteConfirmation(dependency)}>
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
+              <AlertDialog
+                open={openDialog}
+                handleClose={() => setOpenDialog(false)}
+                title="Confirm Delete"
+                message="Are you sure you want to delete this dependency?"
+                onConfirm={handleDeleteConfirmation}
+              />
             </TableBody>
           </Table>
         </div>

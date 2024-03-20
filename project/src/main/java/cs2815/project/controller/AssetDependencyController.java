@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,5 +30,12 @@ public class AssetDependencyController {
     public ResponseEntity<List<AssetDependency>> findParentasset(@PathVariable int assetId) {
         List<AssetDependency> assetDependencies = assetDepenedencyService.getParentAssets(assetId);
         return ResponseEntity.ok(assetDependencies);
+    }
+
+    @DeleteMapping("/{deleteDependencyId}/{username}")
+    public ResponseEntity<String> deleteUser(@PathVariable int deleteDependencyId,
+            @PathVariable String username) {
+        assetDepenedencyService.deleteDependency(deleteDependencyId, username);
+        return ResponseEntity.ok("Dependency deleted successfully");
     }
 }

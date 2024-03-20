@@ -479,7 +479,18 @@ function DisplayAssets({ username, assetList }) {
                     {asset.title}
                   </TableCell>
                   <TableCell>{asset.asset_description}</TableCell>
-                  <TableCell>{asset.link}</TableCell>
+                  <TableCell style={{ color: "blue" }}>
+                    <a
+                      href={
+                        asset.link.startsWith("http")
+                          ? asset.link
+                          : `http://${asset.link}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer">
+                      {asset.link}
+                    </a>
+                  </TableCell>
 
                   <TableCell>
                     {asset.authors.map((author) => (
