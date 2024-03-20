@@ -15,7 +15,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+//Imports
 
+//Function to Display AssetTypes table:
 function AssetTypeDisplay({ username, assetTypeList }) {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ function AssetTypeDisplay({ username, assetTypeList }) {
     console.log("Set assetTypes to the searched asset types.");
   }, [assetTypeList]); // only called if assetTypeList is updated.
 
+  //Function to get AssetTypes values:
   const fetchAssetTypes = async () => {
     try {
       const response = await axios.get(
@@ -54,6 +57,7 @@ function AssetTypeDisplay({ username, assetTypeList }) {
     }
   };
 
+  //Function to allow assetType edit:
   const handleEdit = (assetType) => {
     // Implement your edit functionality here
     console.log("Edit asset type:", assetType);
@@ -61,6 +65,7 @@ function AssetTypeDisplay({ username, assetTypeList }) {
     setIsEditing(true);
   };
 
+  //Function that will be used in AssetType edit to edit the assetType information:
   const handleUpdate = async () => {
     try {
       await axios.post(
@@ -75,15 +80,18 @@ function AssetTypeDisplay({ username, assetTypeList }) {
     setIsEditing(false);
   };
 
+  //Function to call creat assetType:
   const handleCreate = () => {
     navigate("/admin/create-asset-type");
   };
 
+  //Function to alert confirmation of deletion of assetTypes:
   const promptDeleteConfirmation = (asset_type_id) => {
     setDeleteAssetTypeId(asset_type_id);
     setOpenDialog(true);
   };
 
+  //Function to call Deletion:
   const handleDeleteConfirmation = async () => {
     if (deleteAssetTypeId !== null) {
       try {
@@ -100,6 +108,7 @@ function AssetTypeDisplay({ username, assetTypeList }) {
     }
   };
 
+  //Function to Sort list of AssetTypes:
   const handleSortBy = async (orderBy) => {
     try {
       const response = await axios.post(
@@ -120,8 +129,10 @@ function AssetTypeDisplay({ username, assetTypeList }) {
   };
 
   return (
+    //Return of wanted format of assetType management page:
     <Container component={Paper}>
       {isEditing ? (
+        //Labels with formatting for each heading:
         <form>
           <TextField
             label="Type Name"
@@ -145,6 +156,7 @@ function AssetTypeDisplay({ username, assetTypeList }) {
               })
             }
           />
+          {/*Save button*/}
           <Button onClick={handleUpdate}>Save</Button>
         </form>
       ) : (
@@ -156,13 +168,16 @@ function AssetTypeDisplay({ username, assetTypeList }) {
                 <TableCell style={{ fontWeight: "bold" }}>
                   Description
                 </TableCell>
+                {/*Create button*/}
                 <Button onClick={() => handleCreate()}>Create</Button>
+                {/*Sort button*/}
                 <Button
                   onClick={(e) => setSortAnchorEl(e.currentTarget)}
                   aria-controls="sort-menu"
                   aria-haspopup="true">
                   Sort
                 </Button>
+
                 {/*menu for sortby options*/}
                 <Menu
                   id="sort-menu"
@@ -196,9 +211,11 @@ function AssetTypeDisplay({ username, assetTypeList }) {
                     <TableCell>{assetType.type_name}</TableCell>
                     <TableCell>{assetType.description}</TableCell>
                     <TableCell>
+                      {/*Edit button*/}
                       <Button onClick={() => handleEdit(assetType)}>
                         Edit
                       </Button>
+                      {/*Delete button*/}
                       <Button
                         onClick={() =>
                           promptDeleteConfirmation(assetType.type_id)
@@ -216,5 +233,4 @@ function AssetTypeDisplay({ username, assetTypeList }) {
     </Container>
   );
 }
-
 export default AssetTypeDisplay;

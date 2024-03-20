@@ -15,7 +15,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+//imports
 
+//Function for displaying users:
 function UserManagementDisplay({ username, userList }) {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
@@ -51,6 +53,7 @@ function UserManagementDisplay({ username, userList }) {
     };
   }, []);
 
+  //Function to handle delete confirmation:
   const handleDeleteConfirmation = async () => {
     if (deleteUserId !== null) {
       try {
@@ -67,11 +70,13 @@ function UserManagementDisplay({ username, userList }) {
     }
   };
 
+  //Function to prompt deletion:
   const promptDeleteConfirmation = (userId) => {
     setDeleteUserId(userId);
     setOpenDialog(true);
   };
 
+  //Function to get user data:
   const fetchUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/users/refresh");
@@ -90,12 +95,14 @@ function UserManagementDisplay({ username, userList }) {
     }
   };
 
+  //Function to edit user data:
   const handleEdit = (userName) => {
     setEditingUser(userName);
     setIsEditing(true);
     console.log("Edit user:", userName);
   };
 
+  //Function to save changes:
   const handleSave = async () => {
     try {
       await axios.post(
@@ -111,10 +118,12 @@ function UserManagementDisplay({ username, userList }) {
     setIsEditing(false);
   };
 
+  //Function to create new users:
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
 
+  //Function to reset password:
   const resetPassword = async (userName) => {
     try {
       await axios.post("http://localhost:8080/users/reset-password", {
@@ -129,6 +138,7 @@ function UserManagementDisplay({ username, userList }) {
     }
   };
 
+  //Function to delete:
   const handleDelete = async (user_id) => {
     if (typeof user_id !== "number") {
       console.error("Invalid user_id:", user_id);
@@ -146,6 +156,7 @@ function UserManagementDisplay({ username, userList }) {
     }
   };
 
+  //Function to sort users in chosen order:
   const handleSortBy = async (orderBy) => {
     try {
       const response = await axios.post(
@@ -164,9 +175,11 @@ function UserManagementDisplay({ username, userList }) {
       alert("Could not sort users. An error occurred.");
     }
   };
+
   console.log("Users ------");
   console.log(users);
   return (
+    //Returning desired format of user management table:
     <Container component={Paper}>
       {isEditing ? (
         <form>
@@ -197,6 +210,8 @@ function UserManagementDisplay({ username, userList }) {
               setEditingUser({ ...editingUser, user_last_name: e.target.value })
             }
           />
+
+          {/*Save button*/}
           <Button onClick={handleSave}>Save</Button>
         </form>
       ) : (
@@ -209,15 +224,18 @@ function UserManagementDisplay({ username, userList }) {
               <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
               <TableCell>
                 <div style={{ display: "flex", alignItems: "center" }}>
+
+                  {/*Create button*/}
                   <Button onClick={() => handleCreate()}>Create</Button>
                   <div>
+                    {/*Sort button*/}
                     <Button
                       onClick={(e) => setSortAnchorEl(e.currentTarget)}
                       aria-controls="sort-menu"
                       aria-haspopup="true">
                       Sort
                     </Button>
-                    {/*menu for sortby options*/}
+                    {/*Menu for sortby options*/}
                     <Menu
                       id="sort-menu"
                       anchorEl={sortAnchorEl}
@@ -259,10 +277,13 @@ function UserManagementDisplay({ username, userList }) {
                 <TableCell>{user.user_last_name}</TableCell>
                 <TableCell>{user.user_role}</TableCell>
                 <TableCell>
+                  {/*Edit button*/}
                   <Button onClick={() => handleEdit(user)}>Edit</Button>
+                  {/*Reset password button*/}
                   <Button onClick={() => resetPassword(user.user_name)}>
                     Reset Password
                   </Button>
+                  {/*Delete button*/}
                   <Button onClick={() => promptDeleteConfirmation(user.id)}>
                     Delete
                   </Button>

@@ -5,7 +5,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+//Imports
 
+{/*This component will be used inform users of alerts and confirmations.*/}
 function AlertDialog({ open, handleClose, title, message, onConfirm }) {
     return (
         <Dialog
@@ -29,5 +31,4 @@ function AlertDialog({ open, handleClose, title, message, onConfirm }) {
         </Dialog>
     );
 }
-
 export default AlertDialog;

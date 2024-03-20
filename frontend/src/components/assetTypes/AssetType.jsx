@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import "../style.css"; // Importing component-specific styles
 import "../Menustyle.css";
-import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "../user.png";
 import AssetTypeDisplay from "./AssetTypeDisplay";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
+//imports
 
+//Function to diplay AssetTypes and check role permissions:
 function AssetType({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedTypes, setSearchedTypes] = useState([]);
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
+  //Function to handle Search:
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
@@ -52,7 +52,9 @@ function AssetType({ userRole, username }) {
   }, []); // Empty dependency array
 
   return (
+    //Returns wanted format of AssetType management page:
     <div>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
@@ -66,7 +68,7 @@ function AssetType({ userRole, username }) {
                   setSearchTerm("");
                   setSearchedTypes([]);
                 }}>
-                X
+                Clear
               </button>
               <input
                 type="text"
@@ -77,6 +79,7 @@ function AssetType({ userRole, username }) {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <div className="flex space-x-2">
+                {/*Search button*/}
                 <button
                   id="assetTypeSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
@@ -86,12 +89,10 @@ function AssetType({ userRole, username }) {
               </div>
             </div>
           </div>
-
           <AssetTypeDisplay username={username} assetTypeList={searchedTypes} />
         </section>
       </main>
     </div>
   );
 }
-
 export default AssetType;
