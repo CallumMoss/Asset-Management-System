@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
 
-function UserManagementDisplay({ userList }) {
+function UserManagementDisplay({ username, userList }) {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +38,10 @@ function UserManagementDisplay({ userList }) {
   useEffect(() => {
     // Add event listener to close sorting options dropdown when clicking outside of it
     function handleClickOutside(event) {
-      if (sortOptionsRef.current && !sortOptionsRef.current.contains(event.target)) {
+      if (
+        sortOptionsRef.current &&
+        !sortOptionsRef.current.contains(event.target)
+      ) {
         setSortAnchorEl(null);
       }
     }
@@ -51,7 +54,9 @@ function UserManagementDisplay({ userList }) {
   const handleDeleteConfirmation = async () => {
     if (deleteUserId !== null) {
       try {
-        await axios.delete(`http://localhost:8080/users/${deleteUserId}`);
+        await axios.delete(
+          `http://localhost:8080/users/${deleteUserId}/${username}`
+        );
         setOpenDialog(false); // Close dialog
         fetchUsers(); // Refresh user list
         console.log("User deleted successfully:", deleteUserId);
@@ -93,7 +98,10 @@ function UserManagementDisplay({ userList }) {
 
   const handleSave = async () => {
     try {
-      await axios.post("http://localhost:8080/users/edit", editingUser);
+      await axios.post(
+        `http://localhost:8080/users/edit/${username}`,
+        editingUser
+      );
       fetchUsers();
       setEditingUser(null);
     } catch (error) {
@@ -140,18 +148,22 @@ function UserManagementDisplay({ userList }) {
 
   const handleSortBy = async (orderBy) => {
     try {
-        const response = await axios.post("http://localhost:8080/users/sort", users, { params: { orderBy: orderBy } } );
-        if (Array.isArray(response.data)) {
-            setUsers(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort users. Unexpected response structure.");
-        }
+      const response = await axios.post(
+        "http://localhost:8080/users/sort",
+        users,
+        { params: { orderBy: orderBy } }
+      );
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort users. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort users. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort users. An error occurred.");
     }
-};
+  };
   console.log("Users ------");
   console.log(users);
   return (
@@ -171,7 +183,10 @@ function UserManagementDisplay({ userList }) {
             variant="outlined"
             value={editingUser.user_first_name}
             onChange={(e) =>
-              setEditingUser({ ...editingUser, user_first_name: e.target.value })
+              setEditingUser({
+                ...editingUser,
+                user_first_name: e.target.value,
+              })
             }
           />
           <TextField
@@ -196,23 +211,33 @@ function UserManagementDisplay({ userList }) {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Button onClick={() => handleCreate()}>Create</Button>
                   <div>
-                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                    <Button
+                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
                       aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
+                      aria-haspopup="true">
                       Sort
                     </Button>
                     {/*menu for sortby options*/}
-                    <Menu id="sort-menu"
+                    <Menu
+                      id="sort-menu"
                       anchorEl={sortAnchorEl}
                       open={Boolean(sortAnchorEl)}
                       onClose={() => setSortAnchorEl(null)}>
-
-                      <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("UserName")}>Username</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("FirstName")}>First Name</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("LastName")}>Last Name</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("Oldest")}>
+                        Oldest
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("Newest")}>
+                        Newest
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("UserName")}>
+                        Username
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("FirstName")}>
+                        First Name
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("LastName")}>
+                        Last Name
+                      </MenuItem>
                     </Menu>
                   </div>
                 </div>

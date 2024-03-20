@@ -12,27 +12,24 @@ import {
   Container,
 } from "@mui/material";
 
-
-
-function LogDisplay({logList}) {
+function LogDisplay({ logList }) {
   const [logs, setLogs] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(logList.length == 0) {
+    if (logList.length == 0) {
       fetchLogs();
-    }
-    else {
+    } else {
       setLogs(logList);
       console.log("Set logs to the searched logs.");
     }
   }, [logList]); // only called if logList is updated.
-  
+
   const fetchLogs = async () => {
     try {
       const response = await axios.get("http://localhost:8080/logs/refresh");
       console.log("API Response:", response.data);
-  
+
       if (Array.isArray(response.data)) {
         const logsFromApi = response.data;
         setLogs(logsFromApi);
@@ -44,21 +41,31 @@ function LogDisplay({logList}) {
       console.error("Failed to fetch logs:", error);
       alert("An error occurred while fetching logs.");
     }
-  }
-  
+  };
+
   const formatLogTime = (timestamp) => {
     try {
       console.log(logs);
       const date = new Date(timestamp);
-      const formattedDate = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`;
-      const formattedTime = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+      const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+        date.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${date.getFullYear()}`;
+      const formattedTime = `${date
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
       return `Date: ${formattedDate} | Time: ${formattedTime}`;
     } catch (error) {
       console.error("Failed to format log time:", error);
       alert("An error occurred while formatting log time.");
     }
   };
-  
+
   return (
     <Container component={Paper}>
       <Table>
@@ -66,6 +73,7 @@ function LogDisplay({logList}) {
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Time</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>User</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -73,6 +81,9 @@ function LogDisplay({logList}) {
             <TableRow key={log.id}>
               <TableCell>{log.updateDescription}</TableCell>
               <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
+              <TableCell>
+                {log.user ? log.user.user_name : "Deleted User"}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

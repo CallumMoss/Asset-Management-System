@@ -32,6 +32,10 @@ function Dependency({ userRole, username }) {
       alert("An error occurred while searching for the dependencies");
     }
   };
+  const refreshDependencies = async () => {
+    // Perform the logic to refresh dependencies
+    handleSearch(); // For example, you can call handleSearch to fetch fresh data
+  };
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -83,7 +87,11 @@ function Dependency({ userRole, username }) {
           </div>
         </section>
         <section>
-          <DependencyDisplay dependencyList={searchedDependencies} />
+          <DependencyDisplay
+            username={username}
+            dependencyList={searchedDependencies}
+            refreshDependencies={refreshDependencies}
+          />
         </section>
       </main>
     </div>

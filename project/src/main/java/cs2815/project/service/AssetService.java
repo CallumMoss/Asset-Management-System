@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface AssetService {
 
-    void createAsset(AssetWrapper asset);
+    void createAsset(AssetWrapper asset, String username);
 
-    void deleteAsset(int assetID);
+    void deleteAsset(int assetID, String username);
 
     void editAsset(Asset asset);
-    
+
     Asset getNewestAsset();
 
     List<Asset> refresh();
@@ -30,6 +30,7 @@ public interface AssetService {
 
     List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes();
 
-    // orderBy accepts "Oldest" or "Newest", anything else will return alphabetically.
+    // orderBy accepts "Oldest" or "Newest", anything else will return
+    // alphabetically.
     List<Asset> sort(List<Asset> unsortedAssets, String orderBy);
 }

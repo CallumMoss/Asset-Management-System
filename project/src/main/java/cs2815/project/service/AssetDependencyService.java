@@ -9,4 +9,6 @@ public interface AssetDependencyService {
     List<AssetDependency> getAllDependencies();
 
     List<AssetDependency> getParentAssets(int assetId);
+
+    void deleteDependency(int dependencyId, String username);
 }

@@ -32,23 +32,22 @@ public class UserController {
     @Autowired
     private AssetService assetService;
 
-    @PostMapping("/createuser")
-    public void registerUser(@RequestBody User user) {
-        userService.registerUser(user);
+    @PostMapping("/createuser/{username}")
+    public void registerUser(@RequestBody User user, @PathVariable String username) {
+        userService.registerUser(user, username);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
 
-    // if users table is empty, call all createBase for all tables
-    if (userService.refreshUser().size() == 0) {
-        System.out.println("Initializing db");
-        userService.createBaseUsers();
-        languageService.createBaseLanguages();
-        assetTypeService.createBaseTypes();
-        assetService.createBaseAssets();
-    }
-
+        // if users table is empty, call all createBase for all tables
+        if (userService.refreshUser().size() == 0) {
+            System.out.println("Initializing db");
+            userService.createBaseUsers();
+            languageService.createBaseLanguages();
+            assetTypeService.createBaseTypes();
+            assetService.createBaseAssets();
+        }
 
         boolean loginSuccessful = userService.logIn(user);
         String userRole = userService.getUserRole(user.getUser_name());
@@ -65,15 +64,15 @@ public class UserController {
         }
     }
 
-    @PostMapping("/edit")
-    public ResponseEntity<String> editUser(@RequestBody User user) {
-        userService.editUser(user);
+    @PostMapping("/edit/{username}")
+    public ResponseEntity<String> editUser(@RequestBody User user, @PathVariable String username) {
+        userService.editUser(user, username);
         return ResponseEntity.ok("User edited successfully");
     }
 
-    @DeleteMapping("/{user_id}")
-    public ResponseEntity<String> deleteUser(@PathVariable int user_id) {
-        userService.deleteUser(user_id);
+    @DeleteMapping("/{user_id}/{username}")
+    public ResponseEntity<String> deleteUser(@PathVariable int user_id, @PathVariable String username) {
+        userService.deleteUser(user_id, username);
         return ResponseEntity.ok("User deleted successfully");
     }
 
@@ -96,30 +95,31 @@ public class UserController {
     }
 
     @PostMapping("/search/username")
-    public ResponseEntity<List<User>> searchByUsername(@RequestBody Map<String,String> searchString) {
+    public ResponseEntity<List<User>> searchByUsername(@RequestBody Map<String, String> searchString) {
         List<User> compatibleUsers = userService.searchByUsername(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/firstname")
-    public ResponseEntity<List<User>> searchByFirstName(@RequestBody Map<String,String> searchString) {
+    public ResponseEntity<List<User>> searchByFirstName(@RequestBody Map<String, String> searchString) {
         List<User> compatibleUsers = userService.searchByFirstName(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/lastname")
-    public ResponseEntity<List<User>> searchByLastName(@RequestBody Map<String,String> searchString) {
+    public ResponseEntity<List<User>> searchByLastName(@RequestBody Map<String, String> searchString) {
         List<User> compatibleUsers = userService.searchByLastName(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
     @PostMapping("/search/role")
-    public ResponseEntity<List<User>> searchByRole(@RequestBody Map<String,String> searchString) {
+    public ResponseEntity<List<User>> searchByRole(@RequestBody Map<String, String> searchString) {
         List<User> compatibleUsers = userService.searchByRole(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsers);
     }
 
-    @PostMapping("/sort") // If no orderBy string returned, will sort by username. Accepts "FirstName", "LastName", "Oldest" and "Newest"
+    @PostMapping("/sort") // If no orderBy string returned, will sort by username. Accepts "FirstName",
+                          // "LastName", "Oldest" and "Newest"
     public ResponseEntity<List<User>> sort(@RequestBody List<User> unsortedUsers, @RequestParam String orderBy) {
         List<User> sortedUsers = userService.sort(unsortedUsers, orderBy);
         return ResponseEntity.ok(sortedUsers);
