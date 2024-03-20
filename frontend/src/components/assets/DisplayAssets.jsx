@@ -390,8 +390,159 @@ function DisplayAssets({ username, assetList }) {
   const groupedAssets = groupByAssetType(assets);
 
   return (
-    <Container component={Paper}>
-      {/* Iterate over each asset type group */}
+    <><Container component={Paper}>
+      {isEditing ? (
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="title"
+            label="Title"
+            name="title"
+            autoFocus
+            value={title}
+            onChange={(e) => setTitle(e.target.value)} />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="description"
+            label="Description"
+            name="description"
+            multiline
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)} />
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="type-label">Asset Type</InputLabel>
+            <Select
+              labelId="type-label"
+              id="type"
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              input={<OutlinedInput label="Asset Type" />}>
+              {assetTypes.map((assetType) => (
+                <MenuItem key={assetType.type_id} value={assetType.type_name}>
+                  {assetType.type_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="authors-label">Authors</InputLabel>
+            <Select
+              labelId="authors-label"
+              id="authors"
+              multiple
+              value={authors}
+              onChange={(e) => setAuthors(e.target.value)}
+              input={<OutlinedInput id="select-multiple-chip" label="Authors" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}>
+              {authorsList.map((author) => (
+                <MenuItem
+                  key={author.id}
+                  value={author.user_name}
+                  style={getStyles(author.user_name, authors, theme)}>
+                  {author.user_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="dependencies-label">Dependencies</InputLabel>
+            <Select
+              labelId="dependencies-label"
+              id="dependencies"
+              multiple
+              value={dependencies}
+              onChange={handleDependenciesChange}
+              input={<OutlinedInput
+                id="select-multiple-chip"
+                label="Dependencies" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}>
+              {dependenciesList.map((dependency) => (
+                <MenuItem
+                  key={dependency.asset_id}
+                  value={dependency.title}
+                  style={getStyles(dependency.title, dependencies, theme)}>
+                  {dependency.title}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {dependencyDetails.map((dep, index) => (
+            <TextField
+              key={index}
+              margin="normal"
+              required
+              fullWidth
+              label={`Relationship for ${dep.name}`}
+              value={dep.relationType}
+              onChange={(e) => handleDependencyDetailChange(dep.name, e.target.value)}
+              sx={{ mt: 2 }} />
+          ))}
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="languages-label">Languages</InputLabel>
+            <Select
+              labelId="languages-label"
+              id="languages"
+              multiple
+              value={languages}
+              onChange={(e) => setLanguages(e.target.value)}
+              input={<OutlinedInput id="select-multiple-chip" label="Languages" />}
+              renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}>
+              {langList.map((language) => (
+                <MenuItem
+                  key={language.language_id}
+                  value={language.language_name}
+                  style={getStyles(language.language_name, languages, theme)}>
+                  {language.language_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="link"
+            label="Link"
+            name="link"
+            value={link}
+            onChange={(e) => setLink(e.target.value)} />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}>
+            Submit
+          </Button>
+        </Box>
+      ) : (
+        { /* Iterate over each asset type group */ })}
       {Object.entries(groupedAssets).map(([assetType, assets]) => (
         <div key={assetType}>
           <h2
@@ -448,8 +599,7 @@ function DisplayAssets({ username, assetList }) {
                 handleClose={() => setOpenAlertDialog(false)}
                 title="Confirm Delete"
                 message="Are you sure you want to delete this asset?"
-                onConfirm={confirmDelete}
-              />
+                onConfirm={confirmDelete} />
 
               {assets.map((asset) => (
                 <TableRow key={asset.asset_id}>
@@ -477,88 +627,81 @@ function DisplayAssets({ username, assetList }) {
             </TableBody>
           </Table>
         </div>
-      ))}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
-        <DialogContent>
-          {/* Add detailed information here */}
-          {selectedAsset && (
-            <div>
-              <p>Description: {selectedAsset.asset_description}</p>
-              <p>Link: {selectedAsset.link}</p>
-              <p>Asset Type: {selectedAsset.asset_type?.type_name}</p>
+      ))
+        < Dialog} open={openDialog} onClose={handleCloseDialog}>
+      <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
+      <DialogContent>
+        {/* Add detailed information here */}
+        {selectedAsset && (
+          <div>
+            <p>Description: {selectedAsset.asset_description}</p>
+            <p>Link: {selectedAsset.link}</p>
+            <p>Asset Type: {selectedAsset.asset_type?.type_name}</p>
+            <p>
+              Languages:{" "}
+              {selectedAsset.languages
+                .map((language) => language.language_name)
+                .join(", ")}
+            </p>
+            <p>
+              Authors:{" "}
+              {selectedAsset.authors
+                .map((author) => author.user_name)
+                .join(", ")}
+            </p>
+            <br />
+            <p>
+              Parent dependencies of the current Asset:{" "}
+              {parentAssets
+                .map(
+                  (dependency) => `${dependency.asset.title} (${dependency.relationType})`
+                )
+                .join(", ") || "None"}
+            </p>
+            <p>
+              Children dependencies of the current Asset:{" "}
+              {selectedAsset.dependencies
+                .filter(
+                  (dependency) => dependency.dependent && dependency.dependent.title
+                )
+                .map(
+                  (dependency) => `${dependency.dependent.title} (${dependency.relationType})`
+                )
+                .join(", ") || "None"}
+            </p>
+            <p>
+              All dependencies:
+              <Button onClick={() => handleShowDependencies()}>Show</Button>
+            </p>
+            <br />
+            <p>
               <p>
-                Languages:{" "}
-                {selectedAsset.languages
-                  .map((language) => language.language_name)
-                  .join(", ")}
+                Audit Trail:
+                <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
+                  View
+                </Button>
               </p>
               <p>
-                Authors:{" "}
-                {selectedAsset.authors
-                  .map((author) => author.user_name)
-                  .join(", ")}
+                Discussion Board:
+                <Button onClick={() => handleViewMessages(selectedAsset)}>
+                  Open
+                </Button>
               </p>
-              <br />
-              <p>
-                Parent dependencies of the current Asset:{" "}
-                {parentAssets
-                  .map(
-                    (dependency) =>
-                      `${dependency.asset.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <p>
-                Children dependencies of the current Asset:{" "}
-                {selectedAsset.dependencies
-                  .filter(
-                    (dependency) =>
-                      dependency.dependent && dependency.dependent.title
-                  )
-                  .map(
-                    (dependency) =>
-                      `${dependency.dependent.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <p>
-                All dependencies:
-                <Button onClick={() => handleShowDependencies()}>Show</Button>
-              </p>
-              <br />
-              <p>
-                <p>
-                  Audit Trail:
-                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
-                    View
-                  </Button>
-                </p>
-                <p>
-                  Discussion Board:
-                  <Button onClick={() => handleViewMessages(selectedAsset)}>
-                    Open
-                  </Button>
-                </p>
-              </p>
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-      <LogsDialog
+            </p>
+          </div>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog}>Close</Button>
+      </DialogActions>
+    </Dialog><LogsDialog
         logs={logs}
         open={logsDialogOpen}
-        handleClose={handleCloseLogsDialog}
-      />
-      <MessagesDialog
+        handleClose={handleCloseLogsDialog} /><MessagesDialog
         open={openMessageDialog}
         handleClose={handleCloseMessageDialog}
         asset={selectedAsset}
-        user={user}
-      />
+        user={user} /></>
 
       {/* Pagination controls */}
       {!isEditing && (
@@ -575,6 +718,8 @@ function DisplayAssets({ username, assetList }) {
           </Button>
         </>
       )}
+    )};
+      
     </Container>
   );
 }
