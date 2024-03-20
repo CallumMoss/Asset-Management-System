@@ -25,6 +25,12 @@ function AssetTypeDisplay({ username, assetTypeList }) {
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
   const [editedAssetType, setEditedAssetType] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentAssetTypes = assetTypes.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(assetTypes.length / itemsPerPage);
 
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
 
@@ -206,7 +212,7 @@ function AssetTypeDisplay({ username, assetTypeList }) {
               />
 
               <>
-                {assetTypes.map((assetType) => (
+                {currentAssetTypes.map((assetType) => (
                   <TableRow key={assetType.type_id}>
                     <TableCell>{assetType.type_name}</TableCell>
                     <TableCell>{assetType.description}</TableCell>
@@ -228,6 +234,21 @@ function AssetTypeDisplay({ username, assetTypeList }) {
               </>
             </TableBody>
           </Table>
+        </>
+      )}
+        {/* Pagination controls */}
+        {!isEditing && (
+        <>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}>
+            Previous
+          </Button>
+          <Button
+            disabled={currentPage === nPages}
+            onClick={() => setCurrentPage(currentPage + 1)}>
+            Next
+          </Button>
         </>
       )}
     </Container>
