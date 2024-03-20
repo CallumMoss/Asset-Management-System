@@ -8,15 +8,15 @@ public interface UserService {
 
     void createBaseUsers();
 
-    void registerUser(User user);
+    void registerUser(User user, String username);
 
     boolean logIn(User user);
 
     String getUserRole(String username);
 
-    void editUser(User user);
+    void editUser(User user, String username);
 
-    void deleteUser(int userId);
+    void deleteUser(int userId, String username);
 
     User findUser(String userName);
 

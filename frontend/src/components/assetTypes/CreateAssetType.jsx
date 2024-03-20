@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Navbar from '../navigation/Navbar';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Navbar from "../navigation/Navbar";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
 const defaultTheme = createTheme();
 
 function CreateAssetType({ userRole, username }) {
   const navigate = useNavigate();
-  const [typeName, setTypeName] = useState('');
-  const [description, setDescription] = useState('');
+  const [typeName, setTypeName] = useState("");
+  const [description, setDescription] = useState("");
   // Initialize with null for optional attributes.
-  const [attribute1, setAttribute1] = useState('');
-  const [attribute2, setAttribute2] = useState('');
-  const [attribute3, setAttribute3] = useState('');
+  const [attribute1, setAttribute1] = useState("");
+  const [attribute2, setAttribute2] = useState("");
+  const [attribute3, setAttribute3] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,12 +34,15 @@ function CreateAssetType({ userRole, username }) {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/asset_types/create', dataToSend);
-      console.log('Asset Type created successfully', response);
-      navigate('/admin/asset-types');
+      const response = await axios.post(
+        `http://localhost:8080/asset_types/create/${username}`,
+        dataToSend
+      );
+      console.log("Asset Type created successfully", response);
+      navigate("/admin/asset-types");
     } catch (error) {
-      console.error('Error creating asset type:', error);
-      alert('An error occurred while creating the asset type');
+      console.error("Error creating asset type:", error);
+      alert("An error occurred while creating the asset type");
     }
   };
 
@@ -58,15 +61,18 @@ function CreateAssetType({ userRole, username }) {
         <Box
           sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}>
           <Typography component="h1" variant="h5">
             Create Asset Type
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={handleSubmit}
+            sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -127,8 +133,7 @@ function CreateAssetType({ userRole, username }) {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+              sx={{ mt: 3, mb: 2 }}>
               Submit
             </Button>
           </Box>

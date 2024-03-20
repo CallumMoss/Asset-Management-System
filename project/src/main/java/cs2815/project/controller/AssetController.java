@@ -25,8 +25,9 @@ public class AssetController {
 
     @PostMapping("/createasset/{username}")
     public ResponseEntity<String> createAsset(@RequestBody AssetWrapper assetWrapper, @PathVariable String username) {
+
         try {
-            assetService.createAsset(assetWrapper);
+            assetService.createAsset(assetWrapper, username);
             return ResponseEntity.ok("Asset created successfully!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

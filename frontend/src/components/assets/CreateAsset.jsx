@@ -120,7 +120,7 @@ function CreateAsset({ username, userRole }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/assets/createasset", {
+      await axios.post(`http://localhost:8080/assets/createasset/${username}`, {
         title,
         asset_description: description,
         link,

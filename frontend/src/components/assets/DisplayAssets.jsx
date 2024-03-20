@@ -53,6 +53,9 @@ function LogsDialog({ logs, open, handleClose }) {
           <TableRow key={log.id}>
             <TableCell>{log.updateDescription}</TableCell>
             <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
+            <TableCell>
+              {log.user ? log.user.user_name : "Deleted User"}
+            </TableCell>
           </TableRow>
         ))}
       </DialogContent>
@@ -61,6 +64,25 @@ function LogsDialog({ logs, open, handleClose }) {
       </DialogActions>
     </Dialog>
   );
+}
+
+function FormatTime({ timestamp }) {
+  try {
+    const date = new Date(timestamp);
+    const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${date.getFullYear()}`;
+    const formattedTime = `${date.getHours().toString().padStart(2, "0")}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+    return `Date: ${formattedDate} Time: ${formattedTime}`;
+  } catch (error) {
+    console.error("Failed to format log time:", error);
+    alert("An error occurred while formatting log time.");
+  }
 }
 
 // Dialog component to display messages and send new messages
@@ -410,6 +432,9 @@ function DisplayAssets({ username, assetList }) {
                 </TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Link</TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
+                <TableCell style={{ fontWeight: "bold" }}>
+                  Create Date
+                </TableCell>
                 <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
                     {/* Sort button */}
@@ -460,6 +485,9 @@ function DisplayAssets({ username, assetList }) {
                     {asset.authors.map((author) => (
                       <div key={author.id}>{author.user_name}</div>
                     ))}
+                  </TableCell>
+                  <TableCell>
+                    {FormatTime({ timestamp: asset.updateTimestamp })}
                   </TableCell>
                   <TableCell>
                     <Button onClick={() => handleEdit(asset.asset_id)}>

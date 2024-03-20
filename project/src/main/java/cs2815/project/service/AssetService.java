@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AssetService {
 
-    void createAsset(AssetWrapper asset);
+    void createAsset(AssetWrapper asset, String username);
 
     void deleteAsset(int assetID, String username);
 

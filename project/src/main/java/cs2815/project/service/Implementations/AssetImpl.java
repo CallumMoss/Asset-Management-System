@@ -45,7 +45,7 @@ public class AssetImpl implements AssetService {
     private UserServiceImpl userService;
 
     @Override
-    public void createAsset(AssetWrapper assetdto) {
+    public void createAsset(AssetWrapper assetdto, String username) {
 
         Asset asset = convertWrapperToAsset(assetdto);
 
@@ -54,6 +54,7 @@ public class AssetImpl implements AssetService {
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setAsset(asset);
+        log.setUser(userRepo.findByUserName(username));
         log.setUpdateDescription(asset.getTitle() + " was created!");
 
         logRepo.save(log);
@@ -224,7 +225,7 @@ public class AssetImpl implements AssetService {
         AssetWrapper wrapper = new AssetWrapper("Piece.py",
                 "A python program that contains a class which describes the attributes and functions of a chess piece.",
                 "website.com/piece.py", "Python File", authors, dwrapper_list, languages);
-        createAsset(wrapper);
+        createAsset(wrapper, "Tom");
         //
         authors = Arrays.asList("BaseViewer");
         dwrapper = new DependencyWrapper();
@@ -233,7 +234,7 @@ public class AssetImpl implements AssetService {
         languages = Arrays.asList("Python", "Java");
         wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.",
                 "some_link.com", "Project", authors, dwrapper_list, languages);
-        createAsset(wrapper);
+        createAsset(wrapper, "Tom");
 
         authors = Arrays.asList("BaseUser", "BaseViewer");
         dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
@@ -242,7 +243,7 @@ public class AssetImpl implements AssetService {
         languages = Arrays.asList();
         wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md",
                 "Documentation", authors, dwrapper_list, languages);
-        createAsset(wrapper);
+        createAsset(wrapper, "Tom");
     }
 
     @Override

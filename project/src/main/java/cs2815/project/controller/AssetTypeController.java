@@ -19,21 +19,21 @@ public class AssetTypeController {
     @Autowired
     private AssetTypeService assetTypeService;
 
-    @PostMapping("/create")
-    public ResponseEntity<String> createAssetType(@RequestBody AssetType assetType) {
-        assetTypeService.createAssetType(assetType);
+    @PostMapping("/create/{username}")
+    public ResponseEntity<String> createAssetType(@RequestBody AssetType assetType, @PathVariable String username) {
+        assetTypeService.createAssetType(assetType, username);
         return ResponseEntity.status(HttpStatus.CREATED).body("Asset type created successfully");
     }
 
     @PostMapping("/edit")
-    public ResponseEntity<String> editAssetType(@RequestBody AssetType assetType) {
-        assetTypeService.editAssetType(assetType);
+    public ResponseEntity<String> editAssetType(@RequestBody AssetType assetType, @PathVariable String username) {
+        assetTypeService.editAssetType(assetType, username);
         return ResponseEntity.ok("Asset type edited successfully");
     }
 
-    @DeleteMapping("/{asset_type_id}")
-    public ResponseEntity<String> deleteAssetType(@PathVariable int asset_type_id) {
-        assetTypeService.deleteAssetType(asset_type_id);
+    @DeleteMapping("/{asset_type_id}/{username}")
+    public ResponseEntity<String> deleteAssetType(@PathVariable int asset_type_id, @PathVariable String username) {
+        assetTypeService.deleteAssetType(asset_type_id, username);
         return ResponseEntity.ok("Asset type deleted successfully");
     }
 
@@ -44,7 +44,7 @@ public class AssetTypeController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody Map<String,String> searchString) {
+    public ResponseEntity<List<AssetType>> searchTypes(@RequestBody Map<String, String> searchString) {
         List<AssetType> compatibleUsernames = assetTypeService.searchTypes(searchString.get("searchTerm"));
         return ResponseEntity.ok(compatibleUsernames);
     }
@@ -61,12 +61,10 @@ public class AssetTypeController {
         return ResponseEntity.ok(attributeTitles);
     }
 
-
-
-
-
-    @PostMapping("/sort") // orderBy accepts "Oldest" or "Newest", anything else will return alphabetically.
-    public ResponseEntity<List<AssetType>> sort(@RequestBody List<AssetType> unsortedAssetTypes, @RequestParam String orderBy) {
+    @PostMapping("/sort") // orderBy accepts "Oldest" or "Newest", anything else will return
+                          // alphabetically.
+    public ResponseEntity<List<AssetType>> sort(@RequestBody List<AssetType> unsortedAssetTypes,
+            @RequestParam String orderBy) {
         List<AssetType> sortedAssetTypes = assetTypeService.sort(unsortedAssetTypes, orderBy);
         return ResponseEntity.ok(sortedAssetTypes);
     }
