@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import DisplayAssets from "./DisplayAssets";
 import Navbar from "../navigation/Navbar";
 import axios from "axios";
+//Imports
 
-function Assets({ username, userRole }) {
+//Function to display assets on asset page.
+function Assets({ username, userRole }) { //@param username, and userRole - userRole used to determine if user has access rights.
+
+  //Constants:
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedAssets, setSearchedAssets] = useState([]);
   const [filter, setFilter] = useState("");
@@ -59,8 +63,12 @@ function Assets({ username, userRole }) {
   }, [menuRef, setOpen]);
 
   return (
+    //Displaying Asset page in wanted format/order.
     <div>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
+
+      {/*Main code for asset page:*/}
       <main>
         <section className="assets-container">
           <h1 className="text-3xl font-bold mb-4">Asset Management</h1>
@@ -73,7 +81,7 @@ function Assets({ username, userRole }) {
                     setSearchTerm('');
                     setSearchedAssets([]);
                   }}>
-                X
+                Clear
               </button>
               <input
                 type="text"
@@ -83,6 +91,7 @@ function Assets({ username, userRole }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {/*Search button to call search function on click:*/}
               <div className="flex space-x-2">
                 <button
                   id="assetSearchBtn"
@@ -104,6 +113,7 @@ function Assets({ username, userRole }) {
               </div>
             </div>
 
+            {/*Opens create asset page:*/}
             <Link to="/create-asset">
               <button
                 id="createAssetBtn"

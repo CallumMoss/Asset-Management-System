@@ -66,6 +66,7 @@ function LogsDialog({ logs, open, handleClose }) {
   );
 }
 
+//Function to display time of user activity:
 function FormatTime({ timestamp }) {
   try {
     const date = new Date(timestamp);
@@ -118,6 +119,7 @@ function MessagesDialog({ open, handleClose, user, asset }) {
     }
   };
 
+  //Function to allow users to send messages on discussion board:
   const handleSend = async () => {
     if (newMessage.trim() !== "") {
       try {
@@ -135,6 +137,7 @@ function MessagesDialog({ open, handleClose, user, asset }) {
     }
   };
 
+  //Refresh button to cancel search:
   const refresh = async (assetId) => {
     try {
       const response = await axios.get(
@@ -154,6 +157,7 @@ function MessagesDialog({ open, handleClose, user, asset }) {
   };
 
   return (
+    {/*Return to display asset tables along with logs.*/},
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Messages</DialogTitle>
       <DialogContent>
@@ -224,6 +228,7 @@ function DisplayAssets({ username, assetList }) {
     getUser(username);
   }, [assetList]); // only called if assetList is updated.
 
+  //Fucntion to get AssetType values:
   const fetchAssetTypes = async () => {
     try {
       const response = await axios.get(
@@ -236,6 +241,7 @@ function DisplayAssets({ username, assetList }) {
     }
   };
 
+  //Function to get Asset data:
   const getAssets = async () => {
     try {
       const response = await axios.get("http://localhost:8080/assets/refresh");
@@ -251,6 +257,7 @@ function DisplayAssets({ username, assetList }) {
     }
   };
 
+  //Function to get the dependent that dependencies depend on:
   const getParentDependencies = async (asset_id) => {
     try {
       const response = await axios.get(
@@ -409,6 +416,7 @@ function DisplayAssets({ username, assetList }) {
   const groupedAssets = groupByAssetType(assets);
 
   return (
+    {/*Return to display all Asset tables on asset management page.*/},
     <Container component={Paper}>
       {/* Iterate over each asset type group */}
       {Object.entries(groupedAssets).map(([assetType, assets]) => (
@@ -437,14 +445,14 @@ function DisplayAssets({ username, assetList }) {
                 </TableCell>
                 <TableCell>
                   <div style={{ display: "flex", alignItems: "center" }}>
-                    {/* Sort button */}
+                    {/* Sort button:*/}
                     <Button
                       onClick={(e) => setSortAnchorEl(e.currentTarget)}
                       aria-controls="sort-menu"
                       aria-haspopup="true">
                       Sort
                     </Button>
-                    {/*menu for sortby options*/}
+                    {/*Menu for sortby options:*/}
                     <Menu
                       id="sort-menu"
                       anchorEl={sortAnchorEl}
@@ -501,9 +509,11 @@ function DisplayAssets({ username, assetList }) {
                     {FormatTime({ timestamp: asset.updateTimestamp })}
                   </TableCell>
                   <TableCell>
+                    {/*Edit button:*/}
                     <Button onClick={() => handleEdit(asset.asset_id)}>
                       Edit
                     </Button>
+                    {/*Delete button:*/}
                     <Button onClick={() => promptDelete(asset.asset_id)}>
                       Delete
                     </Button>
@@ -517,7 +527,7 @@ function DisplayAssets({ username, assetList }) {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
         <DialogContent>
-          {/* Add detailed information here */}
+          {/*PopUp menu for extra information about assets: */}
           {selectedAsset && (
             <div>
               <p>Description: {selectedAsset.asset_description}</p>
@@ -599,11 +609,13 @@ function DisplayAssets({ username, assetList }) {
       {/* Pagination controls */}
       {!isEditing && (
         <>
+        {/*Previous button:*/}
           <Button
             disabled={currentPage === 1}
             onClick={() => setCurrentPage(currentPage - 1)}>
             Previous
           </Button>
+          {/*Next button:*/}
           <Button
             disabled={currentPage === nPages}
             onClick={() => setCurrentPage(currentPage + 1)}>

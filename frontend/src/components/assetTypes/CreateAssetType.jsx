@@ -9,9 +9,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+//Imports
 
 const defaultTheme = createTheme();
 
+//Function to allow Create AssetType:
 function CreateAssetType({ userRole, username }) {
   const navigate = useNavigate();
   const [typeName, setTypeName] = useState("");
@@ -21,9 +23,11 @@ function CreateAssetType({ userRole, username }) {
   const [attribute2, setAttribute2] = useState("");
   const [attribute3, setAttribute3] = useState("");
 
+  //Function to submit data:
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //Function to send data to table when AssetType created:
     const dataToSend = {
       type_name: typeName,
       description,
@@ -54,10 +58,13 @@ function CreateAssetType({ userRole, username }) {
   };
 
   return (
+    //Return of wanted format for Create AssetType page:
     <ThemeProvider theme={defaultTheme}>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
+        {/*Formatting values of form:*/}
         <Box
           sx={{
             marginTop: 8,
@@ -65,6 +72,7 @@ function CreateAssetType({ userRole, username }) {
             flexDirection: "column",
             alignItems: "center",
           }}>
+          {/*Page title*/}
           <Typography component="h1" variant="h5">
             Create Asset Type
           </Typography>
@@ -129,6 +137,7 @@ function CreateAssetType({ userRole, username }) {
                 onChange={(e) => setAttribute3(e.target.value)}
               />
             )}
+            {/*Submit button*/}
             <Button
               type="submit"
               fullWidth
@@ -142,5 +151,4 @@ function CreateAssetType({ userRole, username }) {
     </ThemeProvider>
   );
 }
-
 export default CreateAssetType;

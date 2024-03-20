@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
+//Imports
 
 const defaultTheme = createTheme();
 
@@ -27,7 +28,9 @@ function getStyles(name, personName, theme) {
   };
 }
 
+//Function to display Create Asset menu:
 function CreateAsset({ username, userRole }) {
+  //Constant declaration and initialization.
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
@@ -39,11 +42,11 @@ function CreateAsset({ username, userRole }) {
   const [dependenciesList, setDependenciesList] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [langList, setLangList] = useState([]);
+  const theme = useTheme();
+  const navigate = useNavigate();
   // Updated to handle multiple dependencies and their specific details
   const [dependencyDetails, setDependencyDetails] = useState([]);
 
-  const theme = useTheme();
-  const navigate = useNavigate();
 
   // Fetchs data from server on the component mount
   useEffect(() => {
@@ -53,6 +56,7 @@ function CreateAsset({ username, userRole }) {
     fetchLanguages();
   }, []);
 
+  //Used to get AssetType values.
   const fetchAssetTypes = async () => {
     try {
       const response = await axios.get(
@@ -64,6 +68,7 @@ function CreateAsset({ username, userRole }) {
     }
   };
 
+  //Used to get Author values.
   const fetchAuthors = async () => {
     try {
       const response = await axios.get("http://localhost:8080/users/refresh");
@@ -73,6 +78,7 @@ function CreateAsset({ username, userRole }) {
     }
   };
 
+  //Used to get Dependencies.
   const fetchDependencies = async () => {
     try {
       const response = await axios.get("http://localhost:8080/assets/refresh");
@@ -82,6 +88,7 @@ function CreateAsset({ username, userRole }) {
     }
   };
 
+  //Used to get Language values.
   const fetchLanguages = async () => {
     try {
       const response = await axios.get(
@@ -93,6 +100,7 @@ function CreateAsset({ username, userRole }) {
     }
   };
 
+  //Function to handle changing value of Dependencies:
   const handleDependenciesChange = (event) => {
     const {
       target: { value },
@@ -110,6 +118,7 @@ function CreateAsset({ username, userRole }) {
     setDependencyDetails(newDependencyDetails);
   };
 
+  //Function to handle changing value of Dependency details:
   const handleDependencyDetailChange = (name, relationType) => {
     setDependencyDetails((current) =>
       current.map((dep) => (dep.name === name ? { ...dep, relationType } : dep))
@@ -138,13 +147,16 @@ function CreateAsset({ username, userRole }) {
   };
 
   return (
+    {/*Returns format of Create asset form:*/},
     <ThemeProvider theme={defaultTheme}>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
+        {/*Parameter values for textboxs in create asset form.*/}
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 8, //Gap from navbar
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -306,6 +318,7 @@ function CreateAsset({ username, userRole }) {
               value={link}
               onChange={(e) => setLink(e.target.value)}
             />
+            {/*Submit button to create Asset once parameters are assigned:*/}
             <Button
               type="submit"
               fullWidth

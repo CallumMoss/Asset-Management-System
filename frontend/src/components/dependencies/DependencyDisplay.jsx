@@ -12,7 +12,9 @@ import {
   Container,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+//Imports
 
+//Function to display dependencies:
 function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
@@ -28,11 +30,13 @@ function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
     return acc;
   }, {});
 
+  //Function to call display comfirmation of deletion:
   const promptDeleteConfirmation = (dependency) => {
     setDeleteDependencyId(dependency.id);
     setOpenDialog(true);
   };
 
+  //Function to handle deletion alert:
   const handleDeleteConfirmation = async () => {
     if (deleteDependencyId !== null) {
       try {
@@ -49,6 +53,7 @@ function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
   };
 
   return (
+    //Return wanted format of dependency page:
     <Container component={Paper}>
       {Object.keys(groupedDependencies).map((parentAsset) => (
         <div key={parentAsset}>
@@ -76,6 +81,7 @@ function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
                   <TableCell>{dependency.relationType}</TableCell>
 
                   <TableCell>
+                    {/*Delete button*/}
                     <Button
                       onClick={() => promptDeleteConfirmation(dependency)}>
                       Delete
@@ -97,5 +103,4 @@ function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
     </Container>
   );
 }
-
 export default DependencyDisplay;

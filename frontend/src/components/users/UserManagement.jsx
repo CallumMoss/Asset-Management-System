@@ -2,8 +2,10 @@ import React, { useState, useRef } from "react";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
 import UserManagementDisplay from "./UserManagementDisplay";
+//Imports
 // Ensure you import Tailwind CSS styles if not already done
 
+//Function for User management display:
 function UserManagement({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -38,18 +40,22 @@ function UserManagement({ userRole, username }) {
     }
   };
 
+  //Function to allow filter change
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
   };
 
   return (
+    //Return for desired format of User management page:
     <div>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
           <h1 className="text-3xl font-bold mb-4">User Management</h1>
           <div className="flex flex-col items-center space-y-4 mb-4">
             <div className="flex items-center space-x-4 w-full max-w-lg">
+              
               {/* ClearSearch button to reset the search */}
               <button
                 className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
@@ -57,8 +63,9 @@ function UserManagement({ userRole, username }) {
                   setSearchTerm("");
                   setSearchedUsers([]);
                 }}>
-                X
+                Clear
               </button>
+
               <input
                 type="text"
                 id="userSearchInput"
@@ -68,12 +75,15 @@ function UserManagement({ userRole, username }) {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               <div className="flex space-x-2">
+
+                {/*Search button*/}
                 <button
                   id="userSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
                   onClick={handleSearch}>
                   Search
                 </button>
+
                 <select
                   value={filter}
                   onChange={handleFilterChange}
@@ -96,5 +106,4 @@ function UserManagement({ userRole, username }) {
     </div>
   );
 }
-
 export default UserManagement;
