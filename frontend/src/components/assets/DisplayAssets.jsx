@@ -25,7 +25,6 @@ import { useNavigate } from "react-router-dom";
 function LogsDialog({ logs, open, handleClose }) {
   const formatLogTime = (timestamp) => {
     try {
-      console.log(logs);
       const date = new Date(timestamp);
       const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
         date.getMonth() + 1
@@ -75,6 +74,28 @@ function MessagesDialog({ open, handleClose, user, asset }) {
     }
   }, [asset]);
 
+  const formatLogTime = (timestamp) => {
+    try {
+      const date = new Date(timestamp);
+      const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+        date.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${date.getFullYear()}`;
+      const formattedTime = `${date
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+      return `Date: ${formattedDate} | Time: ${formattedTime}`;
+    } catch (error) {
+      console.error("Failed to format log time:", error);
+      alert("An error occurred while formatting log time.");
+    }
+  };
+
   const handleSend = async () => {
     if (newMessage.trim() !== "") {
       try {
@@ -118,7 +139,7 @@ function MessagesDialog({ open, handleClose, user, asset }) {
         {messages.map((message) => (
           <TableRow key={message.messageId}>
             <TableCell>{message.textMessage}</TableCell>
-            <TableCell>{message.messageSent}</TableCell>
+            <TableCell>{formatLogTime(message.messageSent)}</TableCell>
             <TableCell>
               {message.user ? message.user.user_name : "Deleted User"}
             </TableCell>
