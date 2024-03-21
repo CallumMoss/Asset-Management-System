@@ -390,7 +390,7 @@ function DisplayAssets({ username, assetList }) {
   const groupedAssets = groupByAssetType(assets);
 
   return (
-    <><Container component={Paper}>
+    <Container component={Paper}>
       {isEditing ? (
         <Box
           component="form"
@@ -543,7 +543,7 @@ function DisplayAssets({ username, assetList }) {
         </Box>
       ) : (
         { /* Iterate over each asset type group */ }
-      {Object.entries(groupedAssets).map(([assetType, assets]) => (
+      ,Object.entries(groupedAssets).map(([assetType, assets]) => (
         <div key={assetType}>
           <h2
             style={{
@@ -627,7 +627,7 @@ function DisplayAssets({ username, assetList }) {
             </TableBody>
           </Table>
         </div>
-      ))}
+      )))}
         <Dialog open={openDialog} onClose={handleCloseDialog}>
       <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
       <DialogContent>
@@ -701,7 +701,7 @@ function DisplayAssets({ username, assetList }) {
         open={openMessageDialog}
         handleClose={handleCloseMessageDialog}
         asset={selectedAsset}
-        user={user} /></>
+        user={user} />
 
       {/* Pagination controls */}
       {!isEditing && (
