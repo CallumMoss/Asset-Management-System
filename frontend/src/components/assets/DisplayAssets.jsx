@@ -19,7 +19,12 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import ForumIcon from '@mui/icons-material/Forum';
+
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -217,6 +222,10 @@ function DisplayAssets({ username, assetList }) {
   const [orderBy, setOrderBy] = useState(null);
   const [parentAssets, setParentAssets] = useState([]);
   const navigate = useNavigate();
+  // Initialize with null for optional attributes.
+  const [attribute1, setAttribute1] = useState("");
+  const [attribute2, setAttribute2] = useState("");
+  const [attribute3, setAttribute3] = useState("");
 
   useEffect(() => {
     if (assetList.length === 0) {
@@ -524,70 +533,70 @@ function DisplayAssets({ username, assetList }) {
           </Table>
         </div>
       ))}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+        <DialogTitle>{selectedAsset?.title || "Asset Details"}</DialogTitle>
         <DialogContent>
-          {/*PopUp menu for extra information about assets: */}
-          {selectedAsset && (
-            <div>
-              <p>Description: {selectedAsset.asset_description}</p>
-              <p>Link: {selectedAsset.link}</p>
-              <p>Asset Type: {selectedAsset.asset_type?.type_name}</p>
-              <p>
-                Languages:{" "}
-                {selectedAsset.languages
-                  .map((language) => language.language_name)
-                  .join(", ")}
-              </p>
-              <p>
-                Authors:{" "}
-                {selectedAsset.authors
-                  .map((author) => author.user_name)
-                  .join(", ")}
-              </p>
-              <br />
-              <p>
-                Parent dependencies of the current Asset:{" "}
-                {parentAssets
-                  .map(
-                    (dependency) =>
-                      `${dependency.asset.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <p>
-                Children dependencies of the current Asset:{" "}
-                {selectedAsset.dependencies
-                  .filter(
-                    (dependency) =>
-                      dependency.dependent && dependency.dependent.title
-                  )
-                  .map(
-                    (dependency) =>
-                      `${dependency.dependent.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <p>
-                All dependencies:
-                <Button onClick={() => handleShowDependencies()}>Show</Button>
-              </p>
-              <br />
-              <p>
-                <p>
-                  Audit Trail:
-                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
-                    View
-                  </Button>
-                </p>
-                <p>
-                  Discussion Board:
-                  <Button onClick={() => handleViewMessages(selectedAsset)}>
-                    Open
-                  </Button>
-                </p>
-              </p>
-            </div>
+          {selectedAsset ? (
+              <div>
+                <Typography variant="body1"><strong>Description:</strong> {selectedAsset.asset_description}</Typography>
+                <Typography variant="body1">
+                  <strong>Link:</strong>{" "}
+                  <Link
+                      href={selectedAsset.link.startsWith("http") ? selectedAsset.link : `http://${selectedAsset.link}`}
+                      style={{color: "blue"}}
+                      target="_blank"
+                      rel="noopener noreferrer">
+                    {selectedAsset.link}
+                  </Link>
+                </Typography>
+                <Typography variant="body1"><strong>Asset Type:</strong> {selectedAsset.asset_type?.type_name}
+                </Typography>
+                <Typography
+                    variant="body1"><strong>Authors:</strong> {selectedAsset.authors.map(author => author.user_name).join(", ")}
+                </Typography>
+                <br/>
+                {/* Conditional rendering for type attributes */}
+                {selectedAsset.asset_type.typeAttribute1 && (
+                    <Typography
+                        variant="body1"><strong>{selectedAsset.asset_type.typeAttribute1}: </strong>{selectedAsset.typeAttributeValue1}</Typography>
+                )}
+                {selectedAsset.asset_type.typeAttribute2 && (
+                    <Typography
+                        variant="body1"><strong>{selectedAsset.asset_type.typeAttribute2}: </strong>{selectedAsset.typeAttributeValue2}</Typography>
+                )}
+                {selectedAsset.asset_type.typeAttribute3 && (
+                    <Typography
+                        variant="body1"><strong>{selectedAsset.asset_type.typeAttribute3}: </strong>{selectedAsset.typeAttributeValue3}</Typography>
+                )}
+                <br/>
+                {/* Dependencies */}
+                <Typography variant="body1">
+                  <strong>{selectedAsset.title} depends on:</strong>{" "}
+                  {parentAssets.map(dependency => `${dependency.asset.title} (${dependency.relationType})`).join(", ") || "no asset"}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Dependants on {selectedAsset.title}:</strong>{" "}
+                  {selectedAsset.dependencies.filter(dep => dep.dependent && dep.dependent.title)
+                      .map(dependency => `${dependency.dependent.title} (${dependency.relationType})`)
+                      .join(", ") || "No asset"}
+                </Typography>
+                <br/>
+                {/* Actions */}
+                <Button variant="outlined" color="primary" onClick={handleShowDependencies}
+                        startIcon={<VisibilityIcon/>}>
+                  All dependencies
+                </Button>
+                <Button variant="outlined" color="primary" onClick={() => handleViewLog(selectedAsset.asset_id)}
+                        startIcon={<ListAltIcon/>}>
+                  Audit Trail
+                </Button>
+                <Button variant="outlined" color="primary" onClick={() => handleViewMessages(selectedAsset)}
+                        startIcon={<ForumIcon/>}>
+                  Discussion Board
+                </Button>
+              </div>
+          ) : (
+              <Typography variant="body1">No asset selected</Typography>
           )}
         </DialogContent>
         <DialogActions>
@@ -595,7 +604,7 @@ function DisplayAssets({ username, assetList }) {
         </DialogActions>
       </Dialog>
       <LogsDialog
-        logs={logs}
+          logs={logs}
         open={logsDialogOpen}
         handleClose={handleCloseLogsDialog}
       />
