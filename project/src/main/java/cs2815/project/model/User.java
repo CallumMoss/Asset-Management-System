@@ -33,6 +33,7 @@ public class User {
     private String user_last_name;
     private String user_password;
     private String user_role;
+    
 
     public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
         this.user_name = uName;
