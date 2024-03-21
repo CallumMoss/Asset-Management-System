@@ -542,7 +542,7 @@ function DisplayAssets({ username, assetList }) {
           </Button>
         </Box>
       ) : (
-        { /* Iterate over each asset type group */ })}
+        { /* Iterate over each asset type group */ }
       {Object.entries(groupedAssets).map(([assetType, assets]) => (
         <div key={assetType}>
           <h2
@@ -627,8 +627,8 @@ function DisplayAssets({ username, assetList }) {
             </TableBody>
           </Table>
         </div>
-      ))
-        < Dialog} open={openDialog} onClose={handleCloseDialog}>
+      ))}
+        <Dialog open={openDialog} onClose={handleCloseDialog}>
       <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
       <DialogContent>
         {/* Add detailed information here */}
@@ -718,7 +718,6 @@ function DisplayAssets({ username, assetList }) {
           </Button>
         </>
       )}
-    )};
       
     </Container>
   );
