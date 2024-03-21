@@ -56,6 +56,7 @@ function DependencyDisplay({ username, dependencyList }) {
           `http://localhost:8080/assetdependency/${deleteDependencyId}/${username}`
         );
         setOpenDialog(false);
+        fetchDependencies();
         console.log("Dependency deleted successfully:", deleteDependencyId);
       } catch (error) {
         console.error("Axios Error:", error);
