@@ -92,8 +92,16 @@ public class AssetImpl implements AssetService {
 
         asset.setDependencies(dependencies);
 
-        if ( assetdto.getTypeAttributeValue1()!=null ) {
+        if (assetdto.getTypeAttributeValue1() != null) {
             asset.setTypeAttributeValue1(assetdto.getTypeAttributeValue1());
+        }
+
+        if (assetdto.getTypeAttributeValue2() != null) {
+            asset.setTypeAttributeValue2(assetdto.getTypeAttributeValue2());
+        }
+
+        if (assetdto.getTypeAttributeValue3() != null) {
+            asset.setTypeAttributeValue3(assetdto.getTypeAttributeValue3());
         }
 
         repo.save(asset);
