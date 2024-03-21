@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,13 +15,25 @@ import AlertDialog from "./AlertDialog";
 //Imports
 
 //Function to display dependencies:
-function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
+function DependencyDisplay({ username, dependencyList }) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteDependencyId, setDeleteDependencyId] = useState(null);
+  const [dependencies, setDependencies] = useState([]);
+  const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+  const sortOptionsRef = useRef(null); // Ref to the sorting options dropdown
+
+  useEffect(() => {
+    if (dependencyList.length === 0) {
+      fetchDependencies();
+    } else {
+      setDependencies(dependencyList);
+    }
+  }, [dependencyList]);
+
 
   // Group dependencies by parent asset
-  const groupedDependencies = dependencyList.reduce((acc, dependency) => {
+  const groupedDependencies = dependencies.reduce((acc, dependency) => {
     const parentAsset = dependency.asset.title;
     if (!acc[parentAsset]) {
       acc[parentAsset] = [];
@@ -52,6 +64,24 @@ function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
     }
   };
 
+  const fetchDependencies = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/assetdependency/refresh");
+      console.log("API Response:", response.data);
+
+      if (Array.isArray(response.data)) {
+        const dependenciesFromApi = response.data;
+        setDependencies(dependenciesFromApi);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        setDependencies([]); // Fallback to an empty array
+      }
+    } catch (error) {
+      console.error("Failed to fetch dependencies:", error);
+      alert("An error occurred while fetching dependencies.");
+    }
+  };
+
   return (
     //Return wanted format of dependency page:
     <Container component={Paper}>
@@ -68,9 +98,6 @@ function DependencyDisplay({ username, dependencyList, refreshDependencies }) {
                 </TableCell>
                 <TableCell style={{ fontWeight: "bold" }}>
                   Relationship
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  <Button>Sort</Button>
                 </TableCell>
               </TableRow>
             </TableHead>

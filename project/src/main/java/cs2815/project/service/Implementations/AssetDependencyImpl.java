@@ -1,9 +1,13 @@
 package cs2815.project.service.Implementations;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import cs2815.project.model.Asset;
+import cs2815.project.service.AssetService;
+import cs2815.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +25,9 @@ public class AssetDependencyImpl implements AssetDependencyService {
 
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     @Override
     public List<AssetDependency> getAllDependencies() {
@@ -45,6 +52,36 @@ public class AssetDependencyImpl implements AssetDependencyService {
                 + "dependency was deleted!");
 
         assetDependencyRepo.delete(dependency);
+    }
+
+    @Override
+    public List<AssetDependency> searchParents(String searchString) {
+        List<String> dependencyNames = assetDependencyRepo.getAllParentNames();
+        List<AssetDependency> compatibleDependencies = new ArrayList<>();
+        for (String name : dependencyNames) {
+            if (searchString.equals(name) || userService.isSimilar(searchString, name)) {
+                List<AssetDependency> assetDependencies = assetDependencyRepo.findParentByTitle(name);
+                if (!compatibleDependencies.contains(assetDependencies.get(0))) {
+                    compatibleDependencies.addAll(assetDependencies);
+                }
+            }
+        }
+        return compatibleDependencies;
+    }
+
+    @Override
+    public List<AssetDependency> searchChild(String searchString) {
+        List<String> dependencyNames = assetDependencyRepo.getAllChildNames();
+        List<AssetDependency> compatibleDependencies = new ArrayList<>();
+        for (String name : dependencyNames) {
+            if (searchString.equals(name) || userService.isSimilar(searchString, name)) {
+                List<AssetDependency> assetDependencies = assetDependencyRepo.findChildByTitle(name);
+                if (!compatibleDependencies.contains(assetDependencies.get(0))) {
+                    compatibleDependencies.addAll(assetDependencies);
+                }
+            }
+        }
+        return compatibleDependencies;
     }
 
 }

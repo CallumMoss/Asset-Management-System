@@ -12,33 +12,46 @@ function Dependency({ userRole, username }) {
   const [searchedDependencies, setSearchedDependencies] = useState([]);
   const [filter, setFilter] = useState("");
 
-  useEffect(() => {
-    handleSearch(); // Call handleSearch function when searchedDependencies changes
-  }, [searchedDependencies]);
-
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  };
   //Function to use search as a filter:
   const handleSearch = async () => {
     try {
       let response = null;
-      if (searchTerm !== "") {
-        // Implement search logic based on searchTerm and filter
-        // Example: response = await axios.post("http://localhost:8080/logs/search", { searchTerm, filter });
+      if (searchTerm != "") {
+        if (filter == "") {
+          // default to parent search
+          response = await axios.post(
+              "http://localhost:8080/assetdependency/search/parent",
+              searchTerm
+          );
+        } else {
+          response = await axios.post(
+              "http://localhost:8080/assetdependency/search/" + filter,
+              searchTerm
+          );
+        }
       } else {
-        response = await axios.get(
-          "http://localhost:8080/assetdependency/refresh"
-        );
+        response = await axios.get("http://localhost:8080/assetdependency/refresh");
       }
       setSearchedDependencies(response.data);
     } catch (error) {
       console.error("Error searching for the dependency:", error);
-      alert("An error occurred while searching for the dependencies");
+      alert("An error occurred while searching for the dependency");
     }
   };
+
   //Function to reset the search filter
   const refreshDependencies = async () => {
     // Perform the logic to refresh dependencies
     handleSearch(); // For example, you can call handleSearch to fetch fresh data
   };
+
+
+
 
   //Function to set new filter by:
   const handleFilterChange = (e) => {
@@ -90,8 +103,8 @@ function Dependency({ userRole, username }) {
                   <option value="" disabled>
                     Filter
                   </option>
-                  <option value="username">Parent Asset</option>
-                  <option value="firstname">Dependent Asset</option>
+                  <option value="parent">Parent Asset</option>
+                  <option value="dependencies">Dependent Asset</option>
                 </select>
               </div>
             </div>
@@ -101,7 +114,6 @@ function Dependency({ userRole, username }) {
           <DependencyDisplay
             username={username}
             dependencyList={searchedDependencies}
-            refreshDependencies={refreshDependencies}
           />
         </section>
       </main>

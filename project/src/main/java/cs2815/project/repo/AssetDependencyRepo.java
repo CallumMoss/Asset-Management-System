@@ -1,5 +1,6 @@
 package cs2815.project.repo;
 
+import cs2815.project.model.Asset;
 import cs2815.project.model.AssetDependency;
 
 import java.util.List;
@@ -13,6 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RepositoryRestResource
 public interface AssetDependencyRepo extends JpaRepository<AssetDependency, Integer> {
+
+    @Query("SELECT ad.asset.title FROM AssetDependency ad")
+    List<String> getAllParentNames();
+
+    @Query("SELECT ad.dependent.title FROM AssetDependency ad")
+    List<String> getAllChildNames();
+
+    @Query("SELECT ad FROM AssetDependency ad WHERE ad.asset.title = :title")
+    List<AssetDependency> findParentByTitle(@Param("title") String title);
+
+    @Query("SELECT ad FROM AssetDependency ad WHERE ad.dependent.title = :title")
+    List<AssetDependency> findChildByTitle(@Param("title") String title);
 
     @Modifying
     @Transactional

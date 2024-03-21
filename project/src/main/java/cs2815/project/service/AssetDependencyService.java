@@ -11,4 +11,8 @@ public interface AssetDependencyService {
     List<AssetDependency> getParentAssets(int assetId);
 
     void deleteDependency(int dependencyId, String username);
+
+    List<AssetDependency> searchParents(String searchString);
+
+    List<AssetDependency> searchChild(String searchString);
 }
