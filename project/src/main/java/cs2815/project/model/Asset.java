@@ -1,8 +1,13 @@
 package cs2815.project.model;
-
+/*
+ * Java imports:
+ */
 import java.sql.Timestamp;
 import java.util.List;
 
+/*
+ * Imports:
+ */
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -96,5 +101,4 @@ public class Asset {
                         CascadeType.REFRESH })
         @JoinTable(name = "asset_languages", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
         private List<Languages> languages;
-
 }
