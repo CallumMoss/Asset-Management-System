@@ -92,16 +92,9 @@ public class AssetImpl implements AssetService {
 
         asset.setDependencies(dependencies);
 
-        List<Languages> languages = new ArrayList<>();
-
-        for (String language : assetdto.getLanguages()) {
-            Languages tempLang = langRepo.findLanguageByName(language);
-            if (tempLang != null) {
-                languages.add(tempLang);
-            }
+        if ( assetdto.getTypeAttributeValue1()!=null ) {
+            asset.setTypeAttributeValue1(assetdto.getTypeAttributeValue1());
         }
-
-        asset.setLanguages(languages);
 
         repo.save(asset);
 
@@ -221,28 +214,25 @@ public class AssetImpl implements AssetService {
         DependencyWrapper dwrapper = new DependencyWrapper();
         List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
         dwrapper_list.add(dwrapper);
-        List<String> languages = Arrays.asList("Java");
         AssetWrapper wrapper = new AssetWrapper("Piece.py",
                 "A python program that contains a class which describes the attributes and functions of a chess piece.",
-                "website.com/piece.py", "Python File", authors, dwrapper_list, languages);
+                "website.com/piece.py", "Python File", authors, dwrapper_list, "Java", null, null);
         createAsset(wrapper, "Tom");
         //
         authors = Arrays.asList("BaseViewer");
         dwrapper = new DependencyWrapper();
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
-        languages = Arrays.asList("Python", "Java");
         wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.",
-                "some_link.com", "Project", authors, dwrapper_list, languages);
+                "some_link.com", "Project", authors, dwrapper_list, null, null, null);
         createAsset(wrapper, "Tom");
 
         authors = Arrays.asList("BaseUser", "BaseViewer");
         dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
-        languages = Arrays.asList();
         wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md",
-                "Documentation", authors, dwrapper_list, languages);
+                "Documentation", authors, dwrapper_list, null, null, null);
         createAsset(wrapper, "Tom");
     }
 
