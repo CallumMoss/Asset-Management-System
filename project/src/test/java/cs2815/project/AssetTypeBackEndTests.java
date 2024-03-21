@@ -53,7 +53,7 @@ class AssetTypeBackEndTests {
         // createAssetType(new AssetType("Java File", "A file that contains java code for a given project."), "Tom");
 
         // Compare the contents of the two lists
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             assert(asset_types.get(i).equals(expected_asset_types.get(i)));
         }
     }

@@ -50,13 +50,13 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Override
     public void createBaseTypes() {
-        createAssetType(new AssetType("Python File", "A file that contains python code for a given project."), "Tom");
-        createAssetType(new AssetType("Documentation",
-                "A file that contains documentation to supply extra information about any given asset."), "Tom");
-        createAssetType(new AssetType("Project",
-                "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."),
-                "Tom");
-        createAssetType(new AssetType("Java File", "A file that contains java code for a given project."), "Tom");
+        createAssetType(new AssetType(1, "Python File", "A file that contains python code for a given project.", "Python Version", null, null), "BaseAdmin");
+
+        createAssetType(new AssetType(2, "Documentation",
+                "A file that contains documentation to supply extra information about any given asset.", "File Type", "Document Purpose", null), "BaseUser");
+        createAssetType(new AssetType(3, "Project",
+                "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.", "Product Owner", "Project Manager", "Status"),
+                "BaseAdmin");
     }
 
     @Override

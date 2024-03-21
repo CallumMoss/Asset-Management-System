@@ -224,24 +224,24 @@ public class AssetImpl implements AssetService {
         dwrapper_list.add(dwrapper);
         AssetWrapper wrapper = new AssetWrapper("Piece.py",
                 "A python program that contains a class which describes the attributes and functions of a chess piece.",
-                "website.com/piece.py", "Python File", authors, dwrapper_list, "Java", null, null);
-        createAsset(wrapper, "Tom");
+                "website.com/piece.py", "Python File", authors, dwrapper_list, "3.9.10", null, null);
+        createAsset(wrapper, "BaseUser");
         //
         authors = Arrays.asList("BaseViewer");
         dwrapper = new DependencyWrapper();
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
         wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.",
-                "some_link.com", "Project", authors, dwrapper_list, null, null, null);
-        createAsset(wrapper, "Tom");
+                "some_link.com", "Project", authors, dwrapper_list, "Callum and Satwik", "DongGyun", "Complete");
+        createAsset(wrapper, "BaseAdmin");
 
         authors = Arrays.asList("BaseUser", "BaseViewer");
         dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
         wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md",
-                "Documentation", authors, dwrapper_list, null, null, null);
-        createAsset(wrapper, "Tom");
+                "Documentation", authors, dwrapper_list, ".MD", "Outlines details relevant for product use", null);
+        createAsset(wrapper, "BasAdmin");
     }
 
     @Override
