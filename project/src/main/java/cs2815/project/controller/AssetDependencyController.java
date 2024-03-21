@@ -38,9 +38,7 @@ public class AssetDependencyController {
 
     @PostMapping("/search/parent")
     public ResponseEntity<List<AssetDependency>> searchParents(@RequestBody String searchString) {
-        System.out.println(searchString);
         List<AssetDependency> compatibleDependencies = assetDepenedencyService.searchParents(searchString);
-        System.out.println(compatibleDependencies);
         return ResponseEntity.ok(compatibleDependencies);
     }
 
