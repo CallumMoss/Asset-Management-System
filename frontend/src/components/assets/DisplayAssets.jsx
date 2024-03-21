@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
   Button,
+  Box,
   Table,
   TableBody,
   TableCell,
@@ -270,10 +271,22 @@ function DisplayAssets({ username, assetList }) {
   // Function to handle edit action
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
-    //setIsEditing(true);
+    setIsEditing(true);
     // Implement your edit functionality here
-    //setEditingAsset({ ...assetId });
+    setEditingAsset({ ...assetId });
   };
+
+  const handleSave = async () => {
+    try {
+      await axios.post("http://localhost:8080/asset/edit", editingAsset);
+      setEditingAsset(null);
+    } catch (error) {
+      console.error(error.response.data);
+      alert("An error occured while updating the asset.");
+    }
+    setIsEditing(false);
+  };
+
 
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
@@ -394,7 +407,7 @@ function DisplayAssets({ username, assetList }) {
       {isEditing ? (
         <Box
           component="form"
-          onSubmit={handleSubmit}
+          onSubmit={handleSave}
           noValidate
           sx={{ mt: 1 }}>
           <TextField
