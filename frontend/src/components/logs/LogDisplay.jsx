@@ -24,8 +24,6 @@ function LogDisplay({ logList }) {
   const currentLogs = logs.slice(indexOfFirstRecord, indexOfLastRecord);
   const nPages = Math.ceil(logs.length / itemsPerPage);
 
-
-
   useEffect(() => {
     if (logList.length == 0) {
       fetchLogs();
@@ -92,7 +90,14 @@ function LogDisplay({ logList }) {
         <TableBody>
           {currentLogs.map((log) => (
             <TableRow key={log.id}>
-              <TableCell>{log.updateDescription}</TableCell>
+              <TableCell>
+                {log.updateDescription.split("\n").map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line}
+                    <br />
+                  </React.Fragment>
+                ))}
+              </TableCell>
               <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
               <TableCell>
                 {log.user ? log.user.user_name : "Deleted User"}
@@ -101,8 +106,8 @@ function LogDisplay({ logList }) {
           ))}
         </TableBody>
       </Table>
-        {/* Pagination controls */}
-        {(
+      {/* Pagination controls */}
+      {
         <>
           <Button
             disabled={currentPage === 1}
@@ -115,7 +120,7 @@ function LogDisplay({ logList }) {
             Next
           </Button>
         </>
-      )}
+      }
     </Container>
   );
 }

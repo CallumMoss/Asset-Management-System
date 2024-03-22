@@ -34,10 +34,12 @@ public interface AssetTypeRepo extends JpaRepository<AssetType, Integer> {
 
         @Modifying
         @Transactional
-        @Query("UPDATE AssetType at SET at.type_name = :newTypeName, at.description = :newDescription " +
-                        "WHERE at.type_id = :assetTypeId")
+        @Query("UPDATE AssetType at SET at.type_name = :newTypeName, at.description = :newDescription, at.typeAttribute1 = :newAttribute1, at.typeAttribute2 = :newAttribute2, at.typeAttribute3 = :newAttribute3 WHERE at.type_id = :assetTypeId")
         void updateAssetTypeFieldsById(@Param("assetTypeId") int assetTypeId,
                         @Param("newTypeName") String newTypeName,
-                        @Param("newDescription") String newDescription);
+                        @Param("newDescription") String newDescription,
+                        @Param("newAttribute1") String newAttribute1,
+                        @Param("newAttribute2") String newAttribute2,
+                        @Param("newAttribute3") String newAttribute3);
 
 }

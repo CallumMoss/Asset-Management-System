@@ -1,6 +1,7 @@
 package cs2815.project.repo;
 
 import cs2815.project.model.Asset;
+import cs2815.project.model.AssetType;
 import cs2815.project.model.User;
 
 import org.springframework.data.domain.Page;
@@ -21,7 +22,6 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
 
     @Query("SELECT a FROM Asset a")
     List<Asset> getAllAssets();
-
 
     @Query("SELECT a FROM Asset a")
     Page<Asset> findAll(Pageable pageable);
@@ -50,19 +50,23 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     @Query("SELECT at.typeAttributeValue1, at.typeAttributeValue2, at.typeAttributeValue3 FROM Asset at WHERE at.asset_id = :assetId")
     List<String> getAssetAttributes(@Param("assetId") int assetId);
 
-
     @Modifying
     @Transactional
     @Query("DELETE FROM Asset at WHERE at.asset_id = :assetID")
     void deleteAssetbyID(@Param("assetID") int assetID);
 
-
     @Modifying
     @Transactional
-    @Query("UPDATE Asset a SET a.title = :newTitle, a.asset_description = :newDescription, a.link = :newLink WHERE a.asset_id = :assetID")
-    void updateAssetFieldsById(@Param("assetID") int assetId, @Param("newTitle") String newTitle, @Param("newDescription") String newDescription, @Param("newLink") String newLink);
-
-
+    @Query("UPDATE Asset a SET a.title = :newTitle, a.asset_description = :newDescription, a.link = :newLink, a.Asset_type = :newAssetType, "
+            +
+            "a.typeAttributeValue1 = :newValue1, a.typeAttributeValue2 = :newValue2, a.typeAttributeValue3 = :newValue3 "
+            +
+            "WHERE a.asset_id = :assetID")
+    void updateAssetFieldsById(@Param("assetID") int assetId, @Param("newTitle") String newTitle,
+            @Param("newDescription") String newDescription, @Param("newAssetType") AssetType newAssetType,
+            @Param("newLink") String newLink,
+            @Param("newValue1") String newValue1, @Param("newValue2") String newValue2,
+            @Param("newValue3") String newValue3);
 
     @Modifying
     @Transactional

@@ -36,8 +36,8 @@ public class AssetDependency {
 
     @ManyToOne
     @JoinColumn(name = "dependent_id")
-
     private Asset dependent;
+
     @Column(name = "relation_type")
     private String relationType;
 

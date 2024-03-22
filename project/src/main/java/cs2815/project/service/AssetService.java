@@ -12,13 +12,11 @@ public interface AssetService {
 
     void deleteAsset(int assetID, String username);
 
-    void editAsset(Asset asset);
+    void editAsset(AssetWrapper assetWrapper, String username);
 
     Asset getNewestAsset();
 
     List<Asset> refresh();
-
-    List<String> searchLanguage(String searchString);
 
     List<Asset> searchByType(String searchString);
 

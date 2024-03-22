@@ -31,7 +31,7 @@ public interface LogRepo extends JpaRepository<Log, Integer> {
     @Query("SELECT l FROM Log l WHERE l.updateDescription = :Description")
     List<Log> getLogByDescription(@Param("Description") String Description);
 
-    @Query("SELECT l FROM Log l WHERE l.asset.asset_id = :assetId")
+    @Query("SELECT l FROM Log l WHERE l.asset.asset_id = :assetId ORDER BY l.updateTimestamp DESC")
     List<Log> getLogByAssetId(@Param("assetId") int assetId);
 
 }

@@ -5,7 +5,6 @@ import cs2815.project.model.specialmodels.LoginResponse;
 import cs2815.project.model.specialmodels.ResetPasswordRequest;
 import cs2815.project.service.AssetService;
 import cs2815.project.service.AssetTypeService;
-import cs2815.project.service.LanguageService;
 import cs2815.project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.plaf.synth.SynthEditorPaneUI;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -24,9 +21,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // used for creating base database for an empty database
-    @Autowired
-    private LanguageService languageService;
     @Autowired
     private AssetTypeService assetTypeService;
     @Autowired
@@ -44,7 +38,6 @@ public class UserController {
         if (userService.refreshUser().size() == 0) {
             System.out.println("Initializing db");
             userService.createBaseUsers();
-            languageService.createBaseLanguages();
             assetTypeService.createBaseTypes();
             assetService.createBaseAssets();
         }

@@ -55,7 +55,14 @@ function LogsDialog({ logs, open, handleClose }) {
         {/* Display logs */}
         {logs.map((log) => (
           <TableRow key={log.id}>
-            <TableCell>{log.updateDescription}</TableCell>
+            <TableCell>
+              {log.updateDescription.split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
+            </TableCell>
             <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
             <TableCell>
               {log.user ? log.user.user_name : "Deleted User"}
@@ -609,6 +616,7 @@ function DisplayAssets({ username, userRole, assetList }) {
                 )}
                 <br />
                 {/* Dependencies */}
+
                 <Typography variant="body1">
                   <strong>{selectedAsset.title} depends on:</strong>{" "}
                   {parentAssets
@@ -628,6 +636,7 @@ function DisplayAssets({ username, userRole, assetList }) {
                     )
                     .join(", ") || "No asset"}
                 </Typography>
+
                 <br />
                 {/* Actions */}
                 <Button

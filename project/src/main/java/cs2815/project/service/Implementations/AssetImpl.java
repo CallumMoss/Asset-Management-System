@@ -3,7 +3,6 @@ package cs2815.project.service.Implementations;
 import cs2815.project.model.Asset;
 import cs2815.project.model.AssetDependency;
 import cs2815.project.model.AssetType;
-import cs2815.project.model.Languages;
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
 import cs2815.project.model.specialmodels.AssetWrapper;
@@ -37,9 +36,6 @@ public class AssetImpl implements AssetService {
 
     @Autowired
     private LogRepo logRepo;
-
-    @Autowired
-    private LangRepo langRepo;
 
     @Autowired
     private UserServiceImpl userService;
@@ -108,18 +104,6 @@ public class AssetImpl implements AssetService {
 
     }
 
-    @Override
-    public List<String> searchLanguage(String searchString) {
-        List<String> LanguagesList = langRepo.getAllLanguageNames();
-        List<String> compatibleList = new ArrayList<>();
-        for (String language : LanguagesList) {
-            if (searchString.equals(language) || userService.isSimilar(searchString, language)) {
-                compatibleList.add(language);
-            }
-        }
-        return compatibleList;
-    }
-
     // Finds what Assets are dependant on the given AssetID asse
     @Override
     public List<Asset> searchByAuthor(String searchString) {
@@ -171,12 +155,16 @@ public class AssetImpl implements AssetService {
 
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();
+        asset.setAsset_id(assetDto.getAsset_id());
         asset.setTitle(assetDto.getTitle());
         asset.setAsset_description(assetDto.getAsset_description());
         asset.setLink(assetDto.getLink());
+        asset.setTypeAttributeValue1(assetDto.getTypeAttributeValue1());
+        asset.setTypeAttributeValue2(assetDto.getTypeAttributeValue2());
+        asset.setTypeAttributeValue3(assetDto.getTypeAttributeValue3());
 
         asset.setAsset_type(assetTypeRepo.findByTypeName(assetDto.getAsset_type()));
-
+        asset.getAsset_type().getType_name();
         asset.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
 
         return asset;
@@ -212,9 +200,64 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
-    public void editAsset(Asset asset) {
-        repo.updateAssetFieldsById(asset.getAsset_id(), asset.getTitle(), asset.getAsset_description(),
-                asset.getLink());
+    public void editAsset(AssetWrapper assetDto, String username) {
+
+        Asset asset = convertWrapperToAsset(assetDto);
+
+        List<User> authors = new ArrayList<>();
+
+        for (String author : assetDto.getAuthors()) {
+            User user = userRepo.findByUserName(author);
+            if (user != null) {
+                authors.add(user);
+            }
+        }
+        asset.setAuthors(authors);
+
+        assetDependencyRepo.deleteAssetbyParentID(asset.getAsset_id());
+
+        List<AssetDependency> dependencies = new ArrayList<>();
+
+        for (DependencyWrapper dependencyWrapper : assetDto.getDependencies()) {
+
+            asset.getAsset_id(); // current asset_id
+
+            Asset dependingAsset = repo.getAssetByName(dependencyWrapper.getName()); // dependent asset_id
+            String relation = dependencyWrapper.getRelationType();
+
+            if (dependingAsset != null) {
+
+                AssetDependency dependency = new AssetDependency();
+                dependency.setAsset(asset);
+                dependency.setDependent(dependingAsset);
+                dependency.setRelationType(relation);
+
+                if (dependency != null) {
+
+                    dependencies.add(dependency);
+                }
+
+            }
+        }
+
+        asset.setDependencies(dependencies);
+
+        Log log = new Log();
+        log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
+        log.setUser(userRepo.findByUserName(username));
+        log.setAsset(asset);
+        log.setUpdateDescription(
+                asset.getTitle() + " asset was edited! Modifications are the following:\n" +
+                        "Name: " + asset.getTitle() + "\n" +
+                        "Description: " + asset.getAsset_description() + "\n" +
+                        "Link: " + asset.getLink() + "\n" +
+                        "Attribute1: " + asset.getTypeAttributeValue1() + "\n" +
+                        "Attribute2: " + asset.getTypeAttributeValue2() + "\n" +
+                        "Attribute3: " + asset.getTypeAttributeValue2());
+
+        logRepo.save(log);
+
+        repo.save(asset);
     }
 
     public void createBaseAssets() {
@@ -222,7 +265,7 @@ public class AssetImpl implements AssetService {
         DependencyWrapper dwrapper = new DependencyWrapper();
         List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
         dwrapper_list.add(dwrapper);
-        AssetWrapper wrapper = new AssetWrapper("Piece.py",
+        AssetWrapper wrapper = new AssetWrapper(1, "Piece.py",
                 "A python program that contains a class which describes the attributes and functions of a chess piece.",
                 "website.com/piece.py", "Python File", authors, dwrapper_list, "3.9.10", null, null);
         createAsset(wrapper, "BaseUser");
@@ -231,7 +274,7 @@ public class AssetImpl implements AssetService {
         dwrapper = new DependencyWrapper();
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
-        wrapper = new AssetWrapper("Heroes Rising", "2D Game developed as part of the first year games module.",
+        wrapper = new AssetWrapper(2, "Heroes Rising", "2D Game developed as part of the first year games module.",
                 "some_link.com", "Project", authors, dwrapper_list, "Callum and Satwik", "DongGyun", "Complete");
         createAsset(wrapper, "BaseAdmin");
 
@@ -239,7 +282,7 @@ public class AssetImpl implements AssetService {
         dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
         dwrapper_list.clear();
         dwrapper_list.add(dwrapper);
-        wrapper = new AssetWrapper("README", "Read me file for the project Heroes Rising.", "random/readme.md",
+        wrapper = new AssetWrapper(3, "README", "Read me file for the project Heroes Rising.", "random/readme.md",
                 "Documentation", authors, dwrapper_list, ".MD", "Outlines details relevant for product use", null);
         createAsset(wrapper, "BasAdmin");
     }

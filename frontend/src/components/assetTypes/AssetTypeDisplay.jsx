@@ -29,7 +29,10 @@ function AssetTypeDisplay({ username, assetTypeList }) {
   const [itemsPerPage] = useState(5);
   const indexOfLastRecord = currentPage * itemsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
-  const currentAssetTypes = assetTypes.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentAssetTypes = assetTypes.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
   const nPages = Math.ceil(assetTypes.length / itemsPerPage);
 
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
@@ -66,24 +69,9 @@ function AssetTypeDisplay({ username, assetTypeList }) {
   //Function to allow assetType edit:
   const handleEdit = (assetType) => {
     // Implement your edit functionality here
-    console.log("Edit asset type:", assetType);
-    setEditedAssetType(assetType);
-    setIsEditing(true);
-  };
 
-  //Function that will be used in AssetType edit to edit the assetType information:
-  const handleUpdate = async () => {
-    try {
-      await axios.post(
-        `http://localhost:8080/asset_types/edit/${username}`,
-        editedAssetType
-      );
-      fetchAssetTypes();
-      console.log("Asset Type updated successfully");
-    } catch (error) {
-      console.error("Failed to update asset type:", error);
-    }
-    setIsEditing(false);
+    navigate("/admin/create-asset-type");
+    setIsEditing(true);
   };
 
   //Function to call creat assetType:
@@ -137,120 +125,74 @@ function AssetTypeDisplay({ username, assetTypeList }) {
   return (
     //Return of wanted format of assetType management page:
     <Container component={Paper}>
-      {isEditing ? (
-        //Labels with formatting for each heading:
-        <form>
-          <TextField
-            label="Type Name"
-            variant="outlined"
-            value={editedAssetType.type_name}
-            onChange={(e) =>
-              setEditedAssetType({
-                ...editedAssetType,
-                type_name: e.target.value,
-              })
-            }
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
+            <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
+            {/*Create button*/}
+            <Button onClick={() => handleCreate()}>Create</Button>
+            {/*Sort button*/}
+            <Button
+              onClick={(e) => setSortAnchorEl(e.currentTarget)}
+              aria-controls="sort-menu"
+              aria-haspopup="true">
+              Sort
+            </Button>
+
+            {/*menu for sortby options*/}
+            <Menu
+              id="sort-menu"
+              anchorEl={sortAnchorEl}
+              open={Boolean(sortAnchorEl)}
+              onClose={() => setSortAnchorEl(null)}>
+              <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
+              <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
+              <MenuItem onClick={() => handleSortBy("Alphabetically")}>
+                Alphabetically
+              </MenuItem>
+            </Menu>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <AlertDialog
+            open={openDialog}
+            handleClose={() => setOpenDialog(false)}
+            title="Confirm Delete"
+            message="Are you sure you want to delete this asset type?"
+            onConfirm={handleDeleteConfirmation}
           />
-          <TextField
-            label="Description"
-            variant="outlined"
-            value={editedAssetType.description}
-            onChange={(e) =>
-              setEditedAssetType({
-                ...editedAssetType,
-                description: e.target.value,
-              })
-            }
-          />
-          {/*Save button*/}
-          <Button onClick={handleUpdate}>Save</Button>
-        </form>
-      ) : (
-        <>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  Description
+
+          <>
+            {currentAssetTypes.map((assetType) => (
+              <TableRow key={assetType.type_id}>
+                <TableCell>{assetType.type_name}</TableCell>
+                <TableCell>{assetType.description}</TableCell>
+                <TableCell>
+                  {/*Edit button*/}
+                  <Button onClick={() => handleEdit(assetType)}>Edit</Button>
+                  {/*Delete button*/}
+                  <Button
+                    onClick={() => promptDeleteConfirmation(assetType.type_id)}>
+                    Delete
+                  </Button>
                 </TableCell>
-                {/*Create button*/}
-                <Button onClick={() => handleCreate()}>Create</Button>
-                {/*Sort button*/}
-                <Button
-                  onClick={(e) => setSortAnchorEl(e.currentTarget)}
-                  aria-controls="sort-menu"
-                  aria-haspopup="true">
-                  Sort
-                </Button>
-
-                {/*menu for sortby options*/}
-                <Menu
-                  id="sort-menu"
-                  anchorEl={sortAnchorEl}
-                  open={Boolean(sortAnchorEl)}
-                  onClose={() => setSortAnchorEl(null)}>
-                  <MenuItem onClick={() => handleSortBy("Newest")}>
-                    Newest
-                  </MenuItem>
-                  <MenuItem onClick={() => handleSortBy("Oldest")}>
-                    Oldest
-                  </MenuItem>
-                  <MenuItem onClick={() => handleSortBy("Alphabetically")}>
-                    Alphabetically
-                  </MenuItem>
-                </Menu>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              <AlertDialog
-                open={openDialog}
-                handleClose={() => setOpenDialog(false)}
-                title="Confirm Delete"
-                message="Are you sure you want to delete this asset type?"
-                onConfirm={handleDeleteConfirmation}
-              />
+            ))}
+          </>
+        </TableBody>
+      </Table>
 
-              <>
-                {currentAssetTypes.map((assetType) => (
-                  <TableRow key={assetType.type_id}>
-                    <TableCell>{assetType.type_name}</TableCell>
-                    <TableCell>{assetType.description}</TableCell>
-                    <TableCell>
-                      {/*Edit button*/}
-                      <Button onClick={() => handleEdit(assetType)}>
-                        Edit
-                      </Button>
-                      {/*Delete button*/}
-                      <Button
-                        onClick={() =>
-                          promptDeleteConfirmation(assetType.type_id)
-                        }>
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </>
-            </TableBody>
-          </Table>
-        </>
-      )}
-        {/* Pagination controls */}
-        {!isEditing && (
-        <>
-          <Button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}>
-            Previous
-          </Button>
-          <Button
-            disabled={currentPage === nPages}
-            onClick={() => setCurrentPage(currentPage + 1)}>
-            Next
-          </Button>
-        </>
-      )}
+      <Button
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage(currentPage - 1)}>
+        Previous
+      </Button>
+      <Button
+        disabled={currentPage === nPages}
+        onClick={() => setCurrentPage(currentPage + 1)}>
+        Next
+      </Button>
     </Container>
   );
 }

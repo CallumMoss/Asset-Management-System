@@ -32,6 +32,11 @@ public interface AssetDependencyRepo extends JpaRepository<AssetDependency, Inte
     @Query("DELETE FROM AssetDependency ad WHERE ad.asset.asset_id = :assetID OR ad.dependent.asset_id = :assetID")
     void deleteAssetbyID(@Param("assetID") int assetID);
 
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM AssetDependency ad WHERE ad.asset.asset_id = :assetID")
+    void deleteAssetbyParentID(@Param("assetID") int assetID);
+
     @Query("SELECT a FROM AssetDependency a WHERE a.dependent.asset_id = :assetId")
     List<AssetDependency> findParentAsset(@Param("assetId") int assetId);
 }

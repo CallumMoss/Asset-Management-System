@@ -11,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AssetWrapper {
+    private int asset_id;
     private String title;
     private String asset_description;
     private String link;

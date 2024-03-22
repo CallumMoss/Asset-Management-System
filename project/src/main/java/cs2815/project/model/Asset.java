@@ -1,6 +1,7 @@
 package cs2815.project.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -90,6 +91,6 @@ public class Asset {
          * the dependencies in the dependency table.
          */
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
-        private List<AssetDependency> dependencies;
+        private List<AssetDependency> dependencies = new ArrayList<>();
 
 }

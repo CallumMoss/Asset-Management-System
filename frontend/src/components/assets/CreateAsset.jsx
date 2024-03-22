@@ -103,11 +103,13 @@ function CreateAsset({ username, userRole }) {
         { type_id: typeId }
       );
       // Split the string into an array, and remove any 'null' or empty values
-      const attributes = response.data[0].split(',').filter(attr => attr && attr.trim().toLowerCase() !== 'null');
+      const attributes = response.data[0]
+        .split(",")
+        .filter((attr) => attr && attr.trim().toLowerCase() !== "null");
       setAssetTypeAttributes(attributes);
       // Initialize an empty value for each attribute
       const newAttributeValues = attributes.reduce((acc, attr) => {
-        acc[attr.trim()] = ''; // Trim the attribute and use it as a key
+        acc[attr.trim()] = ""; // Trim the attribute and use it as a key
         return acc;
       }, {});
       setAssetAttributeValues(newAttributeValues);
@@ -115,8 +117,6 @@ function CreateAsset({ username, userRole }) {
       console.error("Error fetching asset type attributes:", error);
     }
   };
-
-
 
   const handleDependenciesChange = (event) => {
     const {
@@ -147,19 +147,19 @@ function CreateAsset({ username, userRole }) {
     setType(selectedTypeName);
 
     // Find the selected type_id from assetTypes state using the selected type name
-    const selectedType = assetTypes.find(t => t.type_name === selectedTypeName);
+    const selectedType = assetTypes.find(
+      (t) => t.type_name === selectedTypeName
+    );
     if (selectedType) {
       await fetchAssetTypeAttributes(selectedType.type_id);
     }
   };
 
-
-
   const handleAttributeChange = (index, value) => {
     const attributeName = `typeAttributeValue${index + 1}`; // +1 because index is 0-based and we want 1-based
-    setAssetAttributeValues(prev => ({
+    setAssetAttributeValues((prev) => ({
       ...prev,
-      [attributeName]: value
+      [attributeName]: value,
     }));
   };
   const handleSubmit = async (e) => {
@@ -172,14 +172,20 @@ function CreateAsset({ username, userRole }) {
       link,
       asset_type: type,
       authors,
-      dependencies: dependencyDetails.map(dep => ({ name: dep.name, relationType: dep.relationType })),
-      typeAttributeValue1: assetAttributeValues['typeAttributeValue1'] || '',
-      typeAttributeValue2: assetAttributeValues['typeAttributeValue2'] || '',
-      typeAttributeValue3: assetAttributeValues['typeAttributeValue3'] || '',
+      dependencies: dependencyDetails.map((dep) => ({
+        name: dep.name,
+        relationType: dep.relationType,
+      })),
+      typeAttributeValue1: assetAttributeValues["typeAttributeValue1"] || "",
+      typeAttributeValue2: assetAttributeValues["typeAttributeValue2"] || "",
+      typeAttributeValue3: assetAttributeValues["typeAttributeValue3"] || "",
     };
 
     try {
-      await axios.post(`http://localhost:8080/assets/createasset/${username}`, payload);
+      await axios.post(
+        `http://localhost:8080/assets/createasset/${username}`,
+        payload
+      );
       console.log("Asset created successfully");
       navigate("/assets");
     } catch (error) {
@@ -187,8 +193,6 @@ function CreateAsset({ username, userRole }) {
       alert("An error occurred while creating the asset");
     }
   };
-
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -234,14 +238,13 @@ function CreateAsset({ username, userRole }) {
               onChange={(e) => setDescription(e.target.value)}
             />
             <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel id="type-label">Asset Type</InputLabel>
+              <InputLabel id="type-label">Asset Type *</InputLabel>
               <Select
                 labelId="type-label"
                 id="type"
                 value={type}
                 onChange={handleTypeChange}
-                input={<OutlinedInput label="Asset Type" />}
-              >
+                input={<OutlinedInput label="Asset Type" />}>
                 {assetTypes.map((assetType) => (
                   <MenuItem key={assetType.type_id} value={assetType.type_name}>
                     {assetType.type_name}
@@ -249,19 +252,25 @@ function CreateAsset({ username, userRole }) {
                 ))}
               </Select>
             </FormControl>
-            {assetTypeAttributes.map((attributeName, index) => (
-              attributeName.trim().toLowerCase() !== 'null' && (
-                <TextField
-                  key={index}
-                  margin="normal"
-                  required
-                  fullWidth
-                  label={attributeName}
-                  value={assetAttributeValues[`typeAttributeValue${index + 1}`] || ''}
-                  onChange={(e) => handleAttributeChange(index, e.target.value)}
-                />
-              )
-            ))}
+            {assetTypeAttributes.map(
+              (attributeName, index) =>
+                attributeName.trim().toLowerCase() !== "null" && (
+                  <TextField
+                    key={index}
+                    margin="normal"
+                    required
+                    fullWidth
+                    label={attributeName}
+                    value={
+                      assetAttributeValues[`typeAttributeValue${index + 1}`] ||
+                      ""
+                    }
+                    onChange={(e) =>
+                      handleAttributeChange(index, e.target.value)
+                    }
+                  />
+                )
+            )}
 
             <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="authors-label">Authors</InputLabel>
@@ -271,21 +280,21 @@ function CreateAsset({ username, userRole }) {
                 multiple
                 value={authors}
                 onChange={(e) => setAuthors(e.target.value)}
-                input={<OutlinedInput id="select-multiple-chip" label="Authors" />}
+                input={
+                  <OutlinedInput id="select-multiple-chip" label="Authors" />
+                }
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => (
                       <Chip key={value} label={value} />
                     ))}
                   </Box>
-                )}
-              >
+                )}>
                 {authorsList.map((author) => (
                   <MenuItem
                     key={author.id}
                     value={author.user_name}
-                    style={getStyles(author.user_name, authors, theme)}
-                  >
+                    style={getStyles(author.user_name, authors, theme)}>
                     {author.user_name}
                   </MenuItem>
                 ))}
@@ -299,21 +308,24 @@ function CreateAsset({ username, userRole }) {
                 multiple
                 value={dependencies}
                 onChange={handleDependenciesChange}
-                input={<OutlinedInput id="select-multiple-chip" label="Dependencies" />}
+                input={
+                  <OutlinedInput
+                    id="select-multiple-chip"
+                    label="Dependencies"
+                  />
+                }
                 renderValue={(selected) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                     {selected.map((value) => (
                       <Chip key={value} label={value} />
                     ))}
                   </Box>
-                )}
-              >
+                )}>
                 {dependenciesList.map((dependency) => (
                   <MenuItem
                     key={dependency.asset_id}
                     value={dependency.title}
-                    style={getStyles(dependency.title, dependencies, theme)}
-                  >
+                    style={getStyles(dependency.title, dependencies, theme)}>
                     {dependency.title}
                   </MenuItem>
                 ))}
@@ -347,8 +359,7 @@ function CreateAsset({ username, userRole }) {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
+              sx={{ mt: 3, mb: 2 }}>
               Submit
             </Button>
           </Box>

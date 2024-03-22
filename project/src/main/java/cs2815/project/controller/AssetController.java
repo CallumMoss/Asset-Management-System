@@ -47,12 +47,6 @@ public class AssetController {
 
     }
 
-    @PostMapping("/search/language")
-    public ResponseEntity<List<String>> searchLanguage(@RequestBody Map<String, String> searchString) {
-        List<String> compatibleLanguages = assetService.searchLanguage(searchString.get("searchTerm"));
-        return ResponseEntity.ok(compatibleLanguages);
-    }
-
     @PostMapping("/search/type")
     public ResponseEntity<List<Asset>> searchByType(@RequestBody Map<String, String> searchString) {
         List<Asset> compatibleLanguages = assetService.searchByType(searchString.get("searchTerm"));
@@ -77,33 +71,12 @@ public class AssetController {
         return ResponseEntity.ok("Asset deleted successfully");
     }
 
-    @PostMapping("/edit")
-    public ResponseEntity<String> editUser(@RequestBody Asset asset) {
-        assetService.editAsset(asset);
+    @PostMapping("/edit/{username}")
+    public ResponseEntity<String> editUser(@RequestBody AssetWrapper assetDto, @PathVariable String username) {
+        assetService.editAsset(assetDto, username);
         return ResponseEntity.ok("Asset edited successfully");
     }
 
-    /*
-     * //Finds what Assets are dependant on the given AssetID asset
-     * //Way of testing if process works in postman (it does ;) )
-     * 
-     * @PostMapping("/isDependantOn")
-     * public ResponseEntity<List<Integer>> isDependantOn(@RequestBody int assetId)
-     * {
-     * List<Integer> dependantOn = assetService.isDependantOn(assetId);
-     * return ResponseEntity.ok(dependantOn);
-     * }
-     * 
-     * //Finds the Assets that the given AssetID depends On
-     * //Way of testing if process works in postman (it does ;) )
-     * 
-     * @PostMapping("/isParentOf")
-     * public ResponseEntity<List<Integer>> isParentOf(@RequestBody int assetId) {
-     * List<Integer> dependencies = assetService.isParentOf(assetId);
-     * return ResponseEntity.ok(dependencies);
-     *
-     * }
-     */
     @PostMapping("/attributes")
     public ResponseEntity<List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>>> getAssetsAndAttributes() {
         List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> assetsAndAttributes = assetService

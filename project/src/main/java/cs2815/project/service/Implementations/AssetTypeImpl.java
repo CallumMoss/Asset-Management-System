@@ -50,12 +50,15 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Override
     public void createBaseTypes() {
-        createAssetType(new AssetType(1, "Python File", "A file that contains python code for a given project.", "Python Version", null, null), "BaseAdmin");
+        createAssetType(new AssetType(1, "Python File", "A file that contains python code for a given project.",
+                "Python Version", null, null), "BaseAdmin");
 
         createAssetType(new AssetType(2, "Documentation",
-                "A file that contains documentation to supply extra information about any given asset.", "File Type", "Document Purpose", null), "BaseUser");
+                "A file that contains documentation to supply extra information about any given asset.", "File Type",
+                "Document Purpose", null), "BaseUser");
         createAssetType(new AssetType(3, "Project",
-                "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.", "Product Owner", "Project Manager", "Status"),
+                "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.",
+                "Product Owner", "Project Manager", "Status"),
                 "BaseAdmin");
     }
 
@@ -129,13 +132,20 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Override
     public void editAssetType(AssetType assetType, String username) {
-        repo.updateAssetTypeFieldsById(assetType.getType_id(), assetType.getType_name(), assetType.getDescription());
+
+        repo.updateAssetTypeFieldsById(assetType.getType_id(), assetType.getType_name(), assetType.getDescription(),
+                assetType.getTypeAttribute1(), assetType.getTypeAttribute2(), assetType.getTypeAttribute3());
 
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUser(userRepo.findByUserName(username));
-        log.setUpdateDescription(assetType.getType_name() + " was edited!");
-
+        log.setUpdateDescription(
+                assetType.getType_name() + " asset type was edited! Modifications are the following:\n" +
+                        "Name: " + assetType.getType_name() + "\n" +
+                        "Description: " + assetType.getDescription() + "\n" +
+                        "Attribute1: " + assetType.getTypeAttribute1() + "\n" +
+                        "Attribute2: " + assetType.getTypeAttribute2() + "\n" +
+                        "Attribute3: " + assetType.getTypeAttribute3());
         logrepo.save(log);
     }
 

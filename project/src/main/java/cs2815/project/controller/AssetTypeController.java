@@ -25,7 +25,7 @@ public class AssetTypeController {
         return ResponseEntity.status(HttpStatus.CREATED).body("Asset type created successfully");
     }
 
-    @PostMapping("/edit")
+    @PostMapping("/edit/{username}")
     public ResponseEntity<String> editAssetType(@RequestBody AssetType assetType, @PathVariable String username) {
         assetTypeService.editAssetType(assetType, username);
         return ResponseEntity.ok("Asset type edited successfully");
