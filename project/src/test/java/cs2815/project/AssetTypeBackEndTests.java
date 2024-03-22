@@ -40,17 +40,9 @@ class AssetTypeBackEndTests {
         // Creating asset type objects and adding them to the array
         List<AssetType> expected_asset_types = new ArrayList<AssetType>();
 
-        expected_asset_types.add(new AssetType());
-        expected_asset_types.add(new AssetType());
-        expected_asset_types.add(new AssetType());    
-
-        // createAssetType(new AssetType("Python File", "A file that contains python code for a given project."), "Tom");
-        // createAssetType(new AssetType("Documentation",
-        //         "A file that contains documentation to supply extra information about any given asset."), "Tom");
-        // createAssetType(new AssetType("Project",
-        //         "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants."),
-        //         "Tom");
-        // createAssetType(new AssetType("Java File", "A file that contains java code for a given project."), "Tom");
+        expected_asset_types.add(new AssetType(1, "Python File", "A file that contains python code for a given project.", "Python Version", null, null));
+        expected_asset_types.add(new AssetType(2, "Documentation", "A file that contains documentation to supply extra information about any given asset.", "File Type", "Document Purpose", null));
+        expected_asset_types.add(new AssetType(3, "Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.", "Product Owner", "Project Manager", "Status"));    
 
         // Compare the contents of the two lists
         for (int i = 0; i < 3; i++) {
