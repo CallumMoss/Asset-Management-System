@@ -92,5 +92,53 @@ class AssetTypeBackEndTests {
        assertEquals(atsi.searchTypes("TempAssetType"), new ArrayList<AssetType>());
     }
 
+    @Test
+    void test4() {
+        // Testing sorting alphabetically
+        List<AssetType> sorted_asset_types = atsi.sort(atsi.refreshAssetType(), "");
+        List<AssetType> expected_asset_types = new ArrayList<AssetType>();
+
+        expected_asset_types.add(new AssetType(2, "Documentation", "A file that contains documentation to supply extra information about any given asset.", "File Type", "Document Purpose", null));
+        expected_asset_types.add(new AssetType(3, "Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.", "Product Owner", "Project Manager", "Status"));  
+        expected_asset_types.add(new AssetType(1, "Python File", "A file that contains python code for a given project.", "Python Version", null, null));       
+        
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
+        }
+        expected_asset_types.clear();
+    }
+
+    @Test
+    void test5() {
+        // Testing sorting by newest
+        List<AssetType> sorted_asset_types = atsi.sort(atsi.refreshAssetType(), "Newest");
+        List<AssetType> expected_asset_types = new ArrayList<AssetType>();
+
+        expected_asset_types.add(new AssetType(3, "Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.", "Product Owner", "Project Manager", "Status"));
+        expected_asset_types.add(new AssetType(2, "Documentation", "A file that contains documentation to supply extra information about any given asset.", "File Type", "Document Purpose", null));  
+        expected_asset_types.add(new AssetType(1, "Python File", "A file that contains python code for a given project.", "Python Version", null, null));       
+        
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
+        }
+        expected_asset_types.clear();
+    }
+
+    @Test
+    void test6() {
+        // Testing sorting by oldest
+        List<AssetType> sorted_asset_types = atsi.sort(atsi.refreshAssetType(), "Oldest");
+        List<AssetType> expected_asset_types = new ArrayList<AssetType>();
+
+        expected_asset_types.add(new AssetType(1, "Python File", "A file that contains python code for a given project.", "Python Version", null, null));
+        expected_asset_types.add(new AssetType(2, "Documentation", "A file that contains documentation to supply extra information about any given asset.", "File Type", "Document Purpose", null));
+        expected_asset_types.add(new AssetType(3, "Project", "A collection of assets which outline the integral parts of a project, such as code files, relevant documentation and participants.", "Product Owner", "Project Manager", "Status"));  
+        
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
+        }
+        expected_asset_types.clear();
+    }
+
     // Testing incorrect cases (such as creating an asset type that already exists)
 }
