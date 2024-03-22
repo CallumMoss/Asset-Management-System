@@ -91,10 +91,6 @@ public class Asset {
          */
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
         private List<AssetDependency> dependencies;
-
-        @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-                        CascadeType.REFRESH })
-        @JoinTable(name = "asset_languages", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
-        private List<Languages> languages;
+        
 
 }
