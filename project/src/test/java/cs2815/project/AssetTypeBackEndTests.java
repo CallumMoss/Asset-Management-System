@@ -77,5 +77,20 @@ class AssetTypeBackEndTests {
         expected_asset_types.clear();
     }
 
+    @Test
+    void test3() {
+        // Testing creation and deletion of asset types
+        // Testing creation
+       AssetType at = new AssetType(4, "TempAssetType", "Temp", null, null, null);
+       atsi.createAssetType(at, "BaseAdmin");
+       List<AssetType> actual_asset_type = atsi.searchTypes("TempAssetType");
+       assertEquals(actual_asset_type.get(0),at);
+
+       // Testing deletion
+       atsi.deleteAssetType(at.getType_id(), "BasAdmin");
+       System.out.println(atsi.searchTypes("TempAssetType"));
+       assertEquals(atsi.searchTypes("TempAssetType"), new ArrayList<AssetType>());
+    }
+
     // Testing incorrect cases (such as creating an asset type that already exists)
 }
