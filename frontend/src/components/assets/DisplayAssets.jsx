@@ -9,6 +9,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  InputLabel,
   Paper,
   Container,
   Dialog,
@@ -418,7 +419,7 @@ function DisplayAssets({ username, assetList }) {
             label="Title"
             name="title"
             autoFocus
-            value={title}
+            value={editingAsset.title}
             onChange={(e) => setTitle(e.target.value)} />
           <TextField
             margin="normal"
@@ -429,14 +430,14 @@ function DisplayAssets({ username, assetList }) {
             name="description"
             multiline
             rows={4}
-            value={description}
+            value={editingAsset.description}
             onChange={(e) => setDescription(e.target.value)} />
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel id="type-label">Asset Type</InputLabel>
             <Select
               labelId="type-label"
               id="type"
-              value={type}
+              value={editingAsset.type}
               onChange={(e) => setType(e.target.value)}
               input={<OutlinedInput label="Asset Type" />}>
               {assetTypes.map((assetType) => (
@@ -452,7 +453,7 @@ function DisplayAssets({ username, assetList }) {
               labelId="authors-label"
               id="authors"
               multiple
-              value={authors}
+              value={editingAsset.authors}
               onChange={(e) => setAuthors(e.target.value)}
               input={<OutlinedInput id="select-multiple-chip" label="Authors" />}
               renderValue={(selected) => (
@@ -478,7 +479,7 @@ function DisplayAssets({ username, assetList }) {
               labelId="dependencies-label"
               id="dependencies"
               multiple
-              value={dependencies}
+              value={editingAsset.dependencies}
               onChange={handleDependenciesChange}
               input={<OutlinedInput
                 id="select-multiple-chip"
