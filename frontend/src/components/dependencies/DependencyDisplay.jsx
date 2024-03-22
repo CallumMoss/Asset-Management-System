@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,7 +15,7 @@ import AlertDialog from "./AlertDialog";
 //Imports
 
 //Function to display dependencies:
-function DependencyDisplay({ username, dependencyList }) {
+function DependencyDisplay({ username, userRole, dependencyList }) {
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteDependencyId, setDeleteDependencyId] = useState(null);
@@ -30,7 +30,6 @@ function DependencyDisplay({ username, dependencyList }) {
       setDependencies(dependencyList);
     }
   }, [dependencyList]);
-
 
   // Group dependencies by parent asset
   const groupedDependencies = dependencies.reduce((acc, dependency) => {
@@ -67,7 +66,9 @@ function DependencyDisplay({ username, dependencyList }) {
 
   const fetchDependencies = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/assetdependency/refresh");
+      const response = await axios.get(
+        "http://localhost:8080/assetdependency/refresh"
+      );
       console.log("API Response:", response.data);
 
       if (Array.isArray(response.data)) {
@@ -94,26 +95,52 @@ function DependencyDisplay({ username, dependencyList }) {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    width: "33%",
+                    fontWeight: "bold",
+                    alignItems: "center",
+                  }}>
                   Dependent Asset
                 </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
+                <TableCell
+                  style={{
+                    width: "33%",
+                    fontWeight: "bold",
+                    alignItems: "center",
+                  }}>
                   Relationship
+                </TableCell>
+                <TableCell
+                  style={{
+                    width: "33%",
+                    fontWeight: "bold",
+                    alignItems: "center",
+                  }}>
+                  Actions
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {groupedDependencies[parentAsset].map((dependency) => (
                 <TableRow key={dependency.id}>
-                  <TableCell>{dependency.dependent.title}</TableCell>
-                  <TableCell>{dependency.relationType}</TableCell>
+                  <TableCell style={{ width: "33%", alignItems: "center" }}>
+                    {dependency.dependent.title}
+                  </TableCell>
+                  <TableCell style={{ width: "33%", alignItems: "center" }}>
+                    {dependency.relationType}
+                  </TableCell>
 
-                  <TableCell>
-                    {/*Delete button*/}
-                    <Button
-                      onClick={() => promptDeleteConfirmation(dependency)}>
-                      Delete
-                    </Button>
+                  <TableCell style={{ width: "33%", alignItems: "center" }}>
+                    {/* Conditionally render the delete button or text */}
+                    {userRole !== "Viewer" ? (
+                      <Button
+                        onClick={() => promptDeleteConfirmation(dependency)}>
+                        Delete
+                      </Button>
+                    ) : (
+                      <span>No actions available for viewers</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

@@ -74,7 +74,7 @@ public class Asset {
          * data
          */
         @ManyToOne
-        @JoinColumn(name = "asset_type_id")
+        @JoinColumn(name = "asset_type_id", nullable = false)
         private AssetType Asset_type;
 
         /**
@@ -91,6 +91,5 @@ public class Asset {
          */
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
         private List<AssetDependency> dependencies;
-        
 
 }

@@ -14,8 +14,8 @@ function Dependency({ userRole, username }) {
 
   const config = {
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
   };
   //Function to use search as a filter:
   const handleSearch = async () => {
@@ -25,17 +25,19 @@ function Dependency({ userRole, username }) {
         if (filter == "") {
           // default to parent search
           response = await axios.post(
-              "http://localhost:8080/assetdependency/search/parent",
-              searchTerm
+            "http://localhost:8080/assetdependency/search/parent",
+            searchTerm
           );
         } else {
           response = await axios.post(
-              "http://localhost:8080/assetdependency/search/" + filter,
-              searchTerm
+            "http://localhost:8080/assetdependency/search/" + filter,
+            searchTerm
           );
         }
       } else {
-        response = await axios.get("http://localhost:8080/assetdependency/refresh");
+        response = await axios.get(
+          "http://localhost:8080/assetdependency/refresh"
+        );
       }
       setSearchedDependencies(response.data);
     } catch (error) {
@@ -49,9 +51,6 @@ function Dependency({ userRole, username }) {
     // Perform the logic to refresh dependencies
     handleSearch(); // For example, you can call handleSearch to fetch fresh data
   };
-
-
-
 
   //Function to set new filter by:
   const handleFilterChange = (e) => {
@@ -77,15 +76,15 @@ function Dependency({ userRole, username }) {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {searchTerm && (
-                  <button
-                      onClick={() => {
-                        setSearchTerm('');
-                        setSearchedDependencies([]);
-                      }}
-                      className="right top-1/2 transform -translate-y-1/2 text-gray-600"
-                      aria-label="Clear search">
-                    &#x2715;
-                  </button>
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSearchedDependencies([]);
+                  }}
+                  className="right top-1/2 transform -translate-y-1/2 text-gray-600"
+                  aria-label="Clear search">
+                  &#x2715;
+                </button>
               )}
               <div className="flex space-x-2">
                 {/*Search button*/}
@@ -113,6 +112,7 @@ function Dependency({ userRole, username }) {
         <section>
           <DependencyDisplay
             username={username}
+            userRole={userRole}
             dependencyList={searchedDependencies}
           />
         </section>
