@@ -181,6 +181,12 @@ public class AssetImpl implements AssetService {
     }
 
     @Override
+    public Asset getAssetById(int AssetId) {
+        return repo.findAssetById(AssetId);
+
+    }
+
+    @Override
     public void deleteAsset(int assetID, String username) {
 
         Log log = new Log();

@@ -47,6 +47,12 @@ public class AssetController {
 
     }
 
+    @GetMapping("/assetbyid/assetid={assetId}")
+    public ResponseEntity<Asset> getAssetById(@PathVariable int assetId) {
+        return ResponseEntity.ok(assetService.getAssetById(assetId));
+
+    }
+
     @PostMapping("/search/type")
     public ResponseEntity<List<Asset>> searchByType(@RequestBody Map<String, String> searchString) {
         List<Asset> compatibleLanguages = assetService.searchByType(searchString.get("searchTerm"));

@@ -16,6 +16,8 @@ public interface AssetService {
 
     Asset getNewestAsset();
 
+    Asset getAssetById(int assetId);
+
     List<Asset> refresh();
 
     List<Asset> searchByType(String searchString);
