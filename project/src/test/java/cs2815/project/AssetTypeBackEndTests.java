@@ -88,7 +88,6 @@ class AssetTypeBackEndTests {
 
        // Testing deletion
        atsi.deleteAssetType(at.getType_id(), "BasAdmin");
-       System.out.println(atsi.searchTypes("TempAssetType"));
        assertEquals(atsi.searchTypes("TempAssetType"), new ArrayList<AssetType>());
     }
 
@@ -138,6 +137,29 @@ class AssetTypeBackEndTests {
             assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
         }
         expected_asset_types.clear();
+    }
+
+    @Test
+    void test7() {
+        // Testing editing of asset types
+        AssetType at = new AssetType(4, "TempAssetType", "Temp", null, null, null);
+        atsi.createAssetType(at, "BaseAdmin");
+        List<AssetType> actual_asset_type = atsi.searchTypes("TempAssetType");
+        assertEquals(actual_asset_type.get(0), at);
+        AssetType newAt = at;
+        
+        newAt.setType_name("TempAssetType2");
+        newAt.setDescription("Temp2");
+        newAt.setTypeAttribute1("TempNewAttribute1");
+        newAt.setTypeAttribute2("TempNewAttribute2");
+        newAt.setTypeAttribute3("TempNewAttribute3");
+        atsi.editAssetType(newAt, "BaseAdmin"); // checks edits by the same ID
+        for (int i = 0; i < atsi.searchTypes("TempAssetType").size(); i++) {
+            // if old TempAssetType exists, this would fail. If it doesnt and is replaced by new, it passes.
+            assert(atsi.searchTypes("TempAssetType").get(i).equals(newAt));
+        }
+        assert(atsi.searchTypes("TempAssetType").get(0).equals(newAt));
+        atsi.deleteAssetType(newAt.getType_id(), "BasAdmin");
     }
 
     // Testing incorrect cases (such as creating an asset type that already exists)
