@@ -3,6 +3,7 @@ package cs2815.project.model;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -92,5 +93,24 @@ public class Asset {
          */
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
         private List<AssetDependency> dependencies = new ArrayList<>();
+
+     /**
+     * Override equals method to compare Asset objects based on asset_id.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Asset asset = (Asset) o;
+        return asset_id == asset.asset_id;
+    }
+
+    /**
+     * Override hashCode method to generate a hashCode based on asset_id.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(asset_id);
+    }
 
 }
