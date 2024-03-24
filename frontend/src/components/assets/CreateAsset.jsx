@@ -37,8 +37,6 @@ function CreateAsset({ username, userRole }) {
   const [link, setLink] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [dependenciesList, setDependenciesList] = useState([]);
-  const [languages, setLanguages] = useState([]);
-  const [langList, setLangList] = useState([]);
   // Updated to handle multiple dependencies and their specific details
   const [dependencyDetails, setDependencyDetails] = useState([]);
   // New State to store asset type attributes
@@ -54,7 +52,6 @@ function CreateAsset({ username, userRole }) {
     fetchAssetTypes();
     fetchAuthors();
     fetchDependencies();
-    fetchLanguages();
   }, []);
 
   const fetchAssetTypes = async () => {
@@ -85,26 +82,15 @@ function CreateAsset({ username, userRole }) {
       console.error("Error fetching dependencies:", error);
     }
   };
-
-  const fetchLanguages = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/languages/refresh"
-      );
-      setLangList(response.data);
-    } catch (error) {
-      console.error("Error fetching languages:", error);
-    }
-  };
   const fetchAssetTypeAttributes = async (typeId) => {
     try {
       const response = await axios.post(
         `http://localhost:8080/asset_types/attributesByType`,
         { type_id: typeId }
       );
+      console.log(response);
       // Split the string into an array, and remove any 'null' or empty values
-      const attributes = response.data[0]
-        .split(",")
+      const attributes = response.data
         .filter((attr) => attr && attr.trim().toLowerCase() !== "null");
       setAssetTypeAttributes(attributes);
       // Initialize an empty value for each attribute
