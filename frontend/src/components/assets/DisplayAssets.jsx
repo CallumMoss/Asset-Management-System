@@ -181,7 +181,7 @@ function MessagesDialog({ open, handleClose, user, asset }) {
               <TableCell>{message.textMessage}</TableCell>
               <TableCell>{formatLogTime(message.messageSent)}</TableCell>
               <TableCell>
-                {message.user ? message.user.user_name : "Deleted User"}
+                {message.user ? message.user.user_first_name : "Deleted User"}
               </TableCell>
             </TableRow>
           ))}

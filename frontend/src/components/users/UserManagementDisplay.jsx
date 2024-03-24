@@ -29,7 +29,7 @@ function UserManagementDisplay({ username, userList }) {
   const navigate = useNavigate();
   const sortOptionsRef = useRef(null); // Ref to the sorting options dropdown
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const indexOfLastRecord = currentPage * itemsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
   const currentUsers = users.slice(indexOfFirstRecord, indexOfLastRecord);
