@@ -209,9 +209,10 @@ public class UserServiceImpl implements UserService {
     public List<User> searchByUsername(String searchString) {
         List<String> usernameList = repo.findAllUserNames();
         List<User> compatibleUsers = new ArrayList<>();
+        List<User> users;
         for (String username : usernameList) {
-            if (searchString.equals(username) || isSimilar(searchString, username)) {
-                List<User> users = repo.getUserByUsername(username);
+            if (isSimilar(searchString, username)) {
+                users = repo.getUserByUsername(username);
                 compatibleUsers.addAll(users);
                 if (!compatibleUsers.contains(users.get(0))) {
                     compatibleUsers.addAll(users);
@@ -225,9 +226,10 @@ public class UserServiceImpl implements UserService {
     public List<User> searchByFirstName(String searchString) {
         List<String> FNameList = repo.findAllFNames();
         List<User> compatibleUsers = new ArrayList<>();
+        List<User> users;
         for (String firstname : FNameList) {
-            if (searchString.equals(firstname) || isSimilar(searchString, firstname)) {
-                List<User> users = repo.getUserByName(firstname);
+            if (isSimilar(searchString, firstname)) {
+                users = repo.getUserByName(firstname);
                 if (!compatibleUsers.contains(users.get(0))) {
                     compatibleUsers.addAll(users);
                 }
@@ -240,9 +242,10 @@ public class UserServiceImpl implements UserService {
     public List<User> searchByLastName(String searchString) {
         List<String> LNameList = repo.findAllLNames();
         List<User> compatibleUsers = new ArrayList<>();
+        List<User> users;
         for (String lastname : LNameList) {
-            if (searchString.equals(lastname) || isSimilar(searchString, lastname)) {
-                List<User> users = repo.getUserByLastname(lastname);
+            if (isSimilar(searchString, lastname)) {
+                users = repo.getUserByLastname(lastname);
                 if (!compatibleUsers.contains(users.get(0))) {
                     compatibleUsers.addAll(users);
                 }
@@ -255,9 +258,10 @@ public class UserServiceImpl implements UserService {
     public List<User> searchByRole(String searchString) {
         List<String> roleList = repo.findAllRoles();
         List<User> compatibleUsers = new ArrayList<>();
+        List<User> users;
         for (String role : roleList) {
-            if (searchString.equals(role) || isSimilar(searchString, role)) {
-                List<User> users = repo.getUserByRole(role);
+            if (isSimilar(searchString, role)) {
+                users = repo.getUserByRole(role);
                 if (!compatibleUsers.contains(users.get(0))) {
                     compatibleUsers.addAll(users);
                 }
@@ -267,6 +271,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean isSimilar(String searchString, String compareString) {
+        if (searchString.equals(compareString)) {return true;}
         int pointerSearch = 0;
         int pointerCompare = 0;
         while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
