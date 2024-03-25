@@ -1,5 +1,8 @@
 package cs2815.project.model;
 
+/*
+ * Imports:
+ */
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.sql.Timestamp;
 
+/**
+ * Model for Logs
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,6 +26,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "log")
 public class Log {
+    //Private fields:
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int logId;
@@ -33,7 +40,6 @@ public class Log {
     private User user;
 
     private String updateDescription;
-
     private Timestamp updateTimestamp;
 
 }

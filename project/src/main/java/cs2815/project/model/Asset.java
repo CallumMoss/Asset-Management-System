@@ -1,10 +1,15 @@
 package cs2815.project.model;
-
+/*
+ * Java imports:
+ */
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/*
+ * Imports:
+ */
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
