@@ -29,10 +29,12 @@ public class LogServiceImpl implements LogService {
     public List<Log> searchByDescription(String searchString) {
         List<Log> descriptionList = repo.findAllOrderedByUpdateTimestampDesc();
         List<Log> compatibleLogs = new ArrayList<>();
+        List<Log> logs;
+        String desc;
         for (Log log : descriptionList) {
-            String desc = log.getUpdateDescription();
-            if (searchString.equals(desc) || userService.isSimilar(searchString, desc)) {
-                List<Log> logs = repo.getLogByDescription(desc);
+            desc = log.getUpdateDescription();
+            if (userService.isSimilar(searchString, desc)) {
+                logs = repo.getLogByDescription(desc);
                 compatibleLogs.addAll(logs);
                 Collections.reverse(compatibleLogs); // help display it in order.
                 break;

@@ -69,8 +69,15 @@ public class AssetTypeImpl implements AssetTypeService {
         List<AbstractMap.SimpleEntry<String, List<String>>> typeAndAttributes = new ArrayList<>();
 
         for (AssetType assetType : assetTypeList) {
-            List<String> typeAttributes = repo.getAttributesById(assetType.getType_id());
-            typeAndAttributes.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), typeAttributes));
+            List<Object[]> typeAttributes = repo.getAttributesById(assetType.getType_id());
+            List<String> attributes = new ArrayList<>();
+            for (Object[] rawAttribute : typeAttributes) {
+                // Assuming all attributes are strings. Add null checks if necessary.
+                if (rawAttribute[0] != null) attributes.add((String) rawAttribute[0]);
+                if (rawAttribute[1] != null) attributes.add((String) rawAttribute[1]);
+                if (rawAttribute[2] != null) attributes.add((String) rawAttribute[2]);
+                typeAndAttributes.add(new AbstractMap.SimpleEntry<>(assetType.getType_name(), attributes));
+            }
         }
 
         return typeAndAttributes;
@@ -126,7 +133,14 @@ public class AssetTypeImpl implements AssetTypeService {
 
     @Override
     public List<String> getAttributes(AssetType assetType) {
-        List<String> titles = repo.getAttributesById(assetType.getType_id());
+        List<Object[]> rawTitles = repo.getAttributesById(assetType.getType_id());
+        List<String> titles = new ArrayList<>();
+        for (Object[] rawAttribute : rawTitles) {
+            // Assuming all attributes are strings. Add null checks if necessary.
+            if (rawAttribute[0] != null) titles.add((String) rawAttribute[0]);
+            if (rawAttribute[1] != null) titles.add((String) rawAttribute[1]);
+            if (rawAttribute[2] != null) titles.add((String) rawAttribute[2]);
+        }
         return titles;
     }
 
