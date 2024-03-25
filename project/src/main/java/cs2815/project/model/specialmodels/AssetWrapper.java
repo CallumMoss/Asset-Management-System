@@ -1,8 +1,5 @@
 package cs2815.project.model.specialmodels;
 
-/*
- * Imports:
- */
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AssetWrapper {
     private int asset_id;
-    //Private fields:
     private String title;
     private String asset_description;
     private String link;
