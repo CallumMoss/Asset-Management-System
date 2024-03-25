@@ -49,9 +49,6 @@ public class CorsConfig {
         return new CorsFilter(source);
     }
 
-    /**
-     * Encrypts password data protection.
-     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

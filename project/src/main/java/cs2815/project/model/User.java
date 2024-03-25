@@ -1,6 +1,5 @@
 package cs2815.project.model;
 
-/*Imports: */
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,19 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/*
- * Java imports:
- */
 import java.util.Objects;
 
-/*
- * Springboot imports:
- */
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/**
- * Model for Users:
- */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Entity
 @Table(name = "users")
 public class User {
-    //Private fields:
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -46,15 +35,6 @@ public class User {
     private String user_role;
     
 
-    /**
-     * Constructor for Users:
-     * @param uName
-     * @param uFName
-     * @param uLName
-     * @param uPassword
-     * @param uRole
-     * @param key
-     */
     public User(String uName, String uFName, String uLName, String uPassword, String uRole, PasswordEncoder key) {
         this.user_name = uName;
         this.user_first_name = uFName;
@@ -63,17 +43,11 @@ public class User {
         this.user_role = uRole;
     }
 
-    /*
-     * encrypt password setter
-     */
     public void encryptPassword(PasswordEncoder key) {
         this.user_password = key.encode(user_password);
     }
 
-    /*
-     * Function to compare objects.
-     */
-    @Override
+        @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -85,9 +59,6 @@ public class User {
                 Objects.equals(user_role, user.user_role);
     }
 
-    /*
-     * Hash function to store users.
-     */
     @Override
     public int hashCode() {
         return Objects.hash(id, user_first_name, user_last_name, user_name, user_role);
