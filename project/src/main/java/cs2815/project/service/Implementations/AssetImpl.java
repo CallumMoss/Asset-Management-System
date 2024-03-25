@@ -259,7 +259,7 @@ public class AssetImpl implements AssetService {
                         "Link: " + asset.getLink() + "\n" +
                         "Attribute1: " + asset.getTypeAttributeValue1() + "\n" +
                         "Attribute2: " + asset.getTypeAttributeValue2() + "\n" +
-                        "Attribute3: " + asset.getTypeAttributeValue2());
+                        "Attribute3: " + asset.getTypeAttributeValue3());
 
         logRepo.save(log);
 
