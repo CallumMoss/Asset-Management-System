@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
+//Imports:
 
 const defaultTheme = createTheme();
 
@@ -181,6 +182,7 @@ function CreateAsset({ username, userRole }) {
   };
 
   return (
+    //Returning wanted format for create asset page:
     <ThemeProvider theme={defaultTheme}>
       <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
@@ -354,5 +356,4 @@ function CreateAsset({ username, userRole }) {
     </ThemeProvider>
   );
 }
-
 export default CreateAsset;

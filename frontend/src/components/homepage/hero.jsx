@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+
 export default function Hero() {
     return (
       //Main part of intro page with login button:
@@ -12,5 +13,4 @@ export default function Hero() {
         <Link to="/login" className="bg-purple-600 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-purple-700">Log In</Link>
       </div>
     );
-  }
-  
+  } 
