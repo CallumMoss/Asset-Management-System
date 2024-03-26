@@ -327,19 +327,35 @@ public class UserServiceImpl implements UserService {
      * @return True if the strings are similar, false otherwise.
      */
     public boolean isSimilar(String searchString, String compareString) {
-        if (searchString.equals(compareString)) {
-            return true;
-        }
-        int pointerSearch = 0;
-        int pointerCompare = 0;
-        while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
-            if (searchString.toLowerCase().charAt(pointerSearch) == compareString.toLowerCase()
-                    .charAt(pointerCompare)) {
-                pointerSearch++;
+
+        searchString = searchString.toLowerCase();
+        compareString = compareString.toLowerCase();
+
+        int errorsAllowed = (searchString.length()/3) + 1;
+        int searchIndex = 0;
+        int compareIndex = 0;
+
+        if (searchString.equals(compareString) || compareString.contains(searchString)) {return true;}
+
+        while (searchIndex < searchString.length() && compareIndex < compareString.length()) {
+
+            char indexedSearch = searchString.charAt(searchIndex);
+            char indexedCompare = compareString.charAt(compareIndex);
+
+            if (indexedSearch == indexedCompare) {
+                searchIndex++;
+            } else if (searchIndex != 0) {
+                if (indexedCompare == searchString.charAt(0) && errorsAllowed < 0) {
+                    errorsAllowed = (searchString.length()/3) + 1;
+                    searchIndex = 0;
+                    compareIndex--;
+                }  else {
+                    errorsAllowed--;
+                }
             }
-            pointerCompare++;
+            compareIndex++;
         }
-        return pointerSearch == searchString.length();
+        return searchIndex == searchString.length() && errorsAllowed >= 0;
     }
 
     /**
