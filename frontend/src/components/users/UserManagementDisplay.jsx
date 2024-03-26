@@ -15,8 +15,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+//imports
 
-function UserManagementDisplay({ userList }) {
+//Function for displaying users:
+function UserManagementDisplay({ username, userList }) {
   const [users, setUsers] = useState([]);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -26,6 +28,12 @@ function UserManagementDisplay({ userList }) {
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
   const navigate = useNavigate();
   const sortOptionsRef = useRef(null); // Ref to the sorting options dropdown
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentUsers = users.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(users.length / itemsPerPage);
 
   useEffect(() => {
     if (userList.length === 0) {
@@ -38,7 +46,10 @@ function UserManagementDisplay({ userList }) {
   useEffect(() => {
     // Add event listener to close sorting options dropdown when clicking outside of it
     function handleClickOutside(event) {
-      if (sortOptionsRef.current && !sortOptionsRef.current.contains(event.target)) {
+      if (
+        sortOptionsRef.current &&
+        !sortOptionsRef.current.contains(event.target)
+      ) {
         setSortAnchorEl(null);
       }
     }
@@ -48,10 +59,13 @@ function UserManagementDisplay({ userList }) {
     };
   }, []);
 
+  //Function to handle delete confirmation:
   const handleDeleteConfirmation = async () => {
     if (deleteUserId !== null) {
       try {
-        await axios.delete(`http://localhost:8080/users/${deleteUserId}`);
+        await axios.delete(
+          `http://localhost:8080/users/${deleteUserId}/${username}`
+        );
         setOpenDialog(false); // Close dialog
         fetchUsers(); // Refresh user list
         console.log("User deleted successfully:", deleteUserId);
@@ -62,11 +76,13 @@ function UserManagementDisplay({ userList }) {
     }
   };
 
+  //Function to prompt deletion:
   const promptDeleteConfirmation = (userId) => {
     setDeleteUserId(userId);
     setOpenDialog(true);
   };
 
+  //Function to get user data:
   const fetchUsers = async () => {
     try {
       const response = await axios.get("http://localhost:8080/users/refresh");
@@ -85,15 +101,20 @@ function UserManagementDisplay({ userList }) {
     }
   };
 
+  //Function to edit user data:
   const handleEdit = (userName) => {
     setEditingUser(userName);
     setIsEditing(true);
     console.log("Edit user:", userName);
   };
 
+  //Function to save changes:
   const handleSave = async () => {
     try {
-      await axios.post("http://localhost:8080/users/edit", editingUser);
+      await axios.post(
+        `http://localhost:8080/users/edit/${username}`,
+        editingUser
+      );
       fetchUsers();
       setEditingUser(null);
     } catch (error) {
@@ -103,10 +124,12 @@ function UserManagementDisplay({ userList }) {
     setIsEditing(false);
   };
 
+  //Function to create new users:
   const handleCreate = () => {
     navigate("/admin/create-user");
   };
 
+  //Function to reset password:
   const resetPassword = async (userName) => {
     try {
       await axios.post("http://localhost:8080/users/reset-password", {
@@ -121,6 +144,7 @@ function UserManagementDisplay({ userList }) {
     }
   };
 
+  //Function to delete:
   const handleDelete = async (user_id) => {
     if (typeof user_id !== "number") {
       console.error("Invalid user_id:", user_id);
@@ -138,36 +162,30 @@ function UserManagementDisplay({ userList }) {
     }
   };
 
+  //Function to sort users in chosen order:
   const handleSortBy = async (orderBy) => {
     try {
-        let orderByParam = ""; // Initialize the orderByParam
-
-        // Used to determine value of orderby to be sent as param
-        switch (orderBy) {
-            case "firstName":
-                orderByParam = "FirstName";
-                break;
-            case "lastName":
-                orderByParam = "LastName";
-                break;
-            default:
-                orderByParam = "UserName";
-        }
-        const response = await axios.post("http://localhost:8080/users/sort/alphabetically", users, { params: { orderBy: orderByParam } } );
-        if (Array.isArray(response.data)) {
-            setUsers(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort users. Unexpected response structure.");
-        }
+      const response = await axios.post(
+        "http://localhost:8080/users/sort",
+        users,
+        { params: { orderBy: orderBy } }
+      );
+      if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort users. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort users. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort users. An error occurred.");
     }
-};
+  };
+
   console.log("Users ------");
   console.log(users);
   return (
+    //Returning desired format of user management table:
     <Container component={Paper}>
       {isEditing ? (
         <form>
@@ -184,7 +202,10 @@ function UserManagementDisplay({ userList }) {
             variant="outlined"
             value={editingUser.user_first_name}
             onChange={(e) =>
-              setEditingUser({ ...editingUser, user_first_name: e.target.value })
+              setEditingUser({
+                ...editingUser,
+                user_first_name: e.target.value,
+              })
             }
           />
           <TextField
@@ -195,6 +216,8 @@ function UserManagementDisplay({ userList }) {
               setEditingUser({ ...editingUser, user_last_name: e.target.value })
             }
           />
+
+          {/*Save button*/}
           <Button onClick={handleSave}>Save</Button>
         </form>
       ) : (
@@ -205,29 +228,42 @@ function UserManagementDisplay({ userList }) {
               <TableCell style={{ fontWeight: "bold" }}>First Name</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Last Name</TableCell>
               <TableCell style={{ fontWeight: "bold" }}>Role</TableCell>
-              <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
               <TableCell>
                 <div style={{ display: "flex", alignItems: "center" }}>
+
+                  {/*Create button*/}
                   <Button onClick={() => handleCreate()}>Create</Button>
                   <div>
-                    <Button onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                    {/*Sort button*/}
+                    <Button
+                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
                       aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
+                      aria-haspopup="true">
                       Sort
                     </Button>
-                    {/*menu for sortby options*/}
-                    <Menu id="sort-menu"
+                    {/*Menu for sortby options*/}
+                    <Menu
+                      id="sort-menu"
                       anchorEl={sortAnchorEl}
                       open={Boolean(sortAnchorEl)}
                       onClose={() => setSortAnchorEl(null)}>
-
-                      <MenuItem onClick={() => handleSortBy("username")}>Username</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("firstName")}>First Name</MenuItem>
-                      <MenuItem onClick={() => handleSortBy("lastName")}>Last Name</MenuItem>
+                      <MenuItem onClick={() => handleSortBy("Oldest")}>
+                        Oldest
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("Newest")}>
+                        Newest
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("UserName")}>
+                        Username
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("FirstName")}>
+                        First Name
+                      </MenuItem>
+                      <MenuItem onClick={() => handleSortBy("LastName")}>
+                        Last Name
+                      </MenuItem>
                     </Menu>
                   </div>
-                  <Button onClick={() => fetchUsers()}>Refresh</Button>
                 </div>
               </TableCell>
             </TableRow>
@@ -240,17 +276,20 @@ function UserManagementDisplay({ userList }) {
               message="Are you sure you want to delete this user?"
               onConfirm={handleDeleteConfirmation}
             />
-            {users.map((user) => (
+            {currentUsers.map((user) => (
               <TableRow key={user.id}>
                 <TableCell>{user.user_name}</TableCell>
                 <TableCell>{user.user_first_name}</TableCell>
                 <TableCell>{user.user_last_name}</TableCell>
                 <TableCell>{user.user_role}</TableCell>
                 <TableCell>
+                  {/*Edit button*/}
                   <Button onClick={() => handleEdit(user)}>Edit</Button>
+                  {/*Reset password button*/}
                   <Button onClick={() => resetPassword(user.user_name)}>
                     Reset Password
                   </Button>
+                  {/*Delete button*/}
                   <Button onClick={() => promptDeleteConfirmation(user.id)}>
                     Delete
                   </Button>
@@ -259,6 +298,21 @@ function UserManagementDisplay({ userList }) {
             ))}
           </TableBody>
         </Table>
+      )}
+        {/* Pagination controls */}
+        {!isEditing && (
+        <>
+          <Button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}>
+            Previous
+          </Button>
+          <Button
+            disabled={currentPage === nPages}
+            onClick={() => setCurrentPage(currentPage + 1)}>
+            Next
+          </Button>
+        </>
       )}
     </Container>
   );

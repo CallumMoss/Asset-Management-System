@@ -10,25 +10,42 @@ import {
   TableRow,
   Paper,
   Container,
+  TextField,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+//Imports
 
-function AssetTypeDisplay({ assetTypeList }) {
+//Function to Display AssetTypes table:
+function AssetTypeDisplay({ username, assetTypeList }) {
   const [assetTypes, setAssetTypes] = useState([]);
   const navigate = useNavigate();
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteAssetTypeId, setDeleteAssetTypeId] = useState(null);
+  const [editedAssetType, setEditedAssetType] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentAssetTypes = assetTypes.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
+  const nPages = Math.ceil(assetTypes.length / itemsPerPage);
 
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
 
   useEffect(() => {
-    if (assetTypeList.length == 0) {
+    if (assetTypeList.length === 0) {
       fetchAssetTypes();
     }
     setAssetTypes(assetTypeList);
     console.log("Set assetTypes to the searched asset types.");
-  }, [assetTypeList]); // only called if userList is updated.
+  }, [assetTypeList]); // only called if assetTypeList is updated.
 
+  //Function to get AssetTypes values:
   const fetchAssetTypes = async () => {
     try {
       const response = await axios.get(
@@ -49,25 +66,31 @@ function AssetTypeDisplay({ assetTypeList }) {
     }
   };
 
-  const handleEdit = (userName) => {
+  //Function to allow assetType edit:
+  const handleEdit = (assetType) => {
     // Implement your edit functionality here
-    console.log("Edit asset type:", userName);
+
+    navigate("/admin/create-asset-type");
+    setIsEditing(true);
   };
 
+  //Function to call creat assetType:
   const handleCreate = () => {
     navigate("/admin/create-asset-type");
   };
 
+  //Function to alert confirmation of deletion of assetTypes:
   const promptDeleteConfirmation = (asset_type_id) => {
     setDeleteAssetTypeId(asset_type_id);
     setOpenDialog(true);
   };
 
+  //Function to call Deletion:
   const handleDeleteConfirmation = async () => {
     if (deleteAssetTypeId !== null) {
       try {
         await axios.delete(
-          `http://localhost:8080/asset_types/${deleteAssetTypeId}`
+          `http://localhost:8080/asset_types/${deleteAssetTypeId}/${username}`
         );
         setOpenDialog(false);
         fetchAssetTypes();
@@ -79,40 +102,56 @@ function AssetTypeDisplay({ assetTypeList }) {
     }
   };
 
-  const handleSort = async () => {
+  //Function to Sort list of AssetTypes:
+  const handleSortBy = async (orderBy) => {
     try {
-        const response = await axios.post("http://localhost:8080/asset_types/sort/alphabetically", assetTypes );
-        if (Array.isArray(response.data)) {
-          setAssetTypes(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort AssetTypes. Unexpected response structure.");
-        }
+      const response = await axios.post(
+        "http://localhost:8080/asset_types/sort",
+        assetTypes,
+        { params: { orderBy: orderBy } }
+      );
+      if (Array.isArray(response.data)) {
+        setAssetTypes(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort AssetTypes. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort AssetTypes. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort AssetTypes. An error occurred.");
     }
-};
+  };
 
   return (
+    //Return of wanted format of assetType management page:
     <Container component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
             <TableCell style={{ fontWeight: "bold" }}>Type Name</TableCell>
             <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <div style={{ display: "flex", alignItems: "center" }}>
-                  <Button onClick={() => handleCreate()}>Create</Button>
-                  <div>
-                    <Button onClick={(e) => handleSort()}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
-                      Sort
-                    </Button>
-                  </div>
-                  <Button onClick={() => fetchAssetTypes()}>Refresh</Button>
-            </div>
+            {/*Create button*/}
+            <Button onClick={() => handleCreate()}>Create</Button>
+            {/*Sort button*/}
+            <Button
+              onClick={(e) => setSortAnchorEl(e.currentTarget)}
+              aria-controls="sort-menu"
+              aria-haspopup="true">
+              Sort
+            </Button>
+
+            {/*menu for sortby options*/}
+            <Menu
+              id="sort-menu"
+              anchorEl={sortAnchorEl}
+              open={Boolean(sortAnchorEl)}
+              onClose={() => setSortAnchorEl(null)}>
+              <MenuItem onClick={() => handleSortBy("Newest")}>Newest</MenuItem>
+              <MenuItem onClick={() => handleSortBy("Oldest")}>Oldest</MenuItem>
+              <MenuItem onClick={() => handleSortBy("Alphabetically")}>
+                Alphabetically
+              </MenuItem>
+            </Menu>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -124,26 +163,37 @@ function AssetTypeDisplay({ assetTypeList }) {
             onConfirm={handleDeleteConfirmation}
           />
 
-          {assetTypes.map((assetType) => (
-            <TableRow key={assetType.type_id}>
-              <TableCell>{assetType.type_name}</TableCell>
-              <TableCell>{assetType.description}</TableCell>
-
-              <TableCell>
-                <Button onClick={() => handleEdit(assetType.user_name)}>
-                  Edit
-                </Button>
-                <Button
-                  onClick={() => promptDeleteConfirmation(assetType.type_id)}>
-                  Delete
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
+          <>
+            {currentAssetTypes.map((assetType) => (
+              <TableRow key={assetType.type_id}>
+                <TableCell>{assetType.type_name}</TableCell>
+                <TableCell>{assetType.description}</TableCell>
+                <TableCell>
+                  {/*Edit button*/}
+                  <Button onClick={() => handleEdit(assetType)}>Edit</Button>
+                  {/*Delete button*/}
+                  <Button
+                    onClick={() => promptDeleteConfirmation(assetType.type_id)}>
+                    Delete
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </>
         </TableBody>
       </Table>
+
+      <Button
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage(currentPage - 1)}>
+        Previous
+      </Button>
+      <Button
+        disabled={currentPage === nPages}
+        onClick={() => setCurrentPage(currentPage + 1)}>
+        Next
+      </Button>
     </Container>
   );
 }
-
 export default AssetTypeDisplay;

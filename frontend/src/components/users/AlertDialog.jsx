@@ -5,9 +5,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+//Imports
 
+//Function for alerts:
 function AlertDialog({ open, handleClose, title, message, onConfirm }) {
     return (
+        //Returning wanted format for alerts:
         <Dialog
             open={open}
             onClose={handleClose}
@@ -29,5 +32,4 @@ function AlertDialog({ open, handleClose, title, message, onConfirm }) {
         </Dialog>
     );
 }
-
 export default AlertDialog;

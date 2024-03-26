@@ -1,27 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
-
 import "../style.css"; // Importing component-specific styles
 import "../Menustyle.css";
-import { Link, useNavigate } from "react-router-dom"; // Importing components from react-router-dom
-import user from "../user.png";
 import AssetTypeDisplay from "./AssetTypeDisplay";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
+//imports
 
+//Function to diplay AssetTypes and check role permissions:
 function AssetType({ userRole, username }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchedTypes, setSearchedTypes] = useState([]);
   const [open, setOpen] = useState(false);
   const menuRef = useRef(); // Define menuRef using the useRef hook
 
-   const handleSearch = async (e) => {
+  //Function to handle Search:
+  const handleSearch = async (e) => {
     e.preventDefault();
     try {
       console.log("Searching for:", searchTerm);
       let response = null;
-      if (searchTerm !== "") { // if user has searched something, show search results
-        response = await axios.post("http://localhost:8080/asset_types/search", {searchTerm}); // searches by title
-      } else { // if user hasnt searched, show regular results
+      if (searchTerm !== "") {
+        // if user has searched something, show search results
+        response = await axios.post(
+          "http://localhost:8080/asset_types/search",
+          { searchTerm }
+        ); // searches by title
+      } else {
+        // if user hasnt searched, show regular results
         response = await axios.get("http://localhost:8080/asset_types/refresh");
       }
       setSearchedTypes(response.data);
@@ -47,7 +52,9 @@ function AssetType({ userRole, username }) {
   }, []); // Empty dependency array
 
   return (
+    //Returns wanted format of AssetType management page:
     <div>
+      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <main>
         <section className="assets-container">
@@ -62,7 +69,19 @@ function AssetType({ userRole, username }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                  <button
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSearchedTypes([]);
+                      }}
+                      className="right top-1/2 transform -translate-y-1/2 text-gray-600"
+                      aria-label="Clear search">
+                    &#x2715;
+                  </button>
+              )}
               <div className="flex space-x-2">
+                {/*Search button*/}
                 <button
                   id="assetTypeSearchBtn"
                   className="py-2 px-4 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-200"
@@ -72,12 +91,10 @@ function AssetType({ userRole, username }) {
               </div>
             </div>
           </div>
-
-          <AssetTypeDisplay assetTypeList = {searchedTypes}/>
+          <AssetTypeDisplay username={username} assetTypeList={searchedTypes} />
         </section>
       </main>
     </div>
   );
 }
-
 export default AssetType;

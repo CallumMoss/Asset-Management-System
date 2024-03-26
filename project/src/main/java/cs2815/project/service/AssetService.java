@@ -1,23 +1,34 @@
 package cs2815.project.service;
 
+/*
+ * Imports for project:
+ */
 import cs2815.project.model.Asset;
 import cs2815.project.model.specialmodels.AssetWrapper;
 
+/*
+ * Java imports:
+ */
 import java.util.AbstractMap;
 import java.util.List;
-import org.springframework.web.bind.annotation.RequestBody;
 
+/**
+ * Interface for Assets.
+ */
 public interface AssetService {
 
-    void createAsset(AssetWrapper asset);
+    //Function declarations:
+    void createAsset(AssetWrapper asset, String username);
 
-    void deleteAsset(int assetID);
+    void deleteAsset(int assetID, String username);
+
+    void editAsset(AssetWrapper assetWrapper, String username);
 
     Asset getNewestAsset();
 
-    List<Asset> refresh();
+    Asset getAssetById(int assetId);
 
-    List<String> searchLanguage(String searchString);
+    List<Asset> refresh();
 
     List<Asset> searchByType(String searchString);
 
@@ -29,5 +40,7 @@ public interface AssetService {
 
     List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes();
 
-    List<Asset> sortAlphabetically(List<Asset> unsortedAssets);
+    // orderBy accepts "Oldest" or "Newest", anything else will return
+    // alphabetically.
+    List<Asset> sort(List<Asset> unsortedAssets, String orderBy);
 }

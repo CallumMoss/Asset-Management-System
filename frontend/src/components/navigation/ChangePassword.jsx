@@ -8,15 +8,13 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
-import Select from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import Chip from "@mui/material/Chip";
-import Checkbox from "@mui/material/Checkbox";
-import ListItemText from "@mui/material/ListItemText";
+import Navbar from "../navigation/Navbar";
+//Imports
 
 const defaultTheme = createTheme();
 
-function ChangePassword({ username }) {
+//Function to change user's password:
+function ChangePassword({ username, userRole }) {
   const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -30,6 +28,7 @@ function ChangePassword({ username }) {
     else if (name === "confirmNewPassword") setConfirmNewPassword(value);
   };
 
+  //Function to submit change:
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,9 +69,13 @@ function ChangePassword({ username }) {
   };
 
   return (
+    //Return wanted format of change password page.
     <ThemeProvider theme={defaultTheme}>
+      {/*Calls navbar component from navigation to display navbar.*/}
+      <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
+        {/*Format for fill-in boxes*/}
         <Box
           sx={{
             marginTop: 8,
@@ -124,7 +127,7 @@ function ChangePassword({ username }) {
               value={confirmNewPassword}
               onChange={(e) => setConfirmNewPassword(e.target.value)}
             />
-
+            {/*Submit button*/}
             <Button
               type="submit"
               fullWidth
@@ -138,5 +141,4 @@ function ChangePassword({ username }) {
     </ThemeProvider>
   );
 }
-
 export default ChangePassword;

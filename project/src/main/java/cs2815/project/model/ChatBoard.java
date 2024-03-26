@@ -1,5 +1,8 @@
 package cs2815.project.model;
 
+/*
+ * Imports:
+ */
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,11 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.sql.Timestamp;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
+/**
+ * Model for Discussion board to let users communicate.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +26,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "ChatBoard")
 public class ChatBoard {
+
+    //Private fields:
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int messageId;
@@ -40,5 +43,4 @@ public class ChatBoard {
     private User user;
 
     private Timestamp messageSent;
-
 }

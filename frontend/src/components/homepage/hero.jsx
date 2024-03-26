@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
+
 export default function Hero() {
     return (
+      //Main part of intro page with login button:
       <div className="text-center bg-gray-50 py-20 px-6">
       <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-gray-800 mb-6">Welcome to the IT Asset Management Hub</h1>
         <p className="text-lg text-gray-600 mb-8">
@@ -11,5 +13,4 @@ export default function Hero() {
         <Link to="/login" className="bg-purple-600 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-purple-700">Log In</Link>
       </div>
     );
-  }
-  
+  } 

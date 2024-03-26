@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate, Link } from "react-router-dom";
-import ChangePassword from "./ChangePassword";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,9 +11,12 @@ import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "@mui/material/Button";
 import userIcon from "../user.png"; // Update path if necessary
+//Imports
 
+//Function for navigation bar:
 function Navbar({ username, userRole }) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElAsset, setAnchorElAsset] = React.useState(null);
   const [adminAnchorEl, setAdminAnchorEl] = React.useState(null);
   const navigate = useNavigate();
 
@@ -28,6 +30,14 @@ function Navbar({ username, userRole }) {
     setAnchorElUser(null);
   };
 
+  //Function to open asset menu
+  const handleOpenAssetMenu = (event) => {
+    setAnchorElAsset(event.currentTarget);
+  };
+  //Function to close asset menu
+  const handleCloseAssetMenu = (event) => {
+    setAnchorElAsset(null);
+  };
   // Function to handle clicking on admin menu
   const handleAdminMenuClick = (event) => {
     setAdminAnchorEl(event.currentTarget);
@@ -47,25 +57,29 @@ function Navbar({ username, userRole }) {
   ];
 
   return (
+    //Return of wanted format for navigation bar:
     <AppBar position="static" sx={{ backgroundColor: "#89CFF0" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1, display: "flex" }}>
-            {/* Dashboard Link */}
+            {/* Dashboard Link and button*/}
             <Button
               sx={{ my: 2, color: "white", display: "block" }}
               component={Link}
               to="/dashboard">
               Dashboard
             </Button>
-            {/* Assets Link */}
+            {/* Assets Menu and button */}
             <Button
               sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              to="/assets">
+              id="asset-menu-button"
+              aria-controls={anchorElAsset ? "asset-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={anchorElAsset ? "true" : undefined}
+              onClick={handleOpenAssetMenu}>
               Assets
             </Button>
-            {/* Admin menu */}
+            {/* Admin menu and button*/}
             {userRole === "Admin" && (
               <Button
                 sx={{ my: 2, color: "white", display: "block" }}
@@ -106,6 +120,30 @@ function Navbar({ username, userRole }) {
                   handleAdminMenuClose();
                 }}>
                 Logs
+              </MenuItem>
+            </Menu>
+            {/* Asset submenu */}
+            <Menu
+              id="asset-menu"
+              anchorEl={anchorElAsset}
+              open={Boolean(anchorElAsset)}
+              onClose={handleCloseAssetMenu}
+              MenuListProps={{
+                "aria-labelledby": "admin-menu-button",
+              }}>
+              <MenuItem
+                onClick={() => {
+                  navigate("/assets");
+                  handleAdminMenuClose();
+                }}>
+                Asset Management
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  navigate("/dependency");
+                  handleAdminMenuClose();
+                }}>
+                Dependencies
               </MenuItem>
             </Menu>
           </Box>
@@ -149,5 +187,4 @@ function Navbar({ username, userRole }) {
     </AppBar>
   );
 }
-
 export default Navbar;

@@ -14,6 +14,7 @@ import CreateAssetType from "./components/assetTypes/CreateAssetType";
 import Log from "./components//logs/Log";
 import ChangePassword from "./components/navigation/ChangePassword";
 import { Switch } from "@mui/material";
+import Dependency from "./components/dependencies/Dependency";
 
 // AppRoutes component
 function AppRoutes() {
@@ -54,6 +55,17 @@ function AppRoutes() {
             element={
               <ViewerElement currentUserType={currentUserType}>
                 <Assets username={currentUserName} userRole={currentUserType} />
+              </ViewerElement>
+            }
+          />
+          <Route
+            path="/dependency"
+            element={
+              <ViewerElement currentUserType={currentUserType}>
+                <Dependency
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </ViewerElement>
             }
           />
@@ -149,7 +161,10 @@ function AppRoutes() {
             path="/changepassword" // when navigating to this page (when navigate is used in UserManagement)
             element={
               <ViewerElement currentUserType={currentUserType}>
-                <ChangePassword username={currentUserName} />
+                <ChangePassword
+                  username={currentUserName}
+                  userRole={currentUserType}
+                />
               </ViewerElement>
             }
           />

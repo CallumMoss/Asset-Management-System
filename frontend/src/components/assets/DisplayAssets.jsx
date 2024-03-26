@@ -1,3 +1,4 @@
+//Imports:
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -18,18 +19,54 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
+import { Link, useNavigate } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import ForumIcon from "@mui/icons-material/Forum";
 
-import ViewLog from "./ViewLogAsset";
-
+// Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
+  const formatLogTime = (timestamp) => {
+    try {
+      const date = new Date(timestamp);
+      const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+        date.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${date.getFullYear()}`;
+      const formattedTime = `${date
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+      return `Date: ${formattedDate} | Time: ${formattedTime}`;
+    } catch (error) {
+      console.error("Failed to format log time:", error);
+      alert("An error occurred while formatting log time.");
+    }
+  };
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Logs</DialogTitle>
       <DialogContent>
+        {/* Display logs */}
         {logs.map((log) => (
           <TableRow key={log.id}>
-            <TableCell>{log.updateDescription}</TableCell>
-            <TableCell>{log.updateTimestamp}</TableCell>
+            <TableCell>
+              {log.updateDescription.split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
+            </TableCell>
+            <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
+            <TableCell>
+              {log.user ? log.user.user_name : "Deleted User"}
+            </TableCell>
           </TableRow>
         ))}
       </DialogContent>
@@ -40,6 +77,27 @@ function LogsDialog({ logs, open, handleClose }) {
   );
 }
 
+//Function to display time of user activity:
+function FormatTime({ timestamp }) {
+  try {
+    const date = new Date(timestamp);
+    const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+      date.getMonth() + 1
+    )
+      .toString()
+      .padStart(2, "0")}-${date.getFullYear()}`;
+    const formattedTime = `${date.getHours().toString().padStart(2, "0")}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+    return `Date: ${formattedDate} Time: ${formattedTime}`;
+  } catch (error) {
+    console.error("Failed to format log time:", error);
+    alert("An error occurred while formatting log time.");
+  }
+}
+
+// Dialog component to display messages and send new messages
 function MessagesDialog({ open, handleClose, user, asset }) {
   const [newMessage, setNewMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -50,29 +108,52 @@ function MessagesDialog({ open, handleClose, user, asset }) {
     }
   }, [asset]);
 
-  const handleSend = async () => {
-    console.log(user);
-    console.log(asset);
-    console.log(newMessage);
-    if (newMessage.trim() !== "") {
-      const response = await axios.post("http://localhost:8080/messages/send", {
-        textMessage: newMessage,
-        user: user,
-        asset: asset,
-      });
-      setNewMessage("");
-      refresh(asset.asset_id);
+  const formatLogTime = (timestamp) => {
+    try {
+      const date = new Date(timestamp);
+      const formattedDate = `${date.getDate().toString().padStart(2, "0")}-${(
+        date.getMonth() + 1
+      )
+        .toString()
+        .padStart(2, "0")}-${date.getFullYear()}`;
+      const formattedTime = `${date
+        .getHours()
+        .toString()
+        .padStart(2, "0")}:${date
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+      return `Date: ${formattedDate} | Time: ${formattedTime}`;
+    } catch (error) {
+      console.error("Failed to format log time:", error);
+      alert("An error occurred while formatting log time.");
     }
   };
 
+  //Function to allow users to send messages on discussion board:
+  const handleSend = async () => {
+    if (newMessage.trim() !== "") {
+      try {
+        await axios.post("http://localhost:8080/messages/send", {
+          textMessage: newMessage,
+          user: user,
+          asset: asset,
+        });
+        setNewMessage("");
+        refresh(asset.asset_id);
+      } catch (error) {
+        console.error("Error sending message:", error);
+        alert("An error occurred while sending the message.");
+      }
+    }
+  };
+
+  //Refresh button to cancel search:
   const refresh = async (assetId) => {
-    console.log({ assetId });
     try {
       const response = await axios.get(
         `http://localhost:8080/messages/refresh/${assetId}`
       );
-      console.log("API Response:", response.data);
-
       if (Array.isArray(response.data)) {
         const messagesFromApi = response.data;
         setMessages(messagesFromApi);
@@ -82,75 +163,107 @@ function MessagesDialog({ open, handleClose, user, asset }) {
       }
     } catch (error) {
       console.error("Failed to fetch messages:", error);
-      alert("An error occurred while fetching logs.");
+      alert("An error occurred while fetching messages.");
     }
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Messages</DialogTitle>
-      <DialogContent>
-        {messages.map((message) => (
-          <TableRow key={message.messageId}>
-            <TableCell>{message.textMessage}</TableCell>
-            <TableCell>{message.messageSent}</TableCell>
-            <TableCell>
-              {message.user ? message.user.user_name : "Deleted User"}
-            </TableCell>
-          </TableRow>
-        ))}
-      </DialogContent>
-      <DialogContent>
-        {/* Textbox for input */}
-        <TextField
-          label="Type your message"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={2}
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-      </DialogContent>
-      <DialogActions>
-        {/* Send button */}
-        <Button onClick={handleSend} color="primary">
-          Send
-        </Button>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
+    {
+      /*Return to display asset tables along with logs.*/
+    },
+    (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Messages</DialogTitle>
+        <DialogContent>
+          {/* Display messages */}
+          {messages.map((message) => (
+            <TableRow key={message.messageId}>
+              <TableCell>{message.textMessage}</TableCell>
+              <TableCell>{formatLogTime(message.messageSent)}</TableCell>
+              <TableCell>
+                {message.user ? message.user.user_first_name : "Deleted User"}
+              </TableCell>
+            </TableRow>
+          ))}
+        </DialogContent>
+        <DialogContent>
+          {/* Textbox for input */}
+          <TextField
+            label="Type your message"
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={2}
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          {/* Send button */}
+          <Button onClick={handleSend} color="primary">
+            Send
+          </Button>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    )
   );
 }
 
-function DisplayAssets({ username, assetList }) {
+// Component to display and manage assets
+function DisplayAssets({ username, userRole, assetList }) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openMessageDialog, setOpenMessageDialog] = useState(false);
   const [logs, setLogs] = useState([]);
-  const [messages, setMessages] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [deleteAssetId, setDeleteAssetId] = useState(null);
   const [logsDialogOpen, setLogsDialogOpen] = useState(false);
   const [user, setUser] = useState("");
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+  const indexOfLastRecord = currentPage * itemsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - itemsPerPage;
+  const currentAssets = assets.slice(indexOfFirstRecord, indexOfLastRecord);
+  const nPages = Math.ceil(assets.length / itemsPerPage);
+  const [isEditing, setIsEditing] = useState(false);
   const [sortAnchorEl, setSortAnchorEl] = useState(null); // Anchor element for the sort menu
+  const [orderBy, setOrderBy] = useState(null);
+  const [parentAssets, setParentAssets] = useState([]);
+  const navigate = useNavigate();
+  // Initialize with null for optional attributes.
+  const [attribute1, setAttribute1] = useState("");
+  const [attribute2, setAttribute2] = useState("");
+  const [attribute3, setAttribute3] = useState("");
 
   useEffect(() => {
-    if (assetList.length == 0) {
+    if (assetList.length === 0) {
       getAssets();
+      fetchAssetTypes();
     }
     setAssets(assetList);
+    setCurrentPage(1);
     getUser(username);
-    console.log("Set assets to the searched assets.");
   }, [assetList]); // only called if assetList is updated.
 
+  //Fucntion to get AssetType values:
+  const fetchAssetTypes = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/asset_types/refresh"
+      );
+      //setAssetTypes(response.data);
+      console.log("Fetched asset types:", response.data);
+    } catch (error) {
+      console.error("Error fetching asset types:", error);
+    }
+  };
+
+  //Function to get Asset data:
   const getAssets = async () => {
     try {
       const response = await axios.get("http://localhost:8080/assets/refresh");
-      console.log("API Response:", response.data);
-
       if (Array.isArray(response.data)) {
         setAssets(response.data);
       } else {
@@ -163,16 +276,31 @@ function DisplayAssets({ username, assetList }) {
     }
   };
 
+  //Function to get the dependent that dependencies depend on:
+  const getParentDependencies = async (asset_id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/assetdependency/findparent/${asset_id}`
+      );
+      if (Array.isArray(response.data)) {
+        setParentAssets(response.data);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        setParentAssets([]); // Fallback to an empty array
+      }
+    } catch (error) {
+      console.error("Failed to fetch parent assets:", error);
+      alert("An error occurred while parent assets.");
+    }
+  };
+
+  // Function to fetch user from server
   const getUser = async (username) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/users/finduser/${username}`
       );
-
-      console.log("API Response:", response.data);
-
       if (response.data) {
-        // Assuming the response is an object, not an array
         setUser(response.data);
       } else {
         console.error("Unexpected response structure:", response.data);
@@ -184,9 +312,12 @@ function DisplayAssets({ username, assetList }) {
     }
   };
 
+  // Function to handle edit action
   const handleEdit = (assetId) => {
     console.log("Edit asset:", assetId);
+    //setIsEditing(true);
     // Implement your edit functionality here
+    //setEditingAsset({ ...assetId });
   };
 
   const promptDelete = (assetId) => {
@@ -194,10 +325,13 @@ function DisplayAssets({ username, assetList }) {
     setOpenAlertDialog(true);
   };
 
+  // Function to confirm delete action
   const confirmDelete = async () => {
     if (deleteAssetId !== null) {
       try {
-        await axios.delete(`http://localhost:8080/assets/${deleteAssetId}`);
+        await axios.delete(
+          `http://localhost:8080/assets/${deleteAssetId}/username=${username}`
+        );
         setOpenAlertDialog(false);
         getAssets();
         console.log("Asset deleted successfully:", deleteAssetId);
@@ -208,26 +342,30 @@ function DisplayAssets({ username, assetList }) {
     }
   };
 
+  // Function to handle title click
   const handleTitleClick = (asset) => {
     setSelectedAsset(asset);
+    getParentDependencies(asset.asset_id);
     setOpenDialog(true);
   };
+  const handleShowDependencies = () => {
+    navigate("/dependency");
+  };
 
+  // Function to handle view messages action
   const handleViewMessages = (asset) => {
     setSelectedAsset(asset);
     getUser(username);
     setOpenMessageDialog(true);
   };
 
+  // Function to handle view log action
   const handleViewLog = (asset_id) => {
     const fetchLogs = async (assetId) => {
-      console.log({ assetId });
       try {
         const response = await axios.get(
           `http://localhost:8080/logs/${assetId}`
         );
-        console.log("API Response:", response.data);
-
         if (Array.isArray(response.data)) {
           const logsFromApi = response.data;
           setLogs(logsFromApi);
@@ -242,175 +380,326 @@ function DisplayAssets({ username, assetList }) {
       }
     };
     fetchLogs(asset_id);
-    console.log({ logs });
   };
 
+  // Function to handle dialog close
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
+  // Function to handle message dialog close
   const handleCloseMessageDialog = () => {
     setOpenMessageDialog(false);
   };
+
+  // Function to handle logs dialog close
   const handleCloseLogsDialog = () => {
     setLogsDialogOpen(false);
   };
 
-  const handleSort = async () => {
+  // Function to handle sorting
+  const handleSortBy = async (orderBy) => {
     try {
-        const response = await axios.post("http://localhost:8080/assets/sort/alphabetically", assets );
-        if (Array.isArray(response.data)) {
-          setAssets(response.data);
-        } else {
-            console.error("Unexpected response structure:", response.data);
-            alert("Could not sort Assets. Unexpected response structure.");
-        }
+      setOrderBy(orderBy);
+      const response = await axios.post(
+        "http://localhost:8080/assets/sort",
+        assets,
+        { params: { orderBy: orderBy } }
+      );
+      if (Array.isArray(response.data)) {
+        setAssets(response.data);
+        setCurrentPage(1);
+      } else {
+        console.error("Unexpected response structure:", response.data);
+        alert("Could not sort Assets. Unexpected response structure.");
+      }
     } catch (error) {
-        console.error("Axios Error:", error);
-        alert("Could not sort Assets. An error occurred.");
+      console.error("Axios Error:", error);
+      alert("Could not sort Assets. An error occurred.");
     }
   };
-   
+
+  const groupByAssetType = (assets) => {
+    const groupedAssets = {};
+    assets.forEach((asset) => {
+      const assetType = asset.asset_type?.type_name || "Unknown";
+      if (!groupedAssets[assetType]) {
+        groupedAssets[assetType] = [];
+      }
+      groupedAssets[assetType].push(asset);
+    });
+    return groupedAssets;
+  };
+
+  // Group the assets by asset type
+  const groupedAssets = groupByAssetType(assets);
+
   return (
-    <Container component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell style={{ fontWeight: "bold" }}>Asset Title</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Description</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Link</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Asset Type</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Languages</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
-            <TableCell style={{ fontWeight: "bold" }}>Actions</TableCell>
-            <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
-                    <Button onClick={(e) => handleSort()}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true"
-                    >
-                      Sort
-                    </Button>
-                  </div>
-                  <Button onClick={() => getAssets()}>Refresh</Button>
-            </div>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <AlertDialog
-            open={openAlertDialog}
-            handleClose={() => setOpenAlertDialog(false)}
-            title="Confirm Delete"
-            message="Are you sure you want to delete this asset?"
-            onConfirm={confirmDelete}
-          />
+    {
+      /*Return to display all Asset tables on asset management page.*/
+    },
+    (
+      <Container component={Paper}>
+        {/* Iterate over each asset type group */}
+        {Object.entries(groupedAssets).map(([assetType, assets]) => (
+          <div key={assetType}>
+            <h2
+              style={{
+                fontWeight: "bold",
+                marginTop: "60px",
+                fontSize: "1.5em",
+              }}>
+              {assetType}
+            </h2>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Asset Title
+                  </TableCell>
+                  <TableCell style={{ width: "20%", fontWeight: "bold" }}>
+                    Description
+                  </TableCell>
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Link
+                  </TableCell>
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Authors
+                  </TableCell>
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Create Date
+                  </TableCell>
+                  <TableCell style={{ width: "20%" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {/* Sort button:*/}
+                      <Button
+                        onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                        aria-controls="sort-menu"
+                        aria-haspopup="true">
+                        Sort
+                      </Button>
+                      {/*Menu for sortby options:*/}
+                      <Menu
+                        id="sort-menu"
+                        anchorEl={sortAnchorEl}
+                        open={Boolean(sortAnchorEl)}
+                        onClose={() => setSortAnchorEl(null)}>
+                        <MenuItem onClick={() => handleSortBy("Newest")}>
+                          Newest
+                        </MenuItem>
+                        <MenuItem onClick={() => handleSortBy("Oldest")}>
+                          Oldest
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handleSortBy("Alphabetically")}>
+                          Alphabetically
+                        </MenuItem>
+                      </Menu>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <AlertDialog
+                  open={openAlertDialog}
+                  handleClose={() => setOpenAlertDialog(false)}
+                  title="Confirm Delete"
+                  message="Are you sure you want to delete this asset?"
+                  onConfirm={confirmDelete}
+                />
 
-          {assets.map((asset) => (
-            <TableRow key={asset.asset_id}>
-              <TableCell onClick={() => handleTitleClick(asset)}>
-                {asset.title}
-              </TableCell>
-              <TableCell>{asset.asset_description}</TableCell>
-              <TableCell>{asset.link}</TableCell>
-              <TableCell>
-                {asset.asset_type && <div>{asset.asset_type.type_name}</div>}
-              </TableCell>
-              <TableCell>
-                {asset.languages.map((language) => (
-                  <div key={language.language_id}>{language.language_name}</div>
+                {assets.map((asset) => (
+                  <TableRow key={asset.asset_id}>
+                    <TableCell onClick={() => handleTitleClick(asset)}>
+                      {asset.title}
+                    </TableCell>
+                    <TableCell style={{ width: "25%" }}>
+                      {asset.asset_description}
+                    </TableCell>
+                    <TableCell style={{ width: "20%", color: "blue" }}>
+                      <a
+                        href={
+                          asset.link.startsWith("http")
+                            ? asset.link
+                            : `http://${asset.link}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        {asset.link}
+                      </a>
+                    </TableCell>
+
+                    <TableCell style={{ width: "15%" }}>
+                      {asset.authors.map((author) => (
+                        <div key={author.id}>{author.user_name}</div>
+                      ))}
+                    </TableCell>
+                    <TableCell style={{ width: "15%" }}>
+                      {FormatTime({ timestamp: asset.updateTimestamp })}
+                    </TableCell>
+                    <TableCell style={{ width: "10%" }}>
+                      {/*Edit button:*/}
+                      {userRole !== "Viewer" && (
+                        <Button onClick={() => handleEdit(asset.asset_id)}>
+                          Edit
+                        </Button>
+                      )}
+                      {/*Delete button:*/}
+                      {userRole !== "Viewer" && (
+                        <Button onClick={() => promptDelete(asset.asset_id)}>
+                          Delete
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </TableCell>
-              <TableCell>
-                {asset.authors.map((author) => (
-                  <div key={author.id}>{author.user_name}</div>
-                ))}
-              </TableCell>
-              <TableCell>
-                <Button onClick={() => handleEdit(asset.asset_id)}>Edit</Button>
-                <Button onClick={() => promptDelete(asset.asset_id)}>
-                  Delete
+              </TableBody>
+            </Table>
+          </div>
+        ))}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          maxWidth="md"
+          fullWidth>
+          <DialogTitle>{selectedAsset?.title || "Asset Details"}</DialogTitle>
+          <DialogContent>
+            {selectedAsset ? (
+              <div>
+                <Typography variant="body1">
+                  <strong>Description:</strong>{" "}
+                  {selectedAsset.asset_description}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Link:</strong>{" "}
+                  <Link
+                    href={
+                      selectedAsset.link.startsWith("http")
+                        ? selectedAsset.link
+                        : `http://${selectedAsset.link}`
+                    }
+                    style={{ color: "blue" }}
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    {selectedAsset.link}
+                  </Link>
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Asset Type:</strong>{" "}
+                  {selectedAsset.asset_type?.type_name}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Authors:</strong>{" "}
+                  {selectedAsset.authors
+                    .map((author) => author.user_name)
+                    .join(", ")}
+                </Typography>
+                <br />
+                {/* Conditional rendering for type attributes */}
+                {selectedAsset.asset_type.typeAttribute1 && (
+                  <Typography variant="body1">
+                    <strong>{selectedAsset.asset_type.typeAttribute1}: </strong>
+                    {selectedAsset.typeAttributeValue1}
+                  </Typography>
+                )}
+                {selectedAsset.asset_type.typeAttribute2 && (
+                  <Typography variant="body1">
+                    <strong>{selectedAsset.asset_type.typeAttribute2}: </strong>
+                    {selectedAsset.typeAttributeValue2}
+                  </Typography>
+                )}
+                {selectedAsset.asset_type.typeAttribute3 && (
+                  <Typography variant="body1">
+                    <strong>{selectedAsset.asset_type.typeAttribute3}: </strong>
+                    {selectedAsset.typeAttributeValue3}
+                  </Typography>
+                )}
+                <br />
+                {/* Dependencies */}
+
+                <Typography variant="body1">
+                  <strong>{selectedAsset.title} depends on:</strong>{" "}
+                  {parentAssets
+                    .map(
+                      (dependency) =>
+                        `${dependency.asset.title} (${dependency.relationType})`
+                    )
+                    .join(", ") || "No asset"}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Dependents on {selectedAsset.title}:</strong>{" "}
+                  {selectedAsset.dependencies
+                    .filter((dep) => dep.dependent && dep.dependent.title)
+                    .map(
+                      (dependency) =>
+                        `${dependency.dependent.title} (${dependency.relationType})`
+                    )
+                    .join(", ") || "No asset"}
+                </Typography>
+
+                <br />
+                {/* Actions */}
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleShowDependencies}
+                  startIcon={<VisibilityIcon />}>
+                  All dependencies
                 </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleViewLog(selectedAsset.asset_id)}
+                  startIcon={<ListAltIcon />}>
+                  Audit Trail
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleViewMessages(selectedAsset)}
+                  startIcon={<ForumIcon />}>
+                  Discussion Board
+                </Button>
+              </div>
+            ) : (
+              <Typography variant="body1">No asset selected</Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Close</Button>
+          </DialogActions>
+        </Dialog>
+        <LogsDialog
+          logs={logs}
+          open={logsDialogOpen}
+          handleClose={handleCloseLogsDialog}
+        />
+        <MessagesDialog
+          open={openMessageDialog}
+          handleClose={handleCloseMessageDialog}
+          asset={selectedAsset}
+          user={user}
+        />
 
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
-        <DialogContent>
-          {/* Add detailed information here */}
-          {selectedAsset && (
-            <div>
-              <p>Description: {selectedAsset.asset_description}</p>
-              <p>Link: {selectedAsset.link}</p>
-              <p>Asset Type: {selectedAsset.asset_type?.type_name}</p>
-              <p>
-                Languages:{" "}
-                {selectedAsset.languages
-                  .map((language) => language.language_name)
-                  .join(", ")}
-              </p>
-              <p>
-                Authors:{" "}
-                {selectedAsset.authors
-                  .map((author) => author.user_name)
-                  .join(", ")}
-              </p>
-              <br></br>
-              <p>
-                Assets that the CURRENT asset is depending on:{" "}
-                {selectedAsset.dependencies
-                  .map((dependency) => dependency.title)
-                  .join(", ")}
-              </p>
-              <p>
-                Assets depending on CURRENT asset:{" "}
-                {selectedAsset.dependencies
-                  .filter(
-                    (dependency) =>
-                      dependency.dependent && dependency.dependent.title
-                  )
-                  .map(
-                    (dependency) =>
-                      `${dependency.dependent.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <br></br>
-              <p>
-                <p>
-                  Audit Trail:
-                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
-                    View
-                  </Button>
-                </p>
-                <p>
-                  Discussion Board:
-                  <Button onClick={() => handleViewMessages(selectedAsset)}>
-                    Open
-                  </Button>
-                </p>
-              </p>
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-      <LogsDialog
-        logs={logs}
-        open={logsDialogOpen}
-        handleClose={handleCloseLogsDialog}
-      />
-      <MessagesDialog
-        open={openMessageDialog}
-        handleClose={handleCloseMessageDialog}
-        user={user}
-        asset={selectedAsset}
-      />
-    </Container>
+        {/* Pagination controls */}
+        {!isEditing && (
+          <>
+            {/*Previous button:*/}
+            <Button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}>
+              Previous
+            </Button>
+            {/*Next button:*/}
+            <Button
+              disabled={currentPage === nPages}
+              onClick={() => setCurrentPage(currentPage + 1)}>
+              Next
+            </Button>
+          </>
+        )}
+      </Container>
+    )
   );
 }
-
 export default DisplayAssets;

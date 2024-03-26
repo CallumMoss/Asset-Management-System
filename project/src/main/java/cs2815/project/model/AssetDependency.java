@@ -1,8 +1,9 @@
 package cs2815.project.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+/*
+ * Imports:
+ */
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +17,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Model Asset dependency structure.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,13 +28,14 @@ import lombok.Setter;
 @Table(name = "dependency")
 public class AssetDependency {
 
+    //Private fields:
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "asset_id")
-    @JsonIgnoreProperties("dependencies")
+    @JsonIgnoreProperties(value = "dependencies", allowSetters = true)
     private Asset asset;
 
     @ManyToOne
@@ -39,5 +44,4 @@ public class AssetDependency {
 
     @Column(name = "relation_type")
     private String relationType;
-
 }
