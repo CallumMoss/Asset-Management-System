@@ -31,5 +31,4 @@ function AlertDialog({ open, handleClose, title, message, onConfirm }) {
         </Dialog>
     );
 }
-
 export default AlertDialog;

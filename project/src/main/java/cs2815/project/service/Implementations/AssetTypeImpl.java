@@ -1,6 +1,8 @@
 package cs2815.project.service.Implementations;
 
-import cs2815.project.model.Asset;
+/*
+ * Imports for project:
+ */
 import cs2815.project.model.AssetType;
 import cs2815.project.model.Log;
 import cs2815.project.repo.AssetRepo;
@@ -8,18 +10,29 @@ import cs2815.project.repo.AssetTypeRepo;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.AssetTypeService;
+
+/*
+ * Springboot imports:
+ */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/*
+ * Java imports:
+ */
 import java.sql.Timestamp;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Implementation of the AssetTypeService interface.
+ */
 @Service
 public class AssetTypeImpl implements AssetTypeService {
 
+    //Private fields:
     @Autowired
     private AssetTypeRepo repo;
 
@@ -35,6 +48,11 @@ public class AssetTypeImpl implements AssetTypeService {
     @Autowired
     private UserServiceImpl userService;
 
+    /**
+     * Creates a new asset type.
+     * @param assetType The asset type object to be created.
+     * @param username The username of the user creating the asset type.
+     */
     @Override
     public void createAssetType(AssetType assetType, String username) {
         repo.save(assetType);
@@ -48,6 +66,10 @@ public class AssetTypeImpl implements AssetTypeService {
 
     }
 
+    /**
+     * Creates base asset types.
+     * Populates the system with initial asset types.
+     */
     @Override
     public void createBaseTypes() {
         createAssetType(new AssetType(1, "Python File", "A file that contains python code for a given project.",
@@ -62,6 +84,10 @@ public class AssetTypeImpl implements AssetTypeService {
                 "BaseAdmin");
     }
 
+    /**
+     * Retrieves asset types and their attributes.
+     * @return A list containing asset types and their attributes.
+     */
     @Override
     public List<AbstractMap.SimpleEntry<String, List<String>>> getTypesAndAttributes() {
 
@@ -83,6 +109,12 @@ public class AssetTypeImpl implements AssetTypeService {
         return typeAndAttributes;
     }
 
+    /**
+     * Sorts a list of asset types based on given criteria.
+     * @param unsortedAssetTypes The unsorted list of asset types.
+     * @param orderBy The criteria to sort by.
+     * @return The sorted list of asset types.
+     */
     @Override
     public List<AssetType> sort(List<AssetType> unsortedAssetTypes, String orderBy) {
         List<String> sortByList = new ArrayList<>();
@@ -131,6 +163,11 @@ public class AssetTypeImpl implements AssetTypeService {
         return sortedAssetTypes;
     }
 
+    /**
+     * Retrieves the attributes of specific asset type.
+     * @param assetType The asset type.
+     * @return The list of attributes for the given asset type.
+     */
     @Override
     public List<String> getAttributes(AssetType assetType) {
         List<Object[]> rawTitles = repo.getAttributesById(assetType.getType_id());
@@ -144,6 +181,11 @@ public class AssetTypeImpl implements AssetTypeService {
         return titles;
     }
 
+    /**
+     * Edits an existing asset type.
+     * @param assetType The updated asset type object.
+     * @param username The username of the user performing the edit.
+     */
     @Override
     public void editAssetType(AssetType assetType, String username) {
 
@@ -153,7 +195,7 @@ public class AssetTypeImpl implements AssetTypeService {
         Log log = new Log();
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUser(userRepo.findByUserName(username));
-        log.setUpdateDescription(
+                log.setUpdateDescription(
                 assetType.getType_name() + " asset type was edited! Modifications are the following:\n" +
                         "Name: " + assetType.getType_name() + "\n" +
                         "Description: " + assetType.getDescription() + "\n" +
@@ -163,6 +205,11 @@ public class AssetTypeImpl implements AssetTypeService {
         logrepo.save(log);
     }
 
+    /**
+     * Deletes an existing asset type.
+     * @param assetTypeId The ID of the asset type to be deleted.
+     * @param username The username of the user performing the deletion.
+     */
     @Override
     public void deleteAssetType(int assetTypeId, String username) {
         Log log = new Log();
@@ -176,11 +223,20 @@ public class AssetTypeImpl implements AssetTypeService {
         repo.deleteAssetTypeById(assetTypeId);
     }
 
+    /**
+     * Refreshes the list of asset types.
+     * @return The refreshed list of asset types.
+     */
     @Override
     public List<AssetType> refreshAssetType() {
         return repo.getAllAssetTypes();
     }
 
+    /**
+     * Searches for asset types based on search string.
+     * @param searchString The string to search for.
+     * @return The list of asset types matching the search criteria.
+     */
     @Override
     public List<AssetType> searchTypes(String searchString) {
 

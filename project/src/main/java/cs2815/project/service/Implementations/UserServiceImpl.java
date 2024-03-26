@@ -1,25 +1,35 @@
 package cs2815.project.service.Implementations;
 
-import cs2815.project.model.Asset;
+/*
+ * Imports for project:
+ */
 import cs2815.project.model.Log;
 import cs2815.project.model.User;
 import cs2815.project.repo.ChatBoardRepo;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.repo.UserRepo;
 import cs2815.project.service.UserService;
+
+/*
+ * Springboot imports:
+ */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+/*Java imports: */
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Implementation of the UserService interface that provides functionality related to user management.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
+    //Private fields:
     @Autowired
     private UserRepo repo;
 
@@ -32,9 +42,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder key;
 
+    /**
+     * Creates base users if they do not already exist in the database.
+     */
     @Override
     public void createBaseUsers() {
-
         if (repo.findByUserName("BaseAdmin") == null && repo.findByUserName("BaseViewer") == null
                 && repo.findByUserName("BaseUser") == null) {
             User baseViewer = new User("BaseViewer", "Viewer", "Smith", "password",
@@ -47,103 +59,119 @@ public class UserServiceImpl implements UserService {
             repo.save(baseUser);
             repo.save(baseAdmin);
         }
-
     }
 
+    /**
+     * Registers a new user in the system.
+     * @param user The user to register.
+     * @param username The username of the user performing the registration.
+     */
     @Override
     public void registerUser(User user, String username) {
-
         user.encryptPassword(key);
-
         Log log = new Log();
-
         repo.save(user);
         log.setUser(repo.findByUserName(username));
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUpdateDescription(user.getUser_name() + " was created!");
-
         logrepo.save(log);
-
     }
 
+    /**
+     * Logs in a user.
+     * @param user The user to log in.
+     * @return True if the login is successful, false otherwise.
+     */
     @Override
     public boolean logIn(User user) {
         User existingUser = repo.findByUserName(user.getUser_name());
-
         Log loginLog = new Log();
         loginLog.setUser(existingUser);
-
         loginLog.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
-
         boolean authenticated = existingUser != null
                 && key.matches(user.getUser_password(), existingUser.getUser_password());
         if (authenticated) {
             loginLog.setUpdateDescription(user.getUser_name() + " successfully logged in!");
-
         } else {
             loginLog.setUpdateDescription(user.getUser_name() + " failed to log in!");
         }
-
         logrepo.save(loginLog);
-
         return authenticated;
     }
 
+    /**
+     * Retrieves the role of user by username.
+     * @param username The username of the user.
+     * @return The role of the user, or null if the user does not exist.
+     */
     @Override
     public String getUserRole(String username) {
         User user = repo.findByUserName(username);
         return user != null ? user.getUser_role() : null;
     }
 
+    /**
+     * Edits a user's information.
+     * @param user The user with updated information.
+     * @param username The username of the user performing the edit.
+     */
     @Override
     public void editUser(User user, String username) {
-
         Log log = new Log();
         log.setUser(repo.findByUserName(username));
-        log.setUpdateDescription(user.getUser_name() + " was succesfully edited!");
+        log.setUpdateDescription(user.getUser_name() + " was successfully edited!");
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         logrepo.save(log);
-
         repo.updateUserFieldsById(user.getId(), user.getUser_name(), user.getUser_first_name(),
                 user.getUser_last_name(), user.getUser_role());
     }
 
+    /**
+     * Deletes a user from system.
+     * @param userId The ID of the user to delete.
+     * @param username The username of the user performing the deletion.
+     */
     @Override
     public void deleteUser(int userId, String username) {
-
         Log log = new Log();
         User tempUser = repo.findById(userId);
-        log.setUpdateDescription(tempUser.getUser_name() + " was succefully deleted!");
+        log.setUpdateDescription(tempUser.getUser_name() + " was successfully deleted!");
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         log.setUser(repo.findByUserName(username));
         logrepo.save(log);
-
         repo.eraseUserIdFromAssetUser(userId);
         logrepo.eraseUserIdFromLogs(userId);
         chatrepo.eraseUserIdfromChatBoard(userId);
-
         repo.deleteById(userId);
     }
 
+    /**
+     * Resets the password of a user.
+     * @param userName The username of the user.
+     * @param newPassword The new password.
+     */
     @Override
     public void resetPassword(String userName, String newPassword) {
-
         Log log = new Log();
         User tempUser = repo.findByUserName(userName);
         log.setUser(tempUser);
-        log.setUpdateDescription(tempUser.getUser_name() + " password succesfully changed!");
+        log.setUpdateDescription(tempUser.getUser_name() + " password successfully changed!");
         log.setUpdateTimestamp(new Timestamp(System.currentTimeMillis()));
         logrepo.save(log);
-
         repo.resetPassword(userName, key.encode(newPassword));
     }
 
+    /**
+     * Sorts a list of users based on the specified criteria.
+     * @param unsortedUsers The unsorted list of users.
+     * @param orderBy The criteria to sort by.
+     * @return The sorted list of users.
+     */
     @Override
     public List<User> sort(List<User> unsortedUsers, String orderBy) {
         List<String> sortByList = new ArrayList<String>();
         List<User> sortedUsers = new ArrayList<>();
         List<User> allUsers = searchByUsername("");
-
         List<Integer> unsortedUserIds = new ArrayList<Integer>();
         for (User user : unsortedUsers) {
             unsortedUserIds.add(user.getId());
@@ -176,8 +204,6 @@ public class UserServiceImpl implements UserService {
                 return sortedUsers;
             default:
                 for (User user : unsortedUsers) {
-                    // May need to add.LowerCase() to this in future, case sensitivity makes
-                    // different usernames so not added for now.
                     sortByList.add(user.getUser_name());
                 }
         }
@@ -200,11 +226,20 @@ public class UserServiceImpl implements UserService {
         return sortedUsers;
     }
 
+    /**
+     * Retrieves all users from the database.
+     * @return A list of all users.
+     */
     @Override
     public List<User> refreshUser() {
         return repo.getAllUsers();
     }
 
+    /**
+     * Searches for users by username.
+     * @param searchString The search string to match usernames.
+     * @return A list of users matching the search criteria.
+     */
     @Override
     public List<User> searchByUsername(String searchString) {
         List<String> usernameList = repo.findAllUserNames();
@@ -222,6 +257,11 @@ public class UserServiceImpl implements UserService {
         return compatibleUsers;
     }
 
+    /**
+     * Searches for users by first name.
+     * @param searchString The search string to match first names.
+     * @return A list of users matching the search criteria.
+     */
     @Override
     public List<User> searchByFirstName(String searchString) {
         List<String> FNameList = repo.findAllFNames();
@@ -238,6 +278,11 @@ public class UserServiceImpl implements UserService {
         return compatibleUsers;
     }
 
+    /**
+     * Searches for users by last name.
+     * @param searchString The search string to match last names.
+     * @return A list of users matching the search criteria.
+     */
     @Override
     public List<User> searchByLastName(String searchString) {
         List<String> LNameList = repo.findAllLNames();
@@ -254,6 +299,11 @@ public class UserServiceImpl implements UserService {
         return compatibleUsers;
     }
 
+    /**
+     * Searches for users by their role.
+     * @param searchString The search string to match roles.
+     * @return A list of users matching the search criteria.
+     */
     @Override
     public List<User> searchByRole(String searchString) {
         List<String> roleList = repo.findAllRoles();
@@ -270,8 +320,16 @@ public class UserServiceImpl implements UserService {
         return compatibleUsers;
     }
 
+    /**
+     * Checks if two strings are similar.
+     * @param searchString The first string.
+     * @param compareString The second string.
+     * @return True if the strings are similar, false otherwise.
+     */
     public boolean isSimilar(String searchString, String compareString) {
-        if (searchString.equals(compareString)) {return true;}
+        if (searchString.equals(compareString)) {
+            return true;
+        }
         int pointerSearch = 0;
         int pointerCompare = 0;
         while (pointerSearch < searchString.length() && pointerCompare < compareString.length()) {
@@ -284,9 +342,13 @@ public class UserServiceImpl implements UserService {
         return pointerSearch == searchString.length();
     }
 
+    /**
+     * Finds a user by their username.
+     * @param userName The username of the user to find.
+     * @return The user with the specified username.
+     */
     @Override
     public User findUser(String userName) {
-
         return repo.findByUserName(userName);
     }
 }

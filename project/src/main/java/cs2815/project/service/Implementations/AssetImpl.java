@@ -1,5 +1,8 @@
 package cs2815.project.service.Implementations;
 
+/*
+ * Imports for project:
+ */
 import cs2815.project.model.Asset;
 import cs2815.project.model.AssetDependency;
 import cs2815.project.model.AssetType;
@@ -10,15 +13,27 @@ import cs2815.project.model.specialmodels.DependencyWrapper;
 import cs2815.project.repo.*;
 import cs2815.project.service.AssetService;
 
+/*
+ * Springboot imports:
+ */
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/*
+ * Java imports:
+ */
 import java.sql.Timestamp;
 import java.util.*;
 
+
+/**
+ * Implementation of AssetService.
+ * Provides methods to interact with Asset entities.
+ */
 @Service
 public class AssetImpl implements AssetService {
 
+    // Private fields:
     @Autowired
     private AssetRepo repo;
 
@@ -40,6 +55,11 @@ public class AssetImpl implements AssetService {
     @Autowired
     private UserServiceImpl userService;
 
+    /**
+     * Creates an asset.
+     * @param assetDto The asset wrapper object containing asset details.
+     * @param username The username of the user creating the asset.
+     */
     @Override
     public void createAsset(AssetWrapper assetdto, String username) {
 
@@ -104,7 +124,11 @@ public class AssetImpl implements AssetService {
 
     }
 
-    // Finds what Assets are dependant on the given AssetID asse
+    /**
+     * Search for assets by author.
+     * @param searchString The search string.
+     * @return List of compatible Asset objects.
+     */
     @Override
     public List<Asset> searchByAuthor(String searchString) {
         List<String> assetAuthors = userRepo.findAllUserNames();
@@ -127,6 +151,11 @@ public class AssetImpl implements AssetService {
         return compatibleAssets;
     }
 
+    /**
+     * Search for assets by name.
+     * @param searchString The search string.
+     * @return List of compatible Asset objects.
+     */
     @Override
     public List<Asset> searchByName(String searchString) {
         List<String> assetNames = repo.getAllNames();
@@ -143,6 +172,11 @@ public class AssetImpl implements AssetService {
         return compatibleAssets;
     }
 
+    /**
+     * Search for assets by type.
+     * @param searchString The search string.
+     * @return List of compatible Asset objects.
+     */
     @Override
     public List<Asset> searchByType(String searchString) {
         List<String> assetTypes = repo.getAllTypes();
@@ -157,6 +191,11 @@ public class AssetImpl implements AssetService {
         return compatibleAssets;
     }
 
+    /**
+     * Converts an AssetWrapper object to an Asset object.
+     * @param assetDto The AssetWrapper object to convert.
+     * @return The corresponding Asset object.
+     */
     public Asset convertWrapperToAsset(AssetWrapper assetDto) {
         Asset asset = new Asset();
         asset.setAsset_id(assetDto.getAsset_id());
@@ -174,22 +213,39 @@ public class AssetImpl implements AssetService {
         return asset;
     }
 
+    /**
+     * Refreshes the list of assets.
+     * @return List of refreshed Asset objects.
+     */
     @Override
     public List<Asset> refresh() {
         return repo.getAllAssets();
     }
 
+    /**
+     * Retrieves the newest asset.
+     * @return The newest Asset object.
+     */
     @Override
     public Asset getNewestAsset() {
         return repo.findNewestAsset();
     }
 
+    /**
+     * Retrieves an asset by ID.
+     * @param AssetId The ID of the asset.
+     * @return The corresponding Asset object.
+     */
     @Override
     public Asset getAssetById(int AssetId) {
         return repo.findAssetById(AssetId);
-
     }
 
+    /**
+     * Deletes an asset.
+     * @param assetID The ID of the asset to delete.
+     * @param username The username of the user performing the deletion.
+     */
     @Override
     public void deleteAsset(int assetID, String username) {
 
@@ -209,6 +265,11 @@ public class AssetImpl implements AssetService {
         repo.deleteAssetbyID(assetID);
     }
 
+    /**
+     * Edits an existing asset.
+     * @param assetDto The asset wrapper object containing the updated asset details.
+     * @param username The username of the user performing the edit.
+     */
     @Override
     public void editAsset(AssetWrapper assetDto, String username) {
 
@@ -263,13 +324,17 @@ public class AssetImpl implements AssetService {
                         "Link: " + asset.getLink() + "\n" +
                         "Attribute1: " + asset.getTypeAttributeValue1() + "\n" +
                         "Attribute2: " + asset.getTypeAttributeValue2() + "\n" +
-                        "Attribute3: " + asset.getTypeAttributeValue2());
+                        "Attribute3: " + asset.getTypeAttributeValue3());
 
         logRepo.save(log);
 
         repo.save(asset);
     }
 
+    /**
+     * Creates base assets.
+     * Populates the system with initial assets.
+     */
     public void createBaseAssets() {
         List<String> authors = Arrays.asList("BaseAdmin");
         DependencyWrapper dwrapper = new DependencyWrapper();
@@ -279,7 +344,7 @@ public class AssetImpl implements AssetService {
                 "A python program that contains a class which describes the attributes and functions of a chess piece.",
                 "website.com/piece.py", "Python File", authors, dwrapper_list, "3.9.10", null, null);
         createAsset(wrapper, "BaseUser");
-        //
+
         authors = Arrays.asList("BaseViewer");
         dwrapper = new DependencyWrapper();
         dwrapper_list.clear();
@@ -297,6 +362,12 @@ public class AssetImpl implements AssetService {
         createAsset(wrapper, "BasAdmin");
     }
 
+    /**
+     * Sorts list of assets based on given criteria.
+     * @param unsortedAssets The unsorted list of assets.
+     * @param orderBy The criteria to sort by.
+     * @return The sorted list of assets.
+     */
     @Override
     public List<Asset> sort(List<Asset> unsortedAssets, String orderBy) {
         List<String> sortByList = new ArrayList<String>();
@@ -345,6 +416,10 @@ public class AssetImpl implements AssetService {
         return sortedAssets;
     }
 
+    /**
+     * Retrieves assets and their attributes.
+     * @return A list containing assets and their attributes.
+     */
     @Override
     public List<AbstractMap.SimpleEntry<String, List<AbstractMap.SimpleEntry<String, List<String>>>>> getAssetsAndAttributes() {
         List<AssetType> assetTypeList = assetTypeRepo.getAllAssetTypes();

@@ -1,13 +1,22 @@
 package cs2815.project.service;
 
+/*
+ * Java Imports:
+ */
 import java.util.AbstractMap;
 import java.util.List;
 
-import cs2815.project.model.Asset;
+/*
+ * Imports for project:
+ */
 import cs2815.project.model.AssetType;
 
+/**
+ * Interface for AssetTypes
+ */
 public interface AssetTypeService {
 
+    //Function declarations:
     void createAssetType(AssetType assetType, String username);
 
     void editAssetType(AssetType assetType, String username);
