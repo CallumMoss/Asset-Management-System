@@ -132,12 +132,11 @@ class AssetBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(searched_assets.get(i).equals(expected_assets.get(i)));
         }
-        expected_assets.clear();
     }
 
     @Test
     void test3() {
-        // Testing default search (by type)
+        // Testing filter search (by type)
         List<Asset> searched_assets;
 
         List<Asset> expected_assets = new ArrayList<Asset>();
@@ -188,12 +187,11 @@ class AssetBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(searched_assets.get(i).equals(expected_assets.get(i)));
         }
-        expected_assets.clear();
     }
 
     @Test
     void test4() {
-        // Testing default search (by author)
+        // Testing filter search (by author)
         List<Asset> searched_assets;
 
         List<Asset> expected_assets = new ArrayList<Asset>();
@@ -242,8 +240,6 @@ class AssetBackEndTests {
         expected_assets.add(asset1);
 
         for (int i = 0; i < 3; i++) {
-                //System.out.println(searched_assets.get(i).getTitle());
-                //System.out.println(expected_assets.get(i).getTitle());
             assert(searched_assets.get(i).equals(expected_assets.get(i)));
         }
         expected_assets.clear();
@@ -255,21 +251,52 @@ class AssetBackEndTests {
 
         expected_assets.add(asset2);
         expected_assets.add(asset3);
-        
-        System.out.println(searched_assets1.get(0).getTitle());
-        System.out.println(expected_assets.get(0).getTitle());
-        System.out.println(searched_assets.get(0).getTitle());
-        System.out.println(expected_assets.get(1).getTitle());
-        System.out.println(searched_assets.get(1).getTitle());
-        System.out.println(expected_assets.get(1).getTitle());
 
         assert(searched_assets1.get(0).equals(expected_assets.get(0)));
         assert(searched_assets2.get(0).equals(expected_assets.get(1)));
         assert(searched_assets1.get(1).equals(expected_assets.get(1)));
-
-        // searched_assets 1 and 2
     }
 
+    @Test
+    void test5() {
+        // Testing alphabetical sort
+        List<Asset> sorted_assets;
 
-    // Testing incorrect cases (such as creating an asset that already exists)
+        List<Asset> expected_assets = new ArrayList<Asset>();
+        
+        List<String> authors = Arrays.asList("BaseAdmin");
+        DependencyWrapper dwrapper = new DependencyWrapper();
+        List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
+        dwrapper_list.add(dwrapper);
+        AssetWrapper wrapper1 = new AssetWrapper(1, "Piece.py",
+                "A python program that contains a class which describes the attributes and functions of a chess piece.",
+                "website.com/piece.py", "Python File", authors, dwrapper_list, "3.9.10", null, null);
+        Asset asset1 = ai.convertWrapperToAsset(wrapper1);
+
+        authors = Arrays.asList("BaseViewer");
+        dwrapper = new DependencyWrapper();
+        dwrapper_list.clear();
+        dwrapper_list.add(dwrapper);
+        AssetWrapper wrapper2 = new AssetWrapper(2, "Heroes Rising", "2D Game developed as part of the first year games module.",
+                "some_link.com", "Project", authors, dwrapper_list, "Callum and Satwik", "DongGyun", "Complete");
+        Asset asset2 = ai.convertWrapperToAsset(wrapper2);
+
+        authors = Arrays.asList("BaseUser", "BaseViewer");
+        dwrapper = new DependencyWrapper("Heroes Rising", "Documentation of");
+        dwrapper_list.clear();
+        dwrapper_list.add(dwrapper);
+        AssetWrapper wrapper3 = new AssetWrapper(3, "README", "Read me file for the project Heroes Rising.", "random/readme.md",
+                "Documentation", authors, dwrapper_list, ".MD", "Outlines details relevant for product use", null);
+        Asset asset3 = ai.convertWrapperToAsset(wrapper3);
+
+        sorted_assets = ai.sort(ai.refresh(), "");
+        
+        expected_assets.add(asset2);
+        expected_assets.add(asset1);
+        expected_assets.add(asset3);
+
+        for (int i = 0; i < 3; i++) {
+            assert(sorted_assets.get(i).equals(expected_assets.get(i)));
+        }
+    }
 }

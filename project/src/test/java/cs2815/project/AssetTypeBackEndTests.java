@@ -74,7 +74,6 @@ class AssetTypeBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(searched_asset_types.get(i).equals(expected_asset_types.get(i)));
         }
-        expected_asset_types.clear();
     }
 
     @Test
@@ -104,7 +103,6 @@ class AssetTypeBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
         }
-        expected_asset_types.clear();
     }
 
     @Test
@@ -120,7 +118,6 @@ class AssetTypeBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
         }
-        expected_asset_types.clear();
     }
 
     @Test
@@ -136,7 +133,6 @@ class AssetTypeBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_asset_types.get(i).equals(expected_asset_types.get(i)));
         }
-        expected_asset_types.clear();
     }
 
     @Test
@@ -161,6 +157,4 @@ class AssetTypeBackEndTests {
         assert(atsi.searchTypes("TempAssetType").get(0).equals(newAt));
         atsi.deleteAssetType(newAt.getType_id(), "BasAdmin");
     }
-
-    // Testing incorrect cases (such as creating an asset type that already exists)
 }
