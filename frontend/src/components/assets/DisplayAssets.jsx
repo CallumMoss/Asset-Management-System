@@ -19,7 +19,11 @@ import {
   MenuItem,
 } from "@mui/material";
 import AlertDialog from "./AlertDialog";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Typography from "@mui/material/Typography";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import ForumIcon from "@mui/icons-material/Forum";
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -51,7 +55,14 @@ function LogsDialog({ logs, open, handleClose }) {
         {/* Display logs */}
         {logs.map((log) => (
           <TableRow key={log.id}>
-            <TableCell>{log.updateDescription}</TableCell>
+            <TableCell>
+              {log.updateDescription.split("\n").map((line, index) => (
+                <React.Fragment key={index}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
+            </TableCell>
             <TableCell>{formatLogTime(log.updateTimestamp)}</TableCell>
             <TableCell>
               {log.user ? log.user.user_name : "Deleted User"}
@@ -157,46 +168,50 @@ function MessagesDialog({ open, handleClose, user, asset }) {
   };
 
   return (
-    {/*Return to display asset tables along with logs.*/},
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Messages</DialogTitle>
-      <DialogContent>
-        {/* Display messages */}
-        {messages.map((message) => (
-          <TableRow key={message.messageId}>
-            <TableCell>{message.textMessage}</TableCell>
-            <TableCell>{formatLogTime(message.messageSent)}</TableCell>
-            <TableCell>
-              {message.user ? message.user.user_name : "Deleted User"}
-            </TableCell>
-          </TableRow>
-        ))}
-      </DialogContent>
-      <DialogContent>
-        {/* Textbox for input */}
-        <TextField
-          label="Type your message"
-          variant="outlined"
-          fullWidth
-          multiline
-          rows={2}
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-      </DialogContent>
-      <DialogActions>
-        {/* Send button */}
-        <Button onClick={handleSend} color="primary">
-          Send
-        </Button>
-        <Button onClick={handleClose}>Close</Button>
-      </DialogActions>
-    </Dialog>
+    {
+      /*Return to display asset tables along with logs.*/
+    },
+    (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Messages</DialogTitle>
+        <DialogContent>
+          {/* Display messages */}
+          {messages.map((message) => (
+            <TableRow key={message.messageId}>
+              <TableCell>{message.textMessage}</TableCell>
+              <TableCell>{formatLogTime(message.messageSent)}</TableCell>
+              <TableCell>
+                {message.user ? message.user.user_first_name : "Deleted User"}
+              </TableCell>
+            </TableRow>
+          ))}
+        </DialogContent>
+        <DialogContent>
+          {/* Textbox for input */}
+          <TextField
+            label="Type your message"
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={2}
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          {/* Send button */}
+          <Button onClick={handleSend} color="primary">
+            Send
+          </Button>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    )
   );
 }
 
 // Component to display and manage assets
-function DisplayAssets({ username, assetList }) {
+function DisplayAssets({ username, userRole, assetList }) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -217,6 +232,10 @@ function DisplayAssets({ username, assetList }) {
   const [orderBy, setOrderBy] = useState(null);
   const [parentAssets, setParentAssets] = useState([]);
   const navigate = useNavigate();
+  // Initialize with null for optional attributes.
+  const [attribute1, setAttribute1] = useState("");
+  const [attribute2, setAttribute2] = useState("");
+  const [attribute3, setAttribute3] = useState("");
 
   useEffect(() => {
     if (assetList.length === 0) {
@@ -416,214 +435,271 @@ function DisplayAssets({ username, assetList }) {
   const groupedAssets = groupByAssetType(assets);
 
   return (
-    {/*Return to display all Asset tables on asset management page.*/},
-    <Container component={Paper}>
-      {/* Iterate over each asset type group */}
-      {Object.entries(groupedAssets).map(([assetType, assets]) => (
-        <div key={assetType}>
-          <h2
-            style={{
-              fontWeight: "bold",
-              marginTop: "60px",
-              fontSize: "1.5em",
-            }}>
-            {assetType}
-          </h2>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  Asset Title
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  Description
-                </TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Link</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>Authors</TableCell>
-                <TableCell style={{ fontWeight: "bold" }}>
-                  Create Date
-                </TableCell>
-                <TableCell>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {/* Sort button:*/}
-                    <Button
-                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
-                      aria-controls="sort-menu"
-                      aria-haspopup="true">
-                      Sort
-                    </Button>
-                    {/*Menu for sortby options:*/}
-                    <Menu
-                      id="sort-menu"
-                      anchorEl={sortAnchorEl}
-                      open={Boolean(sortAnchorEl)}
-                      onClose={() => setSortAnchorEl(null)}>
-                      <MenuItem onClick={() => handleSortBy("Newest")}>
-                        Newest
-                      </MenuItem>
-                      <MenuItem onClick={() => handleSortBy("Oldest")}>
-                        Oldest
-                      </MenuItem>
-                      <MenuItem onClick={() => handleSortBy("Alphabetically")}>
-                        Alphabetically
-                      </MenuItem>
-                    </Menu>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <AlertDialog
-                open={openAlertDialog}
-                handleClose={() => setOpenAlertDialog(false)}
-                title="Confirm Delete"
-                message="Are you sure you want to delete this asset?"
-                onConfirm={confirmDelete}
-              />
-
-              {assets.map((asset) => (
-                <TableRow key={asset.asset_id}>
-                  <TableCell onClick={() => handleTitleClick(asset)}>
-                    {asset.title}
+    {
+      /*Return to display all Asset tables on asset management page.*/
+    },
+    (
+      <Container component={Paper}>
+        {/* Iterate over each asset type group */}
+        {Object.entries(groupedAssets).map(([assetType, assets]) => (
+          <div key={assetType}>
+            <h2
+              style={{
+                fontWeight: "bold",
+                marginTop: "60px",
+                fontSize: "1.5em",
+              }}>
+              {assetType}
+            </h2>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Asset Title
                   </TableCell>
-                  <TableCell>{asset.asset_description}</TableCell>
-                  <TableCell style={{ color: "blue" }}>
-                    <a
-                      href={
-                        asset.link.startsWith("http")
-                          ? asset.link
-                          : `http://${asset.link}`
-                      }
-                      target="_blank"
-                      rel="noopener noreferrer">
-                      {asset.link}
-                    </a>
+                  <TableCell style={{ width: "20%", fontWeight: "bold" }}>
+                    Description
                   </TableCell>
-
-                  <TableCell>
-                    {asset.authors.map((author) => (
-                      <div key={author.id}>{author.user_name}</div>
-                    ))}
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Link
                   </TableCell>
-                  <TableCell>
-                    {FormatTime({ timestamp: asset.updateTimestamp })}
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Authors
                   </TableCell>
-                  <TableCell>
-                    {/*Edit button:*/}
-                    <Button onClick={() => handleEdit(asset.asset_id)}>
-                      Edit
-                    </Button>
-                    {/*Delete button:*/}
-                    <Button onClick={() => promptDelete(asset.asset_id)}>
-                      Delete
-                    </Button>
+                  <TableCell style={{ width: "15%", fontWeight: "bold" }}>
+                    Create Date
+                  </TableCell>
+                  <TableCell style={{ width: "20%" }}>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {/* Sort button:*/}
+                      <Button
+                        onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                        aria-controls="sort-menu"
+                        aria-haspopup="true">
+                        Sort
+                      </Button>
+                      {/*Menu for sortby options:*/}
+                      <Menu
+                        id="sort-menu"
+                        anchorEl={sortAnchorEl}
+                        open={Boolean(sortAnchorEl)}
+                        onClose={() => setSortAnchorEl(null)}>
+                        <MenuItem onClick={() => handleSortBy("Newest")}>
+                          Newest
+                        </MenuItem>
+                        <MenuItem onClick={() => handleSortBy("Oldest")}>
+                          Oldest
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handleSortBy("Alphabetically")}>
+                          Alphabetically
+                        </MenuItem>
+                      </Menu>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ))}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{selectedAsset && selectedAsset.title}</DialogTitle>
-        <DialogContent>
-          {/*PopUp menu for extra information about assets: */}
-          {selectedAsset && (
-            <div>
-              <p>Description: {selectedAsset.asset_description}</p>
-              <p>Link: {selectedAsset.link}</p>
-              <p>Asset Type: {selectedAsset.asset_type?.type_name}</p>
-              <p>
-                Languages:{" "}
-                {selectedAsset.languages
-                  .map((language) => language.language_name)
-                  .join(", ")}
-              </p>
-              <p>
-                Authors:{" "}
-                {selectedAsset.authors
-                  .map((author) => author.user_name)
-                  .join(", ")}
-              </p>
-              <br />
-              <p>
-                Parent dependencies of the current Asset:{" "}
-                {parentAssets
-                  .map(
-                    (dependency) =>
-                      `${dependency.asset.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <p>
-                Children dependencies of the current Asset:{" "}
-                {selectedAsset.dependencies
-                  .filter(
-                    (dependency) =>
-                      dependency.dependent && dependency.dependent.title
-                  )
-                  .map(
-                    (dependency) =>
-                      `${dependency.dependent.title} (${dependency.relationType})`
-                  )
-                  .join(", ") || "None"}
-              </p>
-              <p>
-                All dependencies:
-                <Button onClick={() => handleShowDependencies()}>Show</Button>
-              </p>
-              <br />
-              <p>
-                <p>
-                  Audit Trail:
-                  <Button onClick={() => handleViewLog(selectedAsset.asset_id)}>
-                    View
-                  </Button>
-                </p>
-                <p>
-                  Discussion Board:
-                  <Button onClick={() => handleViewMessages(selectedAsset)}>
-                    Open
-                  </Button>
-                </p>
-              </p>
-            </div>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog}>Close</Button>
-        </DialogActions>
-      </Dialog>
-      <LogsDialog
-        logs={logs}
-        open={logsDialogOpen}
-        handleClose={handleCloseLogsDialog}
-      />
-      <MessagesDialog
-        open={openMessageDialog}
-        handleClose={handleCloseMessageDialog}
-        asset={selectedAsset}
-        user={user}
-      />
+              </TableHead>
+              <TableBody>
+                <AlertDialog
+                  open={openAlertDialog}
+                  handleClose={() => setOpenAlertDialog(false)}
+                  title="Confirm Delete"
+                  message="Are you sure you want to delete this asset?"
+                  onConfirm={confirmDelete}
+                />
 
-      {/* Pagination controls */}
-      {!isEditing && (
-        <>
-        {/*Previous button:*/}
-          <Button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}>
-            Previous
-          </Button>
-          {/*Next button:*/}
-          <Button
-            disabled={currentPage === nPages}
-            onClick={() => setCurrentPage(currentPage + 1)}>
-            Next
-          </Button>
-        </>
-      )}
-    </Container>
+                {assets.map((asset) => (
+                  <TableRow key={asset.asset_id}>
+                    <TableCell onClick={() => handleTitleClick(asset)}>
+                      {asset.title}
+                    </TableCell>
+                    <TableCell style={{ width: "25%" }}>
+                      {asset.asset_description}
+                    </TableCell>
+                    <TableCell style={{ width: "20%", color: "blue" }}>
+                      <a
+                        href={
+                          asset.link.startsWith("http")
+                            ? asset.link
+                            : `http://${asset.link}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        {asset.link}
+                      </a>
+                    </TableCell>
+
+                    <TableCell style={{ width: "15%" }}>
+                      {asset.authors.map((author) => (
+                        <div key={author.id}>{author.user_name}</div>
+                      ))}
+                    </TableCell>
+                    <TableCell style={{ width: "15%" }}>
+                      {FormatTime({ timestamp: asset.updateTimestamp })}
+                    </TableCell>
+                    <TableCell style={{ width: "10%" }}>
+                      {/*Edit button:*/}
+                      {userRole !== "Viewer" && (
+                        <Button onClick={() => handleEdit(asset.asset_id)}>
+                          Edit
+                        </Button>
+                      )}
+                      {/*Delete button:*/}
+                      {userRole !== "Viewer" && (
+                        <Button onClick={() => promptDelete(asset.asset_id)}>
+                          Delete
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ))}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          maxWidth="md"
+          fullWidth>
+          <DialogTitle>{selectedAsset?.title || "Asset Details"}</DialogTitle>
+          <DialogContent>
+            {selectedAsset ? (
+              <div>
+                <Typography variant="body1">
+                  <strong>Description:</strong>{" "}
+                  {selectedAsset.asset_description}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Link:</strong>{" "}
+                  <Link
+                    href={
+                      selectedAsset.link.startsWith("http")
+                        ? selectedAsset.link
+                        : `http://${selectedAsset.link}`
+                    }
+                    style={{ color: "blue" }}
+                    target="_blank"
+                    rel="noopener noreferrer">
+                    {selectedAsset.link}
+                  </Link>
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Asset Type:</strong>{" "}
+                  {selectedAsset.asset_type?.type_name}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Authors:</strong>{" "}
+                  {selectedAsset.authors
+                    .map((author) => author.user_name)
+                    .join(", ")}
+                </Typography>
+                <br />
+                {/* Conditional rendering for type attributes */}
+                {selectedAsset.asset_type.typeAttribute1 && (
+                  <Typography variant="body1">
+                    <strong>{selectedAsset.asset_type.typeAttribute1}: </strong>
+                    {selectedAsset.typeAttributeValue1}
+                  </Typography>
+                )}
+                {selectedAsset.asset_type.typeAttribute2 && (
+                  <Typography variant="body1">
+                    <strong>{selectedAsset.asset_type.typeAttribute2}: </strong>
+                    {selectedAsset.typeAttributeValue2}
+                  </Typography>
+                )}
+                {selectedAsset.asset_type.typeAttribute3 && (
+                  <Typography variant="body1">
+                    <strong>{selectedAsset.asset_type.typeAttribute3}: </strong>
+                    {selectedAsset.typeAttributeValue3}
+                  </Typography>
+                )}
+                <br />
+                {/* Dependencies */}
+
+                <Typography variant="body1">
+                  <strong>{selectedAsset.title} depends on:</strong>{" "}
+                  {parentAssets
+                    .map(
+                      (dependency) =>
+                        `${dependency.asset.title} (${dependency.relationType})`
+                    )
+                    .join(", ") || "No asset"}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Dependents on {selectedAsset.title}:</strong>{" "}
+                  {selectedAsset.dependencies
+                    .filter((dep) => dep.dependent && dep.dependent.title)
+                    .map(
+                      (dependency) =>
+                        `${dependency.dependent.title} (${dependency.relationType})`
+                    )
+                    .join(", ") || "No asset"}
+                </Typography>
+
+                <br />
+                {/* Actions */}
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={handleShowDependencies}
+                  startIcon={<VisibilityIcon />}>
+                  All dependencies
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleViewLog(selectedAsset.asset_id)}
+                  startIcon={<ListAltIcon />}>
+                  Audit Trail
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => handleViewMessages(selectedAsset)}
+                  startIcon={<ForumIcon />}>
+                  Discussion Board
+                </Button>
+              </div>
+            ) : (
+              <Typography variant="body1">No asset selected</Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Close</Button>
+          </DialogActions>
+        </Dialog>
+        <LogsDialog
+          logs={logs}
+          open={logsDialogOpen}
+          handleClose={handleCloseLogsDialog}
+        />
+        <MessagesDialog
+          open={openMessageDialog}
+          handleClose={handleCloseMessageDialog}
+          asset={selectedAsset}
+          user={user}
+        />
+
+        {/* Pagination controls */}
+        {!isEditing && (
+          <>
+            {/*Previous button:*/}
+            <Button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}>
+              Previous
+            </Button>
+            {/*Next button:*/}
+            <Button
+              disabled={currentPage === nPages}
+              onClick={() => setCurrentPage(currentPage + 1)}>
+              Next
+            </Button>
+          </>
+        )}
+      </Container>
+    )
   );
 }
 export default DisplayAssets;

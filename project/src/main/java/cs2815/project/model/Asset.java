@@ -1,8 +1,16 @@
 package cs2815.project.model;
 
+/*
+ * Java imports:
+ */
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+/*
+ * Imports:
+ */
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -74,7 +82,7 @@ public class Asset {
          * data
          */
         @ManyToOne
-        @JoinColumn(name = "asset_type_id")
+        @JoinColumn(name = "asset_type_id", nullable = false)
         private AssetType Asset_type;
 
         /**
@@ -90,11 +98,25 @@ public class Asset {
          * the dependencies in the dependency table.
          */
         @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
-        private List<AssetDependency> dependencies;
+        private List<AssetDependency> dependencies = new ArrayList<>();
 
-        @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-                        CascadeType.REFRESH })
-        @JoinTable(name = "asset_languages", joinColumns = @JoinColumn(name = "asset_id"), inverseJoinColumns = @JoinColumn(name = "language_id"))
-        private List<Languages> languages;
+     /**
+     * Override equals method to compare Asset objects based on asset_id.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Asset asset = (Asset) o;
+        return asset_id == asset.asset_id;
+    }
+
+    /**
+     * Override hashCode method to generate a hashCode based on asset_id.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(asset_id);
+    }
 
 }

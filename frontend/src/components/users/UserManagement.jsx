@@ -55,17 +55,6 @@ function UserManagement({ userRole, username }) {
           <h1 className="text-3xl font-bold mb-4">User Management</h1>
           <div className="flex flex-col items-center space-y-4 mb-4">
             <div className="flex items-center space-x-4 w-full max-w-lg">
-              
-              {/* ClearSearch button to reset the search */}
-              <button
-                className="py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-200"
-                onClick={() => {
-                  setSearchTerm("");
-                  setSearchedUsers([]);
-                }}>
-                Clear
-              </button>
-
               <input
                 type="text"
                 id="userSearchInput"
@@ -74,6 +63,17 @@ function UserManagement({ userRole, username }) {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
+              {searchTerm && (
+                  <button
+                      onClick={() => {
+                        setSearchTerm('');
+                        setSearchedUsers([]);
+                      }}
+                      className="right top-1/2 transform -translate-y-1/2 text-gray-600"
+                      aria-label="Clear search">
+                    &#x2715;
+                  </button>
+              )}
               <div className="flex space-x-2">
 
                 {/*Search button*/}

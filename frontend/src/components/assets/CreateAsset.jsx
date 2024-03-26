@@ -15,7 +15,6 @@ import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
-//Imports
 
 const defaultTheme = createTheme();
 
@@ -28,9 +27,7 @@ function getStyles(name, personName, theme) {
   };
 }
 
-//Function to display Create Asset menu:
 function CreateAsset({ username, userRole }) {
-  //Constant declaration and initialization.
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
@@ -40,23 +37,23 @@ function CreateAsset({ username, userRole }) {
   const [link, setLink] = useState("");
   const [authorsList, setAuthorsList] = useState([]);
   const [dependenciesList, setDependenciesList] = useState([]);
-  const [languages, setLanguages] = useState([]);
-  const [langList, setLangList] = useState([]);
-  const theme = useTheme();
-  const navigate = useNavigate();
   // Updated to handle multiple dependencies and their specific details
   const [dependencyDetails, setDependencyDetails] = useState([]);
+  // New State to store asset type attributes
+  const [assetTypeAttributes, setAssetTypeAttributes] = useState([]);
+  // New State to store asset attribute values
+  const [assetAttributeValues, setAssetAttributeValues] = useState({});
 
+  const theme = useTheme();
+  const navigate = useNavigate();
 
   // Fetchs data from server on the component mount
   useEffect(() => {
     fetchAssetTypes();
     fetchAuthors();
     fetchDependencies();
-    fetchLanguages();
   }, []);
 
-  //Used to get AssetType values.
   const fetchAssetTypes = async () => {
     try {
       const response = await axios.get(
@@ -68,7 +65,6 @@ function CreateAsset({ username, userRole }) {
     }
   };
 
-  //Used to get Author values.
   const fetchAuthors = async () => {
     try {
       const response = await axios.get("http://localhost:8080/users/refresh");
@@ -78,7 +74,6 @@ function CreateAsset({ username, userRole }) {
     }
   };
 
-  //Used to get Dependencies.
   const fetchDependencies = async () => {
     try {
       const response = await axios.get("http://localhost:8080/assets/refresh");
@@ -87,20 +82,28 @@ function CreateAsset({ username, userRole }) {
       console.error("Error fetching dependencies:", error);
     }
   };
-
-  //Used to get Language values.
-  const fetchLanguages = async () => {
+  const fetchAssetTypeAttributes = async (typeId) => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/languages/refresh"
+      const response = await axios.post(
+        `http://localhost:8080/asset_types/attributesByType`,
+        { type_id: typeId }
       );
-      setLangList(response.data);
+      console.log(response);
+      // Split the string into an array, and remove any 'null' or empty values
+      const attributes = response.data
+        .filter((attr) => attr && attr.trim().toLowerCase() !== "null");
+      setAssetTypeAttributes(attributes);
+      // Initialize an empty value for each attribute
+      const newAttributeValues = attributes.reduce((acc, attr) => {
+        acc[attr.trim()] = ""; // Trim the attribute and use it as a key
+        return acc;
+      }, {});
+      setAssetAttributeValues(newAttributeValues);
     } catch (error) {
-      console.error("Error fetching languages:", error);
+      console.error("Error fetching asset type attributes:", error);
     }
   };
 
-  //Function to handle changing value of Dependencies:
   const handleDependenciesChange = (event) => {
     const {
       target: { value },
@@ -118,26 +121,57 @@ function CreateAsset({ username, userRole }) {
     setDependencyDetails(newDependencyDetails);
   };
 
-  //Function to handle changing value of Dependency details:
   const handleDependencyDetailChange = (name, relationType) => {
     setDependencyDetails((current) =>
       current.map((dep) => (dep.name === name ? { ...dep, relationType } : dep))
     );
   };
 
-  // Function to handle the form submission
+  const handleTypeChange = async (event) => {
+    // Set the type state to the asset type's name
+    const selectedTypeName = event.target.value;
+    setType(selectedTypeName);
+
+    // Find the selected type_id from assetTypes state using the selected type name
+    const selectedType = assetTypes.find(
+      (t) => t.type_name === selectedTypeName
+    );
+    if (selectedType) {
+      await fetchAssetTypeAttributes(selectedType.type_id);
+    }
+  };
+
+  const handleAttributeChange = (index, value) => {
+    const attributeName = `typeAttributeValue${index + 1}`; // +1 because index is 0-based and we want 1-based
+    setAssetAttributeValues((prev) => ({
+      ...prev,
+      [attributeName]: value,
+    }));
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Construct the new payload format expected by the backend
+    const payload = {
+      title,
+      asset_description: description,
+      link,
+      asset_type: type,
+      authors,
+      dependencies: dependencyDetails.map((dep) => ({
+        name: dep.name,
+        relationType: dep.relationType,
+      })),
+      typeAttributeValue1: assetAttributeValues["typeAttributeValue1"] || "",
+      typeAttributeValue2: assetAttributeValues["typeAttributeValue2"] || "",
+      typeAttributeValue3: assetAttributeValues["typeAttributeValue3"] || "",
+    };
+
     try {
-      await axios.post(`http://localhost:8080/assets/createasset/${username}`, {
-        title,
-        asset_description: description,
-        link,
-        asset_type: type,
-        authors,
-        dependencies: dependencyDetails,
-        languages,
-      });
+      await axios.post(
+        `http://localhost:8080/assets/createasset/${username}`,
+        payload
+      );
       console.log("Asset created successfully");
       navigate("/assets");
     } catch (error) {
@@ -147,16 +181,13 @@ function CreateAsset({ username, userRole }) {
   };
 
   return (
-    {/*Returns format of Create asset form:*/},
     <ThemeProvider theme={defaultTheme}>
-      {/*Calls navbar component from navigation to display navbar.*/}
       <Navbar userRole={userRole} username={username} />
       <Container component="main" maxWidth="sm">
         <CssBaseline />
-        {/*Parameter values for textboxs in create asset form.*/}
         <Box
           sx={{
-            marginTop: 8, //Gap from navbar
+            marginTop: 8,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -193,12 +224,12 @@ function CreateAsset({ username, userRole }) {
               onChange={(e) => setDescription(e.target.value)}
             />
             <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel id="type-label">Asset Type</InputLabel>
+              <InputLabel id="type-label">Asset Type *</InputLabel>
               <Select
                 labelId="type-label"
                 id="type"
                 value={type}
-                onChange={(e) => setType(e.target.value)}
+                onChange={handleTypeChange}
                 input={<OutlinedInput label="Asset Type" />}>
                 {assetTypes.map((assetType) => (
                   <MenuItem key={assetType.type_id} value={assetType.type_name}>
@@ -207,6 +238,26 @@ function CreateAsset({ username, userRole }) {
                 ))}
               </Select>
             </FormControl>
+            {assetTypeAttributes.map(
+              (attributeName, index) =>
+                attributeName.trim().toLowerCase() !== "null" && (
+                  <TextField
+                    key={index}
+                    margin="normal"
+                    required
+                    fullWidth
+                    label={attributeName}
+                    value={
+                      assetAttributeValues[`typeAttributeValue${index + 1}`] ||
+                      ""
+                    }
+                    onChange={(e) =>
+                      handleAttributeChange(index, e.target.value)
+                    }
+                  />
+                )
+            )}
+
             <FormControl fullWidth sx={{ mt: 2 }}>
               <InputLabel id="authors-label">Authors</InputLabel>
               <Select
@@ -280,34 +331,6 @@ function CreateAsset({ username, userRole }) {
                 sx={{ mt: 2 }}
               />
             ))}
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <InputLabel id="languages-label">Languages</InputLabel>
-              <Select
-                labelId="languages-label"
-                id="languages"
-                multiple
-                value={languages}
-                onChange={(e) => setLanguages(e.target.value)}
-                input={
-                  <OutlinedInput id="select-multiple-chip" label="Languages" />
-                }
-                renderValue={(selected) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}>
-                {langList.map((language) => (
-                  <MenuItem
-                    key={language.language_id}
-                    value={language.language_name}
-                    style={getStyles(language.language_name, languages, theme)}>
-                    {language.language_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
             <TextField
               margin="normal"
               required
@@ -318,7 +341,6 @@ function CreateAsset({ username, userRole }) {
               value={link}
               onChange={(e) => setLink(e.target.value)}
             />
-            {/*Submit button to create Asset once parameters are assigned:*/}
             <Button
               type="submit"
               fullWidth
@@ -332,4 +354,5 @@ function CreateAsset({ username, userRole }) {
     </ThemeProvider>
   );
 }
+
 export default CreateAsset;
