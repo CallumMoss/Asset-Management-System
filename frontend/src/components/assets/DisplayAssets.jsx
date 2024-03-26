@@ -24,6 +24,7 @@ import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import ForumIcon from "@mui/icons-material/Forum";
+import Box from '@mui/material/Box';
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -39,9 +40,9 @@ function LogsDialog({ logs, open, handleClose }) {
         .getHours()
         .toString()
         .padStart(2, "0")}:${date
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
       return `Date: ${formattedDate} | Time: ${formattedTime}`;
     } catch (error) {
       console.error("Failed to format log time:", error);
@@ -120,9 +121,9 @@ function MessagesDialog({ open, handleClose, user, asset }) {
         .getHours()
         .toString()
         .padStart(2, "0")}:${date
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+          .getMinutes()
+          .toString()
+          .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
       return `Date: ${formattedDate} | Time: ${formattedTime}`;
     } catch (error) {
       console.error("Failed to format log time:", error);
@@ -236,6 +237,7 @@ function DisplayAssets({ username, userRole, assetList }) {
   const [attribute1, setAttribute1] = useState("");
   const [attribute2, setAttribute2] = useState("");
   const [attribute3, setAttribute3] = useState("");
+  const [editAsset, setEditAsset] = useState(null);
 
   useEffect(() => {
     if (assetList.length === 0) {
@@ -246,6 +248,20 @@ function DisplayAssets({ username, userRole, assetList }) {
     setCurrentPage(1);
     getUser(username);
   }, [assetList]); // only called if assetList is updated.
+
+
+  const authorsToString = (authors) => authors.map(author => author.name).join(', ');
+
+// Then create a function to handle changes to the authors field.
+// This will need to split the string back into an array and map it to the array of objects.
+const handleAuthorsChange = (e) => {
+  const authorsArray = e.target.value.split(',').map(name => ({ name: name.trim() }));
+  setEditAsset((prevEditAsset) => ({
+    ...prevEditAsset,
+    authors: authorsArray,
+  }));
+};
+
 
   //Fucntion to get AssetType values:
   const fetchAssetTypes = async () => {
@@ -312,12 +328,36 @@ function DisplayAssets({ username, userRole, assetList }) {
     }
   };
 
-  // Function to handle edit action
-  const handleEdit = (assetId) => {
-    console.log("Edit asset:", assetId);
-    //setIsEditing(true);
-    // Implement your edit functionality here
-    //setEditingAsset({ ...assetId });
+  const handleEditClick = (asset) => {
+    setEditAsset({ ...asset }); // Clone the asset to avoid mutating state directly
+    setIsEditing(true);
+  };
+
+  // Function to handle changes to the edit asset form fields
+  const handleEditChange = (e, field) => {
+    setEditAsset((prevEditAsset) => ({
+      ...prevEditAsset,
+      [field]: e.target.value,
+    }));
+  };
+
+  // Function to handle submitting the edited asset
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (editAsset) {
+      try {
+        const response = await axios.put(`http://localhost:8080/assets/${editAsset.asset_id}`, editAsset);
+        console.log('Asset updated:', response.data);
+        // Exit edit mode
+        setIsEditing(false);
+        setEditAsset(null);
+        // Refresh the assets list
+        getAssets();
+      } catch (error) {
+        console.error('Failed to update asset:', error);
+        alert('An error occurred while updating the asset.');
+      }
+    }
   };
 
   const promptDelete = (assetId) => {
@@ -441,6 +481,95 @@ function DisplayAssets({ username, userRole, assetList }) {
     (
       <Container component={Paper}>
         {/* Iterate over each asset type group */}
+        {isEditing && editAsset && (
+          <Box component="form" onSubmit={handleEditSubmit} noValidate sx={{ mt: 1 }}>
+            {/* Input fields for asset attributes, e.g., title, description */}
+            <TextField
+              label="Title"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.title}
+              onChange={(e) => handleEditChange(e, 'title')}
+            />
+            <TextField
+              label="Description"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.asset_description}
+              multiline
+              rows={4}
+              onChange={(e) => handleEditChange(e, 'asset_description')}
+            />
+            <TextField
+              label="Type"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.asset_type ? editAsset.asset_type.type_name : ''}
+              onChange={(e) => handleEditChange(e, 'asset_type', 'type_name')}
+            />
+            <TextField
+              label="Link"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.link}
+              onChange={(e) => handleEditChange(e, 'link')}
+            />
+          <TextField
+  label="Authors"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  value={editAsset.authors ? authorsToString(editAsset.authors) : ''}
+  onChange={handleAuthorsChange}
+/>
+<TextField
+  label="Type Attribute Value 1"
+  variant="outlined"
+  fullWidth
+  margin="normal"
+  value={editAsset.typeAttribute1 || ''}
+  onChange={(e) => handleEditChange(e, 'typeAttribute1')}
+/>
+            <TextField
+              label="Type Attribute Value 2"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.typeAttribute2}
+              onChange={(e) => handleEditChange(e, 'typeAttribute2')}
+            />
+            <TextField
+              label="Type Attribute Value 3"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.typeAttribute3}
+              onChange={(e) => handleEditChange(e, 'typeAttribute3')}
+            />
+
+            {/* Repeat the TextField for each attribute you want to be able to edit */}
+            {/* ... */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+              <Button type="submit" variant="contained" color="primary" sx={{ ml: 2 }}>
+                Save
+              </Button>
+            </Box>
+          </Box>
+        )}
+        {/* The rest of your component, where you would have a button to trigger edit mode */}
+        {assets.map((asset) => (
+          // ... rendering asset rows
+          // Add an edit button in each row
+          <Button onClick={() => handleEditClick(asset)}>Edit</Button>
+          // ...
+        ))}
+
+
         {Object.entries(groupedAssets).map(([assetType, assets]) => (
           <div key={assetType}>
             <h2
@@ -540,7 +669,7 @@ function DisplayAssets({ username, userRole, assetList }) {
                     <TableCell style={{ width: "10%" }}>
                       {/*Edit button:*/}
                       {userRole !== "Viewer" && (
-                        <Button onClick={() => handleEdit(asset.asset_id)}>
+                        <Button onClick={() => handleEditSubmit(asset.asset_id)}>
                           Edit
                         </Button>
                       )}
