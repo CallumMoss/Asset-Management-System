@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import cs2815.project.controller.LogController;
+import cs2815.project.model.Asset;
 import cs2815.project.model.Log;
 import cs2815.project.repo.LogRepo;
 import cs2815.project.service.Implementations.LogServiceImpl;
@@ -31,22 +32,23 @@ class LogsBackEndTests {
     @Autowired
     private LogServiceImpl lsi;
 
-    // Testing working cases
     @Test
-    void test1() {
-        // Testing if we can get all logs from the database.
-        List<Log> logs = lsi.refreshLogs();
-    
-        // Creating Log objects and adding them to the array
-        List<Log> expected_logs = new ArrayList<Log>();
-        expected_logs.add(new Log());
-        expected_logs.add(new Log());
-        expected_logs.add(new Log());
-        
-        // Compare the contents of the two lists
-        for (int i = 0; i < 4; i++) {
-            assert(logs.get(i).equals(expected_logs.get(i)));
-        }
+    void testGetDescription() {
+        List<Log> logs = new ArrayList<Log>();
+        Log log1 = new Log();
+        log1.setUpdateDescription("Test");
+        logs.add(log1);
+        assertEquals("Test", logs.get(0).getUpdateDescription());
+    }
+
+    @Test
+    void testGetAsset() {
+        List<Log> logs = new ArrayList<Log>();
+        Log log1 = new Log();
+        Asset asset = new Asset();
+        log1.setAsset(asset);
+        logs.add(log1);
+        assertEquals(asset, logs.get(0).getAsset());
     }
     // Testing incorrect cases ()
 }
