@@ -1,11 +1,21 @@
 package cs2815.project.service;
 
+/*
+ * Java imports:
+ */
 import java.util.List;
 
+/*
+ * Imports for project:
+ */
 import cs2815.project.model.User;
 
+/**
+ * Interface for Users:
+ */
 public interface UserService {
 
+    //Function Declarations:
     void createBaseUsers();
 
     void registerUser(User user, String username);
