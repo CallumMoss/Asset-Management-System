@@ -2,6 +2,21 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../navigation/Navbar";
+import {
+  Container,
+  Box,
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Typography,
+  CssBaseline,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
+
 //Imports
 
 //Function to create new users:
@@ -13,6 +28,8 @@ function CreateUser({ userRole, username }) {
   const [role, setRole] = useState("");
 
   const navigate = useNavigate();
+  const theme = createTheme();
+
 
   //Function to handle use of submit button:
   const handleSubmit = async (e) => {
@@ -34,115 +51,95 @@ function CreateUser({ userRole, username }) {
   };
 
   return (
-    //Returns desired format for create user page:
-    <div>
-      {/*Calls navbar component from navigation to display navbar.*/}
+    <ThemeProvider theme={theme}>
       <Navbar userRole={userRole} username={username} />
-      <div className="container mx-auto px-4">
-        <form className="w-full max-w-lg mx-auto mt-8" onSubmit={handleSubmit}>
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="first_name">
-                First Name
-              </label>
-              <input
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                id="first_name"
-                type="text"
-                placeholder="Jane"
-                value={first_name}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="w-full px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="last_name">
-                Last Name
-              </label>
-              <input
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-                id="last_name"
-                type="text"
-                placeholder="Doe"
-                value={last_name}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="user_name">
-                Username
-              </label>
-              <input
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
-                id="user_name"
-                type="text"
-                placeholder="Username"
-                value={user_name}
-                onChange={(e) => setUserName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="w-full px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="password">
-                Password
-              </label>
-              <input
-                className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white"
-                id="password"
-                type="password"
-                placeholder="******************"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full px-3">
-              <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                htmlFor="role">
-                User Role
-              </label>
-              <select
-                className="block appearance-none w-full bg-gray-200 text-gray-700 border border-gray-200 rounded leading-tight focus:outline-none focus:bg-white"
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5">
+            Create New User
+          </Typography>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="first_name"
+              label="First Name"
+              name="first_name"
+              autoComplete="given-name"
+              autoFocus
+              value={first_name}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="last_name"
+              label="Last Name"
+              name="last_name"
+              autoComplete="family-name"
+              value={last_name}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="user_name"
+              label="Username"
+              name="user_name"
+              autoComplete="username"
+              value={user_name}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="role-label">User Role</InputLabel>
+              <Select
+                labelId="role-label"
                 id="role"
                 value={role}
+                label="User Role"
                 onChange={(e) => setRole(e.target.value)}
-                required>
-                <option value="" disabled>
-                  Select a role
-                </option>
-                <option value="Viewer">Viewer</option>
-                <option value="User">User</option>
-                <option value="Admin">Admin</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex flex-wrap -mx-3 mb-2">
-            <div className="w-full px-3 text-center">
-              {/*Submit button*/}
-              <button
-                className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-                type="submit">
-                Submit
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+              >
+                <MenuItem value="Viewer">Viewer</MenuItem>
+                <MenuItem value="User">User</MenuItem>
+                <MenuItem value="Admin">Admin</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Create User
+            </Button>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
   );
 }
+
 export default CreateUser;

@@ -24,6 +24,7 @@ import Typography from "@mui/material/Typography";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import ForumIcon from "@mui/icons-material/Forum";
+import Box from "@mui/material/Box";
 
 // Dialog component to display logs
 function LogsDialog({ logs, open, handleClose }) {
@@ -210,7 +211,6 @@ function MessagesDialog({ open, handleClose, user, asset }) {
   );
 }
 
-// Component to display and manage assets
 function DisplayAssets({ username, userRole, assetList }) {
   const [assets, setAssets] = useState([]);
   const [selectedAsset, setSelectedAsset] = useState(null);
@@ -232,10 +232,8 @@ function DisplayAssets({ username, userRole, assetList }) {
   const [orderBy, setOrderBy] = useState(null);
   const [parentAssets, setParentAssets] = useState([]);
   const navigate = useNavigate();
-  // Initialize with null for optional attributes.
-  const [attribute1, setAttribute1] = useState("");
-  const [attribute2, setAttribute2] = useState("");
-  const [attribute3, setAttribute3] = useState("");
+  const [editAsset, setEditAsset] = useState(null);
+  const [dependencyString, setDependencyString] = useState("");
 
   useEffect(() => {
     if (assetList.length === 0) {
@@ -247,7 +245,62 @@ function DisplayAssets({ username, userRole, assetList }) {
     getUser(username);
   }, [assetList]); // only called if assetList is updated.
 
-  //Fucntion to get AssetType values:
+  const authorsToString = (authors) => {
+    return authors.map((author) => author.user_name).join(", ");
+  };
+
+  const handleAuthorsChange = (e) => {
+    const authorsArray = e.target.value
+      .split(",")
+      .map((name) => {
+        return { user_name: name.trim() };
+      })
+      .filter((author) => author.user_name); // filter out any empty names
+
+    setEditAsset((prevEditAsset) => ({
+      ...prevEditAsset,
+      authors: authorsArray,
+    }));
+  };
+
+  const dependenciesToString = (dependencies) => {
+    return dependencies
+      .map((dep) => `${dep.name} (${dep.relationType})`)
+      .join(", ");
+  };
+
+  const parseDependenciesString = (dependencyString) => {
+    const dependencyRegex = /([^()]+)\s+\(([^()]+)\)/g;
+    let match;
+    const dependencies = [];
+
+    while ((match = dependencyRegex.exec(dependencyString)) !== null) {
+      if (match.index === dependencyRegex.lastIndex) {
+        dependencyRegex.lastIndex++;
+      }
+
+      const [, name, relationType] = match;
+      dependencies.push({
+        name: name.trim(),
+        relationType: relationType.trim(),
+      });
+    }
+
+    return dependencies;
+  };
+
+  const handleDependenciesChange = (e) => {
+    const newDependencyString = e.target.value;
+    setDependencyString(newDependencyString);
+    // Parse the new dependency string to an array of objects
+    const newDependencies = parseDependenciesString(newDependencyString);
+    setEditAsset((prevEditAsset) => ({
+      ...prevEditAsset,
+      dependencies: newDependencies,
+    }));
+  };
+
+  //Fucntion to get AssetType values:s
   const fetchAssetTypes = async () => {
     try {
       const response = await axios.get(
@@ -312,12 +365,78 @@ function DisplayAssets({ username, userRole, assetList }) {
     }
   };
 
-  // Function to handle edit action
-  const handleEdit = (assetId) => {
-    console.log("Edit asset:", assetId);
-    //setIsEditing(true);
-    // Implement your edit functionality here
-    //setEditingAsset({ ...assetId });
+  const handleEditClick = (asset) => {
+    // Map over the dependencies to create a new structure if dependencies exist
+    const dependencies = asset.dependencies
+      ? asset.dependencies.map((dep) => ({
+          name: dep.dependent.title, // Make sure 'title' is the correct property for the dependent asset's name
+          relationType: dep.relationType,
+        }))
+      : [];
+
+    setEditAsset({
+      ...asset,
+      dependencies, // Set the transformed dependencies
+      typeAttribute1: asset.typeAttributeValue1,
+      typeAttribute2: asset.typeAttributeValue2,
+      typeAttribute3: asset.typeAttributeValue3,
+    });
+    setIsEditing(true);
+    // Convert the mapped dependencies to a string representation
+    setDependencyString(dependenciesToString(dependencies));
+  };
+  // Function to handle changes to the edit asset form fields
+  const handleEditChange = (e, field) => {
+    setEditAsset((prevEditAsset) => ({
+      ...prevEditAsset,
+      [field]: e.target.value,
+    }));
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (editAsset) {
+      const dependencies = parseDependenciesString(dependencyString);
+
+      // Use the correct property name for asset_type if it's an object
+      const assetType =
+        typeof editAsset.asset_type === "object"
+          ? editAsset.asset_type.type_name
+          : editAsset.asset_type;
+
+      // Use the correct property name 'user_name' for authors
+      const authors = editAsset.authors
+        ? editAsset.authors.map((author) => author.user_name)
+        : [];
+
+      // Prepare the payload
+      const payload = {
+        asset_id: editAsset.asset_id,
+        title: editAsset.title,
+        asset_description: editAsset.asset_description,
+        link: editAsset.link,
+        asset_type: assetType,
+        authors: authors,
+        dependencies: dependencies,
+        typeAttributeValue1: editAsset.typeAttribute1 || "",
+        typeAttributeValue2: editAsset.typeAttribute2 || "",
+        typeAttributeValue3: editAsset.typeAttribute3 || "",
+      };
+
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/assets/edit/${username}`, // Ensure username is defined and correct
+          payload
+        );
+        console.log("Asset updated:", response.data);
+        setIsEditing(false);
+        setEditAsset(null);
+        getAssets(); // Refresh the assets list
+      } catch (error) {
+        console.error("Failed to update asset:", error);
+        alert("An error occurred while updating the asset.");
+      }
+    }
   };
 
   const promptDelete = (assetId) => {
@@ -441,6 +560,106 @@ function DisplayAssets({ username, userRole, assetList }) {
     (
       <Container component={Paper}>
         {/* Iterate over each asset type group */}
+        {isEditing && editAsset && (
+          <Box
+            component="form"
+            onSubmit={handleEditSubmit}
+            noValidate
+            sx={{ mt: 1 }}>
+            {/* Input fields for asset attributes, e.g., title, description */}
+            <TextField
+              label="Title"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.title}
+              onChange={(e) => handleEditChange(e, "title")}
+            />
+            <TextField
+              label="Description"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.asset_description}
+              multiline
+              rows={4}
+              onChange={(e) => handleEditChange(e, "asset_description")}
+            />
+            <TextField
+              label="Type"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.asset_type ? editAsset.asset_type.type_name : ""}
+              onChange={(e) => handleEditChange(e, "asset_type", "type_name")}
+            />
+            <TextField
+              label="Link"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.link}
+              onChange={(e) => handleEditChange(e, "link")}
+            />
+            <TextField
+              label="Authors"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={
+                editAsset.authors ? authorsToString(editAsset.authors) : ""
+              }
+              onChange={handleAuthorsChange}
+            />
+
+            <TextField
+              label="Dependencies"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={dependencyString}
+              onChange={handleDependenciesChange}
+            />
+
+            <TextField
+              label="Type Attribute Value 1"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.typeAttribute1 || ""}
+              onChange={(e) => handleEditChange(e, "typeAttribute1")}
+            />
+            <TextField
+              label="Type Attribute Value 2"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.typeAttribute2}
+              onChange={(e) => handleEditChange(e, "typeAttribute2")}
+            />
+            <TextField
+              label="Type Attribute Value 3"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={editAsset.typeAttribute3}
+              onChange={(e) => handleEditChange(e, "typeAttribute3")}
+            />
+
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Button onClick={() => setIsEditing(false)}>Cancel</Button>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                sx={{ ml: 2 }}>
+                Save
+              </Button>
+            </Box>
+          </Box>
+        )}
+        {/* The rest of your component, where you would have a button to trigger edit mode */}
+
         {Object.entries(groupedAssets).map(([assetType, assets]) => (
           <div key={assetType}>
             <h2
@@ -467,7 +686,7 @@ function DisplayAssets({ username, userRole, assetList }) {
                     Authors
                   </TableCell>
                   <TableCell style={{ width: "15%", fontWeight: "bold" }}>
-                    Create Date
+                    Latest Update
                   </TableCell>
                   <TableCell style={{ width: "20%" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -540,7 +759,7 @@ function DisplayAssets({ username, userRole, assetList }) {
                     <TableCell style={{ width: "10%" }}>
                       {/*Edit button:*/}
                       {userRole !== "Viewer" && (
-                        <Button onClick={() => handleEdit(asset.asset_id)}>
+                        <Button onClick={() => handleEditClick(asset)}>
                           Edit
                         </Button>
                       )}
@@ -599,19 +818,19 @@ function DisplayAssets({ username, userRole, assetList }) {
                 {selectedAsset.asset_type.typeAttribute1 && (
                   <Typography variant="body1">
                     <strong>{selectedAsset.asset_type.typeAttribute1}: </strong>
-                    {selectedAsset.typeAttributeValue1}
+                    {selectedAsset.typeAttributeValue1 || "No value set!"}
                   </Typography>
                 )}
                 {selectedAsset.asset_type.typeAttribute2 && (
                   <Typography variant="body1">
                     <strong>{selectedAsset.asset_type.typeAttribute2}: </strong>
-                    {selectedAsset.typeAttributeValue2}
+                    {selectedAsset.typeAttributeValue2 || "No value set!"}
                   </Typography>
                 )}
                 {selectedAsset.asset_type.typeAttribute3 && (
                   <Typography variant="body1">
                     <strong>{selectedAsset.asset_type.typeAttribute3}: </strong>
-                    {selectedAsset.typeAttributeValue3}
+                    {selectedAsset.typeAttributeValue3 || "No value set!"}
                   </Typography>
                 )}
                 <br />

@@ -1,5 +1,6 @@
 package cs2815.project.model;
 
+import jakarta.persistence.Column;
 /*
  * Imports:
  */
@@ -27,7 +28,7 @@ import java.sql.Timestamp;
 @Table(name = "log")
 public class Log {
 
-    //Private fields:
+    // Private fields:
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int logId;
@@ -40,6 +41,7 @@ public class Log {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(length = 1000) // Adjust the length as needed
     private String updateDescription;
 
     private Timestamp updateTimestamp;
