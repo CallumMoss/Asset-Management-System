@@ -40,9 +40,9 @@ function LogsDialog({ logs, open, handleClose }) {
         .getHours()
         .toString()
         .padStart(2, "0")}:${date
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
       return `Date: ${formattedDate} | Time: ${formattedTime}`;
     } catch (error) {
       console.error("Failed to format log time:", error);
@@ -121,9 +121,9 @@ function MessagesDialog({ open, handleClose, user, asset }) {
         .getHours()
         .toString()
         .padStart(2, "0")}:${date
-          .getMinutes()
-          .toString()
-          .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}:${date.getSeconds().toString().padStart(2, "0")}`;
       return `Date: ${formattedDate} | Time: ${formattedTime}`;
     } catch (error) {
       console.error("Failed to format log time:", error);
@@ -233,8 +233,7 @@ function DisplayAssets({ username, userRole, assetList }) {
   const [parentAssets, setParentAssets] = useState([]);
   const navigate = useNavigate();
   const [editAsset, setEditAsset] = useState(null);
-  const [dependencyString, setDependencyString] = useState('');
-
+  const [dependencyString, setDependencyString] = useState("");
 
   useEffect(() => {
     if (assetList.length === 0) {
@@ -251,9 +250,12 @@ function DisplayAssets({ username, userRole, assetList }) {
   };
 
   const handleAuthorsChange = (e) => {
-    const authorsArray = e.target.value.split(",").map((name) => {
-      return { user_name: name.trim() };
-    }).filter(author => author.user_name); // filter out any empty names
+    const authorsArray = e.target.value
+      .split(",")
+      .map((name) => {
+        return { user_name: name.trim() };
+      })
+      .filter((author) => author.user_name); // filter out any empty names
 
     setEditAsset((prevEditAsset) => ({
       ...prevEditAsset,
@@ -262,7 +264,9 @@ function DisplayAssets({ username, userRole, assetList }) {
   };
 
   const dependenciesToString = (dependencies) => {
-    return dependencies.map(dep => `${dep.name} (${dep.relationType})`).join(", ");
+    return dependencies
+      .map((dep) => `${dep.name} (${dep.relationType})`)
+      .join(", ");
   };
 
   const parseDependenciesString = (dependencyString) => {
@@ -276,7 +280,10 @@ function DisplayAssets({ username, userRole, assetList }) {
       }
 
       const [, name, relationType] = match;
-      dependencies.push({ name: name.trim(), relationType: relationType.trim() });
+      dependencies.push({
+        name: name.trim(),
+        relationType: relationType.trim(),
+      });
     }
 
     return dependencies;
@@ -287,12 +294,11 @@ function DisplayAssets({ username, userRole, assetList }) {
     setDependencyString(newDependencyString);
     // Parse the new dependency string to an array of objects
     const newDependencies = parseDependenciesString(newDependencyString);
-    setEditAsset(prevEditAsset => ({
+    setEditAsset((prevEditAsset) => ({
       ...prevEditAsset,
       dependencies: newDependencies,
     }));
   };
-
 
   //Fucntion to get AssetType values:s
   const fetchAssetTypes = async () => {
@@ -361,17 +367,19 @@ function DisplayAssets({ username, userRole, assetList }) {
 
   const handleEditClick = (asset) => {
     // Map over the dependencies to create a new structure if dependencies exist
-    const dependencies = asset.dependencies ? asset.dependencies.map(dep => ({
-      name: dep.dependent.title, // Make sure 'title' is the correct property for the dependent asset's name
-      relationType: dep.relationType
-    })) : [];
+    const dependencies = asset.dependencies
+      ? asset.dependencies.map((dep) => ({
+          name: dep.dependent.title, // Make sure 'title' is the correct property for the dependent asset's name
+          relationType: dep.relationType,
+        }))
+      : [];
 
     setEditAsset({
       ...asset,
       dependencies, // Set the transformed dependencies
       typeAttribute1: asset.typeAttributeValue1,
       typeAttribute2: asset.typeAttributeValue2,
-      typeAttribute3: asset.typeAttributeValue3
+      typeAttribute3: asset.typeAttributeValue3,
     });
     setIsEditing(true);
     // Convert the mapped dependencies to a string representation
@@ -391,13 +399,14 @@ function DisplayAssets({ username, userRole, assetList }) {
       const dependencies = parseDependenciesString(dependencyString);
 
       // Use the correct property name for asset_type if it's an object
-      const assetType = typeof editAsset.asset_type === 'object'
-        ? editAsset.asset_type.type_name
-        : editAsset.asset_type;
+      const assetType =
+        typeof editAsset.asset_type === "object"
+          ? editAsset.asset_type.type_name
+          : editAsset.asset_type;
 
       // Use the correct property name 'user_name' for authors
       const authors = editAsset.authors
-        ? editAsset.authors.map(author => author.user_name)
+        ? editAsset.authors.map((author) => author.user_name)
         : [];
 
       // Prepare the payload
@@ -409,9 +418,9 @@ function DisplayAssets({ username, userRole, assetList }) {
         asset_type: assetType,
         authors: authors,
         dependencies: dependencies,
-        typeAttributeValue1: editAsset.typeAttribute1 || '',
-        typeAttributeValue2: editAsset.typeAttribute2 || '',
-        typeAttributeValue3: editAsset.typeAttribute3 || '',
+        typeAttributeValue1: editAsset.typeAttribute1 || "",
+        typeAttributeValue2: editAsset.typeAttribute2 || "",
+        typeAttributeValue3: editAsset.typeAttribute3 || "",
       };
 
       try {
@@ -429,7 +438,6 @@ function DisplayAssets({ username, userRole, assetList }) {
       }
     }
   };
-
 
   const promptDelete = (assetId) => {
     setDeleteAssetId(assetId);
@@ -613,7 +621,6 @@ function DisplayAssets({ username, userRole, assetList }) {
               onChange={handleDependenciesChange}
             />
 
-
             <TextField
               label="Type Attribute Value 1"
               variant="outlined"
@@ -653,7 +660,6 @@ function DisplayAssets({ username, userRole, assetList }) {
         )}
         {/* The rest of your component, where you would have a button to trigger edit mode */}
 
-
         {Object.entries(groupedAssets).map(([assetType, assets]) => (
           <div key={assetType}>
             <h2
@@ -680,7 +686,7 @@ function DisplayAssets({ username, userRole, assetList }) {
                     Authors
                   </TableCell>
                   <TableCell style={{ width: "15%", fontWeight: "bold" }}>
-                    Create Date
+                    Latest Update
                   </TableCell>
                   <TableCell style={{ width: "20%" }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
@@ -812,19 +818,19 @@ function DisplayAssets({ username, userRole, assetList }) {
                 {selectedAsset.asset_type.typeAttribute1 && (
                   <Typography variant="body1">
                     <strong>{selectedAsset.asset_type.typeAttribute1}: </strong>
-                    {selectedAsset.typeAttributeValue1}
+                    {selectedAsset.typeAttributeValue1 || "No value set!"}
                   </Typography>
                 )}
                 {selectedAsset.asset_type.typeAttribute2 && (
                   <Typography variant="body1">
                     <strong>{selectedAsset.asset_type.typeAttribute2}: </strong>
-                    {selectedAsset.typeAttributeValue2}
+                    {selectedAsset.typeAttributeValue2 || "No value set!"}
                   </Typography>
                 )}
                 {selectedAsset.asset_type.typeAttribute3 && (
                   <Typography variant="body1">
                     <strong>{selectedAsset.asset_type.typeAttribute3}: </strong>
-                    {selectedAsset.typeAttributeValue3}
+                    {selectedAsset.typeAttributeValue3 || "No value set!"}
                   </Typography>
                 )}
                 <br />
