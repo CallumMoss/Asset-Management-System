@@ -52,10 +52,8 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User user) {
-
         // if users table is empty, call all createBase for all tables
         if (userService.refreshUser().size() == 0) {
-            System.out.println("Initializing db");
             userService.createBaseUsers();
             assetTypeService.createBaseTypes();
             assetService.createBaseAssets();

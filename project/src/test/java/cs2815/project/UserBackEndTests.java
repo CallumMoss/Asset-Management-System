@@ -74,7 +74,6 @@ class UserBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(searched_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
     @Test
@@ -101,7 +100,6 @@ class UserBackEndTests {
         for (int i = 0; i < 2; i++) {
             assert(searched_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
     @Test
@@ -128,7 +126,6 @@ class UserBackEndTests {
         for (int i = 0; i < 2; i++) {
             assert(searched_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
     @Test
@@ -155,7 +152,6 @@ class UserBackEndTests {
         for (int i = 0; i < 2; i++) {
             assert(searched_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
 
@@ -185,7 +181,6 @@ class UserBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
     @Test
@@ -201,7 +196,6 @@ class UserBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
     @Test
@@ -217,7 +211,6 @@ class UserBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_users.get(i).equals(expected_users.get(i)));
         }
-        expected_users.clear();
     }
 
     @Test
@@ -250,6 +243,4 @@ class UserBackEndTests {
         assert(usi.searchByUsername("TempUser").get(0).equals(newU));
         usi.deleteUser(newU.getId(), "BaseAdmin");
     }
-
-    // Testing incorrect cases (such as creating a user that already exists)
 }
