@@ -3,30 +3,16 @@ package cs2815.project;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import cs2815.project.controller.UserController;
 import cs2815.project.model.User;
-import cs2815.project.repo.UserRepo;
 import cs2815.project.service.Implementations.UserServiceImpl;
 
 // Tests are designed for the base database
 @SpringBootTest
 class UserBackEndTests {
-
-    @Autowired
-    private UserRepo ur;
-
-    @Autowired
-    private UserController uc;
 
     @Autowired
     private UserServiceImpl usi;

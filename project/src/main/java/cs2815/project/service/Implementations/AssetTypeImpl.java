@@ -55,6 +55,7 @@ public class AssetTypeImpl implements AssetTypeService {
      */
     @Override
     public void createAssetType(AssetType assetType, String username) {
+        if(assetType == null) {return;}
         repo.save(assetType);
 
         Log log = new Log();

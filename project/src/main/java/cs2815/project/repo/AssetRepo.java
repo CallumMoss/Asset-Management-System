@@ -42,6 +42,7 @@ public interface AssetRepo extends JpaRepository<Asset, Integer> { // Integer be
     * @param pageable Pagination information.
     * @return Page of assets.
     */
+    @SuppressWarnings("null")
     @Query("SELECT a FROM Asset a")
     Page<Asset> findAll(Pageable pageable);
 

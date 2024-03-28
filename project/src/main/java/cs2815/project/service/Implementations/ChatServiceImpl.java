@@ -46,6 +46,7 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public void deleteMessage(ChatBoard message) {
+        if(message == null){return;}
         chatRepo.delete(message);
     }
 

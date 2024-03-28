@@ -5,29 +5,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
-import cs2815.project.controller.AssetTypeController;
 import cs2815.project.model.AssetType;
-import cs2815.project.model.User;
-import cs2815.project.repo.AssetTypeRepo;
 import cs2815.project.service.Implementations.AssetTypeImpl;
 
 // Tests are designed for the base database
 @SpringBootTest
 class AssetTypeBackEndTests {
-
-    @Autowired
-    private AssetTypeRepo atr;
-
-    @Autowired
-    private AssetTypeController atc;
 
     @Autowired
     private AssetTypeImpl atsi;
@@ -154,7 +141,6 @@ class AssetTypeBackEndTests {
             // if old TempAssetType exists, this would fail. If it doesnt and is replaced by new, it passes.
             assert(atsi.searchTypes("TempAssetType").get(i).equals(newAt));
         }
-        assert(atsi.searchTypes("TempAssetType").get(0).equals(newAt));
-        atsi.deleteAssetType(newAt.getType_id(), "BasAdmin");
+        atsi.deleteAssetType(newAt.getType_id(), "BaseAdmin");
     }
 }

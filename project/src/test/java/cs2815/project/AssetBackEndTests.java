@@ -6,28 +6,21 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import cs2815.project.controller.AssetController;
 import cs2815.project.model.Asset;
 import cs2815.project.model.specialmodels.AssetWrapper;
 import cs2815.project.model.specialmodels.DependencyWrapper;
-import cs2815.project.repo.AssetRepo;
 import cs2815.project.service.Implementations.AssetImpl;
 
 // Tests are designed for the base database
+// Ensure to have a clear database, then login to the website.
+// By logging in with an empty database, the base database is created for you.
+// Tests will only run for base database.
 @SpringBootTest
 class AssetBackEndTests {
-
-    @Autowired
-    private AssetRepo ar;
-
-    @Autowired
-    private AssetController ac;
 
     @Autowired
     private AssetImpl ai;
@@ -381,5 +374,62 @@ class AssetBackEndTests {
         for (int i = 0; i < 3; i++) {
             assert(sorted_assets.get(i).equals(expected_assets.get(i)));
         }
+    }
+
+    @Test
+    void test8() {
+        // Testing creation and deletion of assets
+        // Testing creation
+       List<String> authors = Arrays.asList("BaseAdmin");
+       DependencyWrapper dwrapper = new DependencyWrapper();
+       List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
+       dwrapper_list.add(dwrapper);
+       AssetWrapper wrapper = new AssetWrapper(4, "TempAsset",
+               "Temp Description",
+               "templink.com", "Python File", authors, dwrapper_list, "3.9.10", null, null);
+       ai.createAsset(wrapper, "BaseUser");
+       List<Asset> actual_asset = ai.searchByName("TempAsset");
+       wrapper.setAsset_id(actual_asset.get(0).getAsset_id());
+       assertEquals(actual_asset.get(0), ai.convertWrapperToAsset(wrapper));
+
+       // Testing deletion
+       ai.deleteAsset(actual_asset.get(0).getAsset_id(), "BaseAdmin");
+       assertEquals(ai.searchByName("TempAsset"), new ArrayList<Asset>());
+    }
+
+    @Test
+    void test9() {
+        // Testing edit
+
+        List<String> authors = Arrays.asList("BaseAdmin");
+       DependencyWrapper dwrapper = new DependencyWrapper();
+       List<DependencyWrapper> dwrapper_list = new ArrayList<DependencyWrapper>();
+       dwrapper_list.add(dwrapper);
+       AssetWrapper wrapper = new AssetWrapper(4, "TempAsset",
+               "Temp Description",
+               "templink.com", "Python File", authors, dwrapper_list, "3.9.10", null, null);
+       ai.createAsset(wrapper, "BaseUser");
+       List<Asset> actual_asset = ai.searchByName("TempAsset");
+       wrapper.setAsset_id(actual_asset.get(0).getAsset_id());
+
+       authors = Arrays.asList("BaseAdmin");
+       dwrapper = new DependencyWrapper();
+       dwrapper_list = new ArrayList<DependencyWrapper>();
+       dwrapper_list.add(dwrapper);
+       AssetWrapper newWrapper = new AssetWrapper(wrapper.getAsset_id(), "NewTempAsset",
+               "New Temp Description",
+               "newtemplink.com", "Python File", authors, dwrapper_list, "3.8", null, null);
+        ai.editAsset(newWrapper, "BaseAdmin");
+        actual_asset = ai.searchByName("TempAsset");
+
+
+
+        for (int i = 0; i < actual_asset.size(); i++) {
+                // if old TempAssetType exists, this would fail. If it doesnt and is replaced by new, it passes.
+                assertEquals(actual_asset.get(0), ai.convertWrapperToAsset(newWrapper));
+            }
+
+        ai.deleteAsset(actual_asset.get(0).getAsset_id(), "BaseAdmin");
+        assertEquals(ai.searchByName("TempAsset"), new ArrayList<Asset>());
     }
 }

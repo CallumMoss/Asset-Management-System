@@ -64,7 +64,7 @@ public class AssetImpl implements AssetService {
     public void createAsset(AssetWrapper assetdto, String username) {
 
         Asset asset = convertWrapperToAsset(assetdto);
-
+        if(asset == null) {return;}
         repo.save(asset);
 
         Log log = new Log();
